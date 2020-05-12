@@ -1,0 +1,234 @@
+*{
+    margin: 0;
+	padding: 0;
+	color: @fontColor;
+}
+html,body{
+    margin: 0;
+    padding: 0;
+}
+// 背景图片地址和大小
+.bis(@url) { 
+	background-image: url(@url);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+//transform上下左右居中
+.ctt {  
+	position: absolute; 
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+//定位上下居中
+.tb {  
+	position: absolute;
+	top: 50%;
+    transform: translateY(-50%);
+}
+//定位左右居中
+.lr {  
+	position: absolute;
+	left: 50%;
+    transform: translateX(-50%);
+}
+
+//宽高
+.wh(@width, @height){
+	width: @width;
+	height: @height;
+}
+
+//字体大小、行高、字体
+.ft(@size, @line-height) {  
+	font-size: @size;
+	line-height:@line-height;
+}
+
+//字体大小，颜色
+.sc(@size, @color){
+	font-size: @size;
+	color: @color;
+}
+
+//flex 布局和 子元素 对其方式
+.fj(@type: space-between){
+	display: flex;
+	justify-content: @type;
+}
+
+.bor{
+	border:1px solid @borColor;
+}
+.bor-b{
+	border-bottom:1px solid @borColor;
+}
+.bor-t{
+	border-top:1px solid @borColor;
+}
+.bor-l{
+	border-left:1px solid @borColor;
+}
+.bor-r{
+	border-right:1px solid @borColor;
+}
+// flex弹性布局样式
+.drc {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.dc {
+	display: flex;
+	flex-direction: column;
+}
+.dcr {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.dfcc {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+}
+.dfrcb {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+.dfrb {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.dfrca {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-around;
+}
+.drfe {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+.cp{cursor: pointer;}
+//字体大小
+.fs10 {
+	font-size: 12px;
+	font-family: "siyuan-l";
+	transform: scale(0.85);
+	display: inline-block;
+	position: absolute;
+	width: max-content;
+	width: 320px;
+	margin-left: -16px;
+  }
+  .fs12 {
+	font-size: 12px;
+  }
+  .fs13 {
+	font-size: 13px;
+  }
+  .fs14 {
+	font-size: 14px;
+  }
+  .fs16 {
+	font-size: 16px;
+  }
+  .fs18 {
+	font-size: 18px;
+  }
+  .fs20 {
+	font-size: 20px;
+  }
+  .fs24 {
+	font-size: 24px;
+  }
+  .fs26 {
+	font-size: 26px;
+  }
+  .fs28 {
+	font-size: 28px;
+  }
+  .fs30 {
+	font-size: 30px;
+  }
+  .fs34 {
+	font-size: 34px;
+  }
+  .fs40 {
+	font-size: 40px;
+  }
+  .fs45 {
+	font-size: 45px;
+  }
+  .fs50 {
+	font-size: 50px;
+  }
+  .fs52 {
+	font-size: 52px;
+  }
+.fw500{font-weight: 500;}
+.fw600{font-weight: 600;}
+//字体加粗
+.blod {font-weight: 700;}
+//外边距样式;
+.mt10{margin-top: 10px;};.mt20{margin-top: 20px;};.mt30{margin-top: 30px;};.mt40{margin-top: 40px;};.mt50{margin-top: 50px;};.mt80{margin-top: 80px;}
+.mb10{margin-bottom: 10px;};.mb20{margin-bottom: 20px;};.mb30{margin-bottom: 30px;};.mb40{margin-bottom: 40px;};.mb50{margin-bottom: 50px;};
+.ml10{margin-left: 10px;};.ml20{margin-left: 20px;};.ml30{margin-left: 30px;};.ml40{margin-left: 40px;};.ml50{margin-left: 50px;};
+.mr10{margin-right: 10px;};.mr20{margin-right: 20px;};.mr30{margin-right: 30px;};.mr40{margin-right: 40px;};.mr50{margin-right: 50px;};
+//内边距样式;
+.pt10{padding-top: 10px;};.pt20{padding-top: 20px;};.pt30{padding-top: 30px;};.pt40{padding-top: 40px;};.pt50{padding-top: 50px;};
+.pb10{padding-bottom: 10px;};.pb20{padding-bottom: 20px;};.pb30{padding-bottom: 30px;};.pb40{padding-bottom: 40px;};.pb50{padding-bottom: 50px;};
+.pl10{padding-left: 10px;};.pl20{padding-left: 20px;};.pl30{padding-left: 30px;};.pl40{padding-left: 40px;};.pl50{padding-left: 50px;};
+.pr10{padding-right: 10px;};.pr20{padding-right: 20px;};.pr30{padding-right: 30px;};.pr40{padding-right: 40px;};.pr50{padding-right: 50px;};
+//文本对齐方式
+.text-c{text-align: center};.text-l{text-align: left};.text-r{text-align: right};
+// 文字大小
+@titleSize: 20px;
+@subTitleSize: 16px;
+@contentSize: 14px;
+@titbgColor:#F4F6FA;
+@fontColor:#5A5E66;
+@titFontColor:#2D2F33;
+@borColor:#E6EBF5;
+@buleColor:#2796FF;
+.draw-tit{
+	color:@buleColor ;
+}
+.ban{
+	opacity: .8;
+	background: #999;
+	cursor: no-drop;
+} 
+.tit-txt{
+	color: @titFontColor;
+}
+.el-form /deep/ .el-input{
+	width: 202px;
+}
+.el-table .table-header{
+	background: @titbgColor;
+	font-size: @contentSize;
+	font-weight: bold;
+}
+.el-table .table-header /deep/ .cell{
+	color: @titFontColor;
+}
+.el-table .table-h{
+	padding: 0;
+	height: 36px;
+}
+
+/*icon*/
+.icon{
+	.wh(16px,16px);
+	background-size: 100% 100%;
+}
+.icon-yhmb{
+	background-image:url(../assets/icon/yhmb.png);
+}
