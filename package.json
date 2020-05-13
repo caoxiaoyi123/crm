@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.8.7",
     "axios": "^0.19.2",
+    "core-js": "^3.6.5",
     "element-ui": "^2.13.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6"
@@ -46,8 +47,9 @@
   },
   "browserslist": [
     "> 1%",
+    "cover 99.5% in CN",
     "last 2 versions",
-    "not ie < 10"
+    "ie 11"
   ],
   "gitHooks": {
     "pre-commit": "lint-staged"
