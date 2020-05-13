@@ -112,7 +112,7 @@ export default {
             fromObj:{},
             id:'',
             searchList:[],
-            isshow:true,
+            isshow:false,
             rules:{
                 comName:{required:true,message:'公司名称不得为空'},
                 corpCode:[
@@ -169,6 +169,7 @@ export default {
         // console.group('创建完毕状态===============》created');
         if(this.comid!=''){
             this.ajax(this.comid)
+            this.isshow=true;
         }
     },
     beforeMount() {
@@ -196,6 +197,7 @@ export default {
         // 方法 集合
         creatFn(){
             // this.fromData.comRegion='';
+            this.fromData=new Object();
             this.drawer=true;
             this.title='新建供应商'
             if(this.$refs.fromData){
@@ -245,8 +247,9 @@ export default {
             this.$refs.fromData.validate((valid)=>{
                 if(valid){
                     let data=this.fromData
+                    data.comMgrid=this.comid
                     if(this.title=='新建供应商'){
-                        data.comMgrid=this.comid
+                        data.comId=null
                     }else{
                         data.comId=this.id
                     }
@@ -265,7 +268,7 @@ export default {
                 url:'/so/supplier/save',
                 data:data
             }).then(res=>{
-                if(!res.code){
+                if(res.succ){
                     this.$notify({
                         title: '成功',
                         message:res.data,
@@ -273,11 +276,6 @@ export default {
                     });
                     this.drawer=false;
                     this.ajax(this.comid)
-                }else{
-                    this.$notify.info({
-                        title: '消息',
-                        message:res.msg
-                    });
                 }
             })
         },

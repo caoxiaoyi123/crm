@@ -409,17 +409,18 @@ export default {
                         data:d,
                         url:'/so/edit'
                     }).then(res=>{
-                        if(!res.code){
+                        if(res.succ){
                             this.$notify({
                                 title: '成功',
                                 message:res.data,
                                 type: 'success'
                             });
                             this.drawer=false;
+                            this.ajax()
                         }else{
                             this.$notify.info({
                                 title: '消息',
-                                message:res.data
+                                message:res.msg
                             });
                         }
                         

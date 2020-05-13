@@ -152,6 +152,8 @@ export default {
     watch: {
         // 监控集合
         comid:function(val,old){
+            this.projectList=[];
+            this.userList=[];
             if(val!=''){
                 this.data.projId=null;
                 this.data.userId=null
@@ -211,7 +213,7 @@ export default {
     created() {
         // console.group('创建完毕状态===============》created');
         if(this.comid!=''){
-            this.ajax(this.comid)
+            this.ajax()
             this.getUserList();
             this.getProList();
         }
@@ -280,6 +282,8 @@ export default {
                         }
                     }
                     this.fromData=res.data
+                    this.fromData.projName=row.projName
+                    this.fromData.userName=row.userName
                 }
                 
             })
@@ -300,7 +304,7 @@ export default {
                 }
             }).then(res =>{
                 this.userList=res.data;
-                console.log(res)
+                this.userList.unshift({userName:'全部',userId:null})
             })
         },
         getProList(){
@@ -313,6 +317,7 @@ export default {
                 }
             }).then(res =>{
                 this.projectList=res.data;
+                this.projectList.unshift({projName:'全部',projId:null})
             })
         }
     }

@@ -19,9 +19,11 @@ axios.interceptors.request.use(function (config) {
 })
 
 axios.interceptors.response.use(function (response) { // ①10010 token过期（30天） ②10011 token无效
-  if (response.data.code == 401 ) {
-    // alert('用户登录失效，请重新登录')
-    // return
+  if (!response.data.succ) {
+    Vue.$notify.info({
+        title: '消息',
+        message:response.data.msg
+    });
   }
   return response.data
 },function(err){

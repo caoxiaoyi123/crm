@@ -46,14 +46,14 @@ export default {
         // console.group('创建完毕状态===============》created');
         let city=JSON.parse(localStorage.getItem('cityAllTree'))
         this.options=city;
-        if(this.region!=''){
-            let arr=this.region.split('-',3);
-            arr.map(item=>{
-                item+'-'
-            })
-            this.value=arr
-        }
-        // this.value=this.region
+        // if(this.region&&this.region!=''){
+        //     let arr=this.region.split('-',3);
+        //     arr.map(item=>{
+        //         item+'-'
+        //     })
+        //     this.value=arr
+        // }
+        this.value=this.region
     },
     beforeMount() {
         // console.group('挂载前状态  ===============》beforeMount');
@@ -80,7 +80,7 @@ export default {
         // 方法 集合
         handleChange(){
             let data={
-                regionVal:this.value[this.value.length-1]
+                regionVal:this.value
             }
             this.$emit('regionChange',data)
         }

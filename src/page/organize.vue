@@ -63,7 +63,7 @@ export default {
             fromData:{},
             fromObj:{},
             id:'',
-            isshow:true
+            isshow:false
         }
     },
     watch: {
@@ -91,6 +91,7 @@ export default {
         // console.group('创建完毕状态===============》created');
         if(this.comid!=''){
             this.ajax(this.comid)
+            this.isshow=true
         }
     },
     beforeMount() {
@@ -116,7 +117,7 @@ export default {
     methods: {
         // 方法 集合
         creatFn(){
-            // this.fromData=new Object();
+            this.fromData=new Object();
             this.drawer=true;
             this.title='新建组织'
             if(this.$refs.fromData){
@@ -137,18 +138,13 @@ export default {
                 },
                 url:'/so/depart/delete'
             }).then(res=>{
-                if(!res.code){
+                if(res.succ){
                     this.$notify({
                         title: '成功',
                         message:res.data,
                         type: 'success'
                     });
                     this.ajax(this.comid)
-                }else{
-                    this.$notify.info({
-                        title: '消息',
-                        message:res.msg
-                    });
                 }
             })
         },
@@ -186,7 +182,7 @@ export default {
                 url:url,
                 data:data
             }).then(res=>{
-                if(!res.code){
+                if(res.succ){
                     this.$notify({
                         title: '成功',
                         message:res.data,
@@ -194,11 +190,6 @@ export default {
                     });
                     this.drawer=false;
                     this.ajax(this.comid)
-                }else{
-                    this.$notify.info({
-                        title: '消息',
-                        message:res.msg
-                    });
                 }
             })
         },
