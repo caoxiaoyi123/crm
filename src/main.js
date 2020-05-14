@@ -1,6 +1,4 @@
-// import '@babel/polyfill'//转移ES6语法变ES5
-import "core-js";
-import "regenerator-runtime/runtime";
+import "babel-polyfill";
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
