@@ -297,14 +297,14 @@ export default {
         getUserList(){
             this.$http({
                 method:'post',
-                url:'/so/user/list',
+                url:'/so/user/record/list',
                 data:{
                     comId:this.comid,
                     comName:this.comName
                 }
             }).then(res =>{
                 this.userList=res.data;
-                this.userList.unshift({userName:'全部',userId:null})
+                this.userList.unshift({userName:'请选择',userId:null})
             })
         },
         getProList(){
@@ -317,7 +317,7 @@ export default {
                 }
             }).then(res =>{
                 this.projectList=res.data;
-                this.projectList.unshift({projName:'全部',projId:null})
+                this.projectList.unshift({projName:'请选择',projId:null})
             })
         }
     }

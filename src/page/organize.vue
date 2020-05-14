@@ -149,9 +149,11 @@ export default {
             })
         },
         tableSelectFn(currentRow,oldCurrentRow){//表格选中时
-            let obj=JSON.parse(JSON.stringify(currentRow))
-            this.fromObj=obj
-            this.id=currentRow.depId
+            if(currentRow){
+                let obj=JSON.parse(JSON.stringify(currentRow))
+                this.fromObj=obj
+                this.id=currentRow.depId
+            }
         },
         submitFn(){
             this.$refs.fromData.validate((valid)=>{

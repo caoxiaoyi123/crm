@@ -237,6 +237,7 @@ export default {
             tabNum:'organize',
             drawer:false,
             fromData:{comRegion:''},
+            fromObj:{},
             comid:'',
             comname:''
         }
@@ -308,10 +309,10 @@ export default {
     methods:{
         editFn(){
             this.drawer=true;
-            this.fromData=JSON.parse(JSON.stringify(this.fromObj));
-            if(this.$refs.fromData){
-                this.$refs.fromData.resetFields()
-            }
+            // this.fromData=JSON.parse(JSON.stringify(this.fromObj));
+            // if(this.$refs.fromData){
+            //     this.$refs.fromData.resetFields()
+            // }
         },
         getTreeDic(pid,data){//根据pid获取树状图
             let result = [] , temp;
@@ -329,7 +330,7 @@ export default {
         tableSelectFn(currentRow,oldCurrentRow){//表格选中时
             if(currentRow){
                 let obj=JSON.parse(JSON.stringify(currentRow))
-                this.fromObj=obj
+                // this.fromObj=obj
                 this.fromData=obj
                 this.comid=this.fromData.comId
                 this.comname=this.fromData.comName
@@ -417,13 +418,7 @@ export default {
                             });
                             this.drawer=false;
                             this.ajax()
-                        }else{
-                            this.$notify.info({
-                                title: '消息',
-                                message:res.msg
-                            });
                         }
-                        
                     })
                 }
             })

@@ -2,15 +2,15 @@
 <template>
     <div class="project">
         <div class="head-box drc">
-            <span class="drc cp mr20" @click="creatFn">
+            <span class="drc cp mr20" @click="creatFn" v-if="isshow">
                 <i class="el-icon-plus"></i>
                 <font class="fs13">新建</font>
             </span>
-            <span class="drc cp mr20" @click="editFn">
+            <span class="drc cp mr20" @click="editFn" v-if="tableData&&tableData.length>0">
                 <i class="el-icon-edit"></i>
                 <font class="fs13">编辑</font>
             </span>
-            <span class="drc cp mr20" @click="exportFn">
+            <span class="drc cp mr20" @click="exportFn" v-if="tableData&&tableData.length>0">
                 <i class="icon icon-daochu el-icon-upload2"></i>
                 <font class="fs13">导出excel</font>
             </span>
@@ -34,15 +34,6 @@
                 </el-table-column>
                 <el-table-column align="center" label="创建时间" prop="projCreatime"></el-table-column>
             </el-table>
-        </div>
-        <div class="page-box dfcc">
-            <el-pagination
-                @current-change="pageNoChange"
-                :current-page="data.pageNo"
-                :page-size="data.pageSize"
-                layout="prev,pager,next,jumper"
-                :total="total">
-            </el-pagination>
         </div>
         <v-drawer :title="title" :drawer="drawer" :drawerW="'803px'" :type="1" @submitFn="submitFn">
             <el-form ref="fromData" :model="fromData" label-width="86px" size="medium" >
@@ -74,12 +65,12 @@
                     <el-form-item label="技术等级" prop="projTechlevel">
                         <el-input v-model="fromData.projTechlevel"></el-input>
                     </el-form-item>
-                    <el-form-item label-width="130px" label="所属地区" prop="projRegion" @regionChange='regionWacth'>
-                        <v-region style="width:202px"></v-region>
+                    <el-form-item label-width="130px" label="所属地区" prop="projRegion">
+                        <v-region style="width:202px" :region="fromData.projRegion" @regionChange='regionWacth'></v-region>
                     </el-form-item>
                 </div>
                 <div class="dfrb">
-                    <el-form-item label="计划工期(月)" prop="projDuration" :rules="{pattern, message: '计划工期必须为正整数',trigger: ['blur', 'change']}">
+                    <el-form-item label="计划工期(月)" prop="projDuration" :rules="{pattern:/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|[1-9]\d*$/, message: '计划工期必须为正数',trigger: ['blur', 'change']}">
                         <el-input v-model="fromData.projDuration"></el-input>
                     </el-form-item>
                     <el-form-item label-width="130px" label="工期起止时间" prop="timer" :rules="{required:true,message:'工期起止时间不得为空'}">
@@ -96,10 +87,10 @@
                     </el-form-item>
                 </div>
                 <div class="dfrb">
-                    <el-form-item label="总投资(万)" prop="projBudget">
+                    <el-form-item label="总投资(万)" prop="projBudget" :rules="{pattern:/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|[1-9]\d*$/, message: '总投资必须为正数',trigger: ['blur', 'change']}">
                         <el-input v-model="fromData.projBudget"></el-input>
                     </el-form-item>
-                    <el-form-item label-width="130px" label="里程" prop="projDistance">
+                    <el-form-item label-width="130px" label="里程" prop="projDistance"  :rules="{pattern:/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|[1-9]\d*$/, message: '里程必须为正数',trigger: ['blur', 'change']}">
                         <el-input v-model="fromData.projDistance"></el-input>
                     </el-form-item>
                 </div>
@@ -155,7 +146,7 @@
                         </el-select>
                     </el-form-item>
                 </div>
-                <el-form-item label="建安费" prop="projConstruction">
+                <el-form-item label="建安费" prop="projConstruction" :rules="{pattern:/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*|[1-9]\d*$/, message: '建安费必须为正数',trigger: ['blur', 'change']}">
                     <el-input v-model="fromData.projConstruction" style="width:202px"></el-input>
                 </el-form-item>
                 <el-form-item label="项目概况" prop="projMemo">
@@ -322,7 +313,7 @@
             <!-- 头部 -->
             <div class="dia-tit dfrcb" slot="title">
                 <span class="color-fff">项目授权用户</span>
-                <i class="color-fff el-icon-close cp" @click="isDialog=false"></i>
+                <i class="color-fff el-icon-close cp" @click="isDialog=false;tableData1=new Array()"></i>
             </div>
             <!-- 内容 -->
             <div class="main">
@@ -341,12 +332,12 @@
                     <el-table-column align="center" width="50px" label="序号" type="index"></el-table-column>
                     <el-table-column header-align="center" align="left" label="用户名" prop="userName"></el-table-column>
                     <el-table-column align="center" label="姓名" prop="userNickname"></el-table-column>
-                    <el-table-column align="center" type="selection" :reserve-selection="true"></el-table-column>
+                    <el-table-column align="center" type="selection"></el-table-column>
                 </el-table>
             </div>
             <!-- 操作 -->
             <div slot="footer" class="btn-box text-r">
-                <button class="cancel-btn text-c fs14 cp"  @click="isDialog=false">取消</button>
+                <button class="cancel-btn text-c fs14 cp"  @click="isDialog=false;tableData1=new Array()">取消</button>
                 <button class="sure-btn text-c fs14 cp" @click="sumbitFn">保存</button>
             </div>
         </el-dialog>
@@ -362,12 +353,10 @@ export default {
             data:{
                 comId:'',
                 comName:'',
-                pageNo:1,
-                pageSize:10
             },
             projId:'',
-            total:0,
             tableData:[],
+            isshow:false,
             drawer:false,
             title:"",
             fromData:{
@@ -459,8 +448,10 @@ export default {
         // 监控集合
         comid:function(val,old){
             if(val!=''){
+                this.isshow=true
                 this.ajax()
             }else{
+                this.isshow=false
                 this.tableData.splice(0)
             }
             
@@ -498,6 +489,7 @@ export default {
         // console.group('创建完毕状态===============》created');
         if(this.comid!=''){
             this.ajax()
+            this.isshow=true
         }
     },
     beforeMount() {
@@ -530,7 +522,7 @@ export default {
             }else{
                 str='确定要开启该项目所有用户关联?'
             }
-            this.$confirm('确定要关闭该项目所有用户关联?','提示',{
+            this.$confirm(str,'提示',{
                 confirmButtonText:'保存',
                 showClose:false,
                 distinguishCancelAndClose:true,
@@ -583,7 +575,7 @@ export default {
             }
         },
         selectAll(sele){
-            console.log
+            console.log(sele)
         },
         /**监听多选框end */
         getEmpower(row){//获取授权用户
@@ -595,17 +587,29 @@ export default {
                     projId:row.projId
                 }
             }).then(res=>{
-                this.tableData1=res.data
-                let arr=[]
-                for(let x of this.tableData1){
-                    if(x.isReadx==1){
-                        arr.push(x)
-                        // this.$refs.userTable.toggleRowSelection(x,true)
+                this.tableData1=JSON.parse(JSON.stringify(res.data));
+                this.$nextTick(()=>{
+                    let arr=[],arr1=[];
+                    for(let x of this.tableData1){
+                        if(x.isReadx==1){
+                            arr.push(x)
+                            // this.$refs.userTable.toggleRowSelection(x,true)
+                        }else{
+                            arr1.push(x)
+                        }
                     }
-                }
-                arr.forEach(row=>{
-                    this.$refs.userTable.toggleRowSelection(row,true)
+                    arr.forEach(row=>{
+                        this.$refs.userTable.toggleRowSelection(row,true)
+                    })
+                    arr1.forEach(row=>{
+                        this.$refs.userTable.toggleRowSelection(row,false)
+                    })
                 })
+                // let arr=[]
+                
+                // arr.forEach(row=>{
+                //     this.$refs.userTable.toggleRowSelection(row,true)
+                // })
             })
             this.isDialog=true;
         },
@@ -625,6 +629,7 @@ export default {
                         type: 'success'
                     });
                     this.isDialog=false;
+                    this.tableData1=[];
                 }
             })
         },
@@ -648,6 +653,9 @@ export default {
                     projId:this.projId
                 }
             }).then(res=>{
+                if(res.data.projPlantype){
+                    this.planChange(res.data)
+                }
                 this.fromObj=res.data;
                 if(this.fromObj.projStartime&&this.fromObj.projEndtime){
                     this.fromObj.timer=[this.fromObj.projStartime,this.fromObj.projEndtime]
@@ -710,11 +718,17 @@ export default {
             this.projId=obj.projId
             this.id=currentRow.comId
         },
-        planChange(){//计划类型联动
+        planChange(obj){//计划类型联动
             // this.planList1=[];
-            this.fromData.projPlanchildtype='';
+            let d=null;
+            if(obj){
+                d=JSON.parse(JSON.stringify(obj))
+            }else{
+                d=JSON.parse(JSON.stringify(this.fromData))
+            }
+            d.projPlanchildtype='';
             for(let x of this.planList){
-                if(x.id==this.fromData.projPlantype){
+                if(x.id==d.projPlantype){
                     this.planList1=x.data
                 }
             }
@@ -722,10 +736,6 @@ export default {
         plan1Change(){
             // console.log(this.$event)
             this.$set(this.fromData,this.fromData.projPlanchildtype,this.fromData.projPlanchildtype)
-        },
-        pageNoChange(val){
-            this.data.pageNo=val
-            this.ajax()
         },
         ajax(){
             let d=this.data;
@@ -741,8 +751,7 @@ export default {
                 url:'/so/project/list',
                 data:d
             }).then(res=>{
-                this.tableData=res.data.data;
-                this.total=res.data.total;
+                this.tableData=res.data;
                 // this.$refs.ownList.setCurrentRow(this.tableData[0])
             })
         }

@@ -79,8 +79,11 @@ export default {
     methods: {
         // 方法 集合
         handleChange(){
+            let d=JSON.parse(JSON.stringify(this.value));
+            d=this.value[this.value.length-1];
+            console.log(d)
             let data={
-                regionVal:this.value
+                regionVal:d
             }
             this.$emit('regionChange',data)
         }

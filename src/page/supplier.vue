@@ -106,9 +106,7 @@ export default {
             tableData:[],
             drawer:false,
             title:"",
-            fromData:{
-                comRegion:''
-            },
+            fromData:{},
             fromObj:{},
             id:'',
             searchList:[],
