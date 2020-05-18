@@ -3,7 +3,7 @@ import {
 } from "../../config/env";
 import axios from "axios";
 import Vue from "vue";
-import { Notification } from "element-ui";
+import { Message } from "element-ui";
 Vue.prototype.$http = axios;
 axios.defaults.retry = 4; //重复请求次数
 axios.defaults.retryDelay = 1000; //重复请求间隔
@@ -25,9 +25,10 @@ axios.interceptors.response.use(function(response) {
     return response.data;
   }
   if (!response.data.succ) {
-    Notification.info({
+    Message({
       title: "消息",
-      message: response.data.msg
+      message: response.data.msg,
+      type: "warning"
     });
   }
   return response.data;
