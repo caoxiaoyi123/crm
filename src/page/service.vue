@@ -1,254 +1,825 @@
 <!-- 模型： DOM 结构 -->
 <template>
-    <div class="service">
-        <div class="head-box drc">
-            <span class="drc mr20">
-                <font class="fs13" style="margin-right:12px">项目名称</font>
-                <el-select v-model="proName" placeholder="请选择" size="mini" style="width:122px">
-                    <el-option
-                        v-for="item in nameList"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    ></el-option>
-                </el-select>
-            </span>
-            <span class="drc cp mr20" @click="creatFn">
-                <i class="el-icon-plus"></i>
-                <font class="fs13">新建</font>
-            </span>
-            <span class="drc cp mr20" @click="editFn">
-                <i class="el-icon-edit"></i>
-                <font class="fs13">编辑</font>
-            </span>
-            <span class="drc cp">
-                <i class="el-icon-remove-outline"></i>
-                <font class="fs13">删除</font>
-            </span>
-        </div>
-        <div class="table-box">
-            <el-table
-                height="32vh"
-                cell-class-name="fs13 table-h"
-                header-cell-class-name="table-header table-h"
-                border
-                :data="tableData"
-                style="width:100%"
-            >
-                <el-table-column
-                    align="center"
-                    class-name="serial-num"
-                    width="50px"
-                    label="序号"
-                    type="index"
-                ></el-table-column>
-                <el-table-column header-align="center" align="left" label="项目名称" prop></el-table-column>
-                <el-table-column align="center" label="销售人员" prop></el-table-column>
-                <el-table-column align="center" label="客户联系人" prop></el-table-column>
-                <el-table-column align="center" label="服务来源" prop></el-table-column>
-                <el-table-column align="center" label="服务类型" prop></el-table-column>
-                <el-table-column align="center" label="服务人员" prop></el-table-column>
-                <el-table-column align="center" label="服务时间" prop></el-table-column>
-                <el-table-column align="center" label="服务内容" prop></el-table-column>
-                <el-table-column align="center" label="处理阶段" prop></el-table-column>
-                <el-table-column align="center" label="操作" prop></el-table-column>
-            </el-table>
-        </div>
-        <v-drawer :title="title" :drawer="drawer" :drawerW="drawerW" @submitFn="submitFn">
-            <el-form :model="fromData" label-width="94px" ref="fromData" size="medium" >
-                <div class="dfrb">
-                    <el-form-item label="单位名称" prop="depName" :rules="{ required: true, message: '单位名称不得为空' }">
-                        <el-input v-model="fromData.depName" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="项目名称" prop="depName" :rules="{ required: true, message: '项目名称不得为空' }">
-                        <el-select placeholder="请选择项目名称" v-model="fromData.depName"  style="width:202px">
-                            <el-option
-                                v-for="item in stateList"
-                                :key="item"
-                                :label="item"
-                                :value="item"
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                </div>
-                <div class="dfrb">
-                    <el-form-item label="销售人员" prop="depName" :rules="{ required: true, message: '销售人员不得为空' }">
-                        <el-input v-model="fromData.depName" disabled></el-input>
-                    </el-form-item>
-                    <el-form-item label="客户联系人" prop="depName" :rules="{ required: true, message: '客户联系人不得为空' }">
-                        <el-select v-model="fromData.depName" placeholder="请选择客户联系人" style="width:202px">
-                            <el-option
-                                v-for="item in stateList"
-                                :key="item"
-                                :label="item"
-                                :value="item"
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                </div>
-                <div class="dfrb">
-                    <el-form-item label="服务来源" prop="projState" :rules="{ required: true, message: '服务来源不得为空' }">
-                        <el-select  placeholder="请选择服务来源" v-model="fromData.projState"  style="width:202px">
-                            <el-option
-                                v-for="item in stateList"
-                                :key="item"
-                                :label="item"
-                                :value="item"
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="服务类型" prop="depName" :rules="{ required: true, message: '服务类型不得为空' }">
-                        <el-select  placeholder="请选择服务类型" v-model="fromData.projState"  style="width:202px">
-                            <el-option
-                                v-for="item in stateList"
-                                :key="item"
-                                :label="item"
-                                :value="item"
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                </div>
-                <el-form-item label="服务时间" prop="depName" :rules="{ required: true, message: '服务时间不得为空' }">
-                    <el-date-picker
-                    v-model="fromData.depName"
-                    type="date"
-                    placeholder="请选择服务时间">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="服务内容" prop="remake">
-                    <el-input
-                        placeholder="请输入服务内容"
-                        type="textarea"
-                        resize="none"
-                        v-model="fromData.remake"
-                        maxlength="50"
-                    ></el-input>
-                </el-form-item>
-                <h4 class="bor-b mb20"></h4>
-                <div class="dfrb">
-                    <el-form-item label="内部验收单" label-width="115px">
-                        <el-upload
-                            ref="upload"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="false"
-                            :multiple="false"
-                            :on-success="sucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="fromData"
-                        >
-                            <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                        </el-upload>
-                    </el-form-item>
-                </div>
-                <div class="dfrb">
-                    <el-form-item label="硬件安装验收单"  label-width="115px">
-                        <el-upload
-                            ref="upload"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="false"
-                            :multiple="false"
-                            :on-success="sucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="fromData"
-                        >
-                            <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                        </el-upload>
-                    </el-form-item>
-                </div>
-
-            </el-form>
-        </v-drawer>
+  <div class="service">
+    <div class="head-box drc">
+      <span class="drc mr20">
+        <font class="fs13" style="margin-right:12px">项目名称</font>
+        <el-select
+          v-model="data.projId"
+          placeholder="请选择"
+          size="mini"
+          style="width:122px"
+          @change="selectChange"
+        >
+          <el-option
+            v-for="item in projectList"
+            :key="item.projId"
+            :label="item.projName"
+            :value="item.projId"
+          ></el-option>
+        </el-select>
+      </span>
+      <span class="drc cp mr20" @click="creatFn" v-if="isshow">
+        <i class="el-icon-plus"></i>
+        <font class="fs13">新建</font>
+      </span>
+      <span
+        class="drc cp mr20"
+        @click="editFn"
+        v-if="tableData && tableData.length > 0"
+      >
+        <i class="el-icon-edit"></i>
+        <font class="fs13">编辑</font>
+      </span>
+      <span
+        class="drc cp"
+        @click="deleteFn"
+        v-if="tableData && tableData.length > 0"
+      >
+        <i class="el-icon-remove-outline"></i>
+        <font class="fs13">删除</font>
+      </span>
     </div>
+    <div class="table-box">
+      <el-table
+        ref="list"
+        height="32vh"
+        cell-class-name="fs13 table-h"
+        header-cell-class-name="table-header table-h"
+        border
+        @current-change="tableSelectFn"
+        highlight-current-row
+        :data="tableData"
+        style="width:100%"
+      >
+        <el-table-column
+          align="center"
+          class-name="serial-num"
+          width="50px"
+          label="序号"
+          type="index"
+          :index="indexFn"
+        ></el-table-column>
+        <el-table-column
+          header-align="center"
+          align="left"
+          label="项目名称"
+          prop="projName"
+        ></el-table-column>
+        <el-table-column align="center" label="销售人员">{{
+          allotUserName
+        }}</el-table-column>
+        <el-table-column
+          align="center"
+          label="客户联系人"
+          prop="contact"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          label="服务来源"
+          prop="sourceFrom"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          label="服务类型"
+          prop="type"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          label="服务人员"
+          prop="person"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          label="服务时间"
+          prop="createtime"
+        ></el-table-column>
+        <el-table-column align="center" label="服务内容" prop="description">
+          <template slot-scope="scope">
+            <span class="text-over" :title="scope.row.description">{{
+              scope.row.description
+            }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="处理阶段"
+          prop="status"
+        ></el-table-column>
+        <el-table-column align="center" label="操作"></el-table-column>
+      </el-table>
+      <div class="page-box dfrcb">
+        <span class="fs13">
+          显示{{
+            total == 0 ? total : (data.pageNo - 1) * data.pageSize + 1
+          }}到{{
+            total > data.pageNo * data.pageSize
+              ? data.pageNo * data.pageSize
+              : total
+          }}，共{{ total }}条记录
+        </span>
+        <div class="drc">
+          <el-pagination
+            @current-change="pageNoChange"
+            :current-page="data.pageNo"
+            :page-size="data.pageSize"
+            layout="prev,pager,next,jumper"
+            :total="total"
+          ></el-pagination>
+        </div>
+      </div>
+    </div>
+    <v-drawer
+      :title="title"
+      :drawer="drawer"
+      :drawerW="drawerW"
+      @submitFn="submitFn"
+    >
+      <el-form
+        :model="fromData"
+        label-width="94px"
+        ref="fromData"
+        size="medium"
+        @submit.native.prevent
+      >
+        <div class="dfrb">
+          <el-form-item
+            label="单位名称"
+            :rules="{ required: true, message: '单位名称不得为空' }"
+          >
+            <el-input v-model="comName" disabled></el-input>
+          </el-form-item>
+          <el-form-item
+            label="项目名称"
+            prop="projId"
+            :rules="{ required: true, message: '项目名称不得为空' }"
+          >
+            <el-select
+              placeholder="请选择项目名称"
+              v-model="fromData.projId"
+              style="width:202px"
+            >
+              <el-option
+                v-for="item in projectList"
+                :key="item.projId"
+                :label="item.projName"
+                :value="item.projId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <div class="dfrb">
+          <el-form-item
+            label="销售人员"
+            :rules="{ required: true, message: '销售人员不得为空' }"
+          >
+            <el-input v-model="allotUserName" disabled></el-input>
+          </el-form-item>
+          <el-form-item
+            label="客户联系人"
+            prop="contact"
+            :rules="{ required: true, message: '客户联系人不得为空' }"
+          >
+            <el-autocomplete
+              placeholder="请输入客户联系人"
+              v-model="fromData.contact"
+              @select="corpCodeSelect"
+              :fetch-suggestions="corpCodeAjax"
+              :trigger-on-focus="false"
+            >
+              <template slot-scope="{ item }">
+                <span :title="item.userNickname">{{ item.userNickname }}</span>
+              </template>
+            </el-autocomplete>
+          </el-form-item>
+        </div>
+        <div class="dfrb">
+          <el-form-item
+            label="服务来源"
+            prop="sourceFrom"
+            :rules="{ required: true, message: '服务来源不得为空' }"
+          >
+            <el-select
+              placeholder="请选择服务来源"
+              v-model="fromData.sourceFrom"
+              style="width:202px"
+            >
+              <el-option
+                v-for="item in sourceFromList"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="服务类型"
+            prop="type"
+            :rules="{ required: true, message: '服务类型不得为空' }"
+          >
+            <el-select
+              placeholder="请选择服务类型"
+              v-model="fromData.type"
+              style="width:202px"
+            >
+              <el-option
+                v-for="item in typeList"
+                :key="item"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </div>
+        <el-form-item
+          label="服务时间"
+          prop="created"
+          :rules="{ required: true, message: '服务时间不得为空' }"
+        >
+          <el-date-picker
+            v-model="fromData.created"
+            type="date"
+            value-format="timestamp"
+            placeholder="请选择服务时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="服务内容" prop="description">
+          <el-input
+            placeholder="请输入服务内容"
+            type="textarea"
+            resize="none"
+            v-model="fromData.description"
+            maxlength="50"
+          ></el-input>
+        </el-form-item>
+        <h4 class="bor-b mb20"></h4>
+        <div class="dfrb">
+          <el-form-item label="内部验收单" label-width="115px">
+            <el-upload
+              ref="nbys"
+              :action="baseUrl + '/so/file/upload'"
+              :show-file-list="true"
+              list-type="text"
+              :multiple="false"
+              :on-success="nbysSucFn"
+              :on-error="upLoadfn.uploadErrFn"
+              :limit="1"
+              :on-exceed="upLoadfn.uploadExcFn"
+              :data="file.nbys.data"
+              :file-list="file.nbys.list"
+              :on-preview="nbysPreviewFn"
+            >
+              <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
+            </el-upload>
+          </el-form-item>
+        </div>
+        <div class="dfrb">
+          <el-form-item label="硬件安装验收单" label-width="115px">
+            <el-upload
+              ref="yjaz"
+              :action="baseUrl + '/so/file/upload'"
+              :show-file-list="true"
+              list-type="text"
+              :multiple="false"
+              :on-success="yjazSucFn"
+              :on-error="upLoadfn.uploadErrFn"
+              :limit="1"
+              :on-exceed="upLoadfn.uploadExcFn"
+              :data="file.yjaz.data"
+              :file-list="file.yjaz.list"
+              :on-preview="yjazPreviewFn"
+            >
+              <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
+            </el-upload>
+          </el-form-item>
+        </div>
+        <div class="dfrb">
+          <el-form-item label="培训证明" label-width="115px">
+            <el-upload
+              ref="pxzm"
+              :action="baseUrl + '/so/file/upload'"
+              :show-file-list="true"
+              list-type="text"
+              :multiple="false"
+              :on-success="pxzmSucFn"
+              :on-error="upLoadfn.uploadErrFn"
+              :limit="1"
+              :on-exceed="upLoadfn.uploadExcFn"
+              :data="file.pxzm.data"
+              :file-list="file.pxzm.list"
+              :on-preview="pxzmPreviewFn"
+            >
+              <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
+            </el-upload>
+          </el-form-item>
+        </div>
+        <div class="dfrb">
+          <el-form-item label="好评截图" label-width="115px">
+            <el-upload
+              ref="hpjt"
+              :action="baseUrl + '/so/file/upload'"
+              :show-file-list="true"
+              list-type="text"
+              :multiple="false"
+              :on-success="hpjtSucFn"
+              :on-error="upLoadfn.uploadErrFn"
+              :limit="1"
+              :on-exceed="upLoadfn.uploadExcFn"
+              :data="file.hpjt.data"
+              :file-list="file.hpjt.list"
+              :on-preview="hpjtPreviewFn"
+            >
+              <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
+            </el-upload>
+          </el-form-item>
+        </div>
+        <div class="dfrb">
+          <el-form-item label="其他文件" label-width="115px">
+            <el-upload
+              ref="qtwj"
+              :action="baseUrl + '/so/file/upload'"
+              :show-file-list="true"
+              list-type="text"
+              :multiple="false"
+              :on-success="qtwjSucFn"
+              :on-error="upLoadfn.uploadErrFn"
+              :limit="1"
+              :on-exceed="upLoadfn.uploadExcFn"
+              :data="file.qtwj.data"
+              :file-list="file.qtwj.list"
+              :on-preview="qtwjPreviewFn"
+            >
+              <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
+            </el-upload>
+          </el-form-item>
+        </div>
+      </el-form>
+    </v-drawer>
+  </div>
 </template>
 <script>
+import {
+  baseUrl //引入baseUrl
+} from "../../config/env";
 export default {
-    name: "service", // 结构名称
-    data() {
-        return {
-            // 数据模型a
-            proName: "",
-            nameList: [],
-            drawer: false,
-            tableData: [],
-            drawerW: "764px",
-            title: "",
-            fromData:{},
-        };
-    },
-    watch: {
-        // 监控集合
-    },
-    props: {
-        // 集成父级参数
-    },
-    beforeCreate() {
-        // console.group('创建前状态  ===============》beforeCreate');
-    },
-    created() {
-        // console.group('创建完毕状态===============》created');
-    },
-    beforeMount() {
-        // console.group('挂载前状态  ===============》beforeMount');
-    },
-    mounted() {
-        // console.group('挂载结束状态===============》mounted');
-        this.$nextTick(function() {
-            // console.log('执行完后，执行===============》mounted');
-        });
-    },
-    beforeUpdate() {
-        // console.group('更新前状态  ===============》beforeUpdate');
-    },
-    updated() {
-        // console.group('更新完成状态===============》updated');
-    },
-    beforeDestroy() {
-        // console.group('销毁前状态  ===============》beforeDestroy');
-    },
-    destroyed() {
-        // console.group('销毁完成状态===============》destroyed');
-    },
-    methods: {
-        // 方法 集合
-        creatFn() {
-            this.drawer = true;
-            this.title = "新建服务记录";
-            this.drawerW = "764px";
+  name: "service", // 结构名称
+  data() {
+    return {
+      // 数据模型a
+      projectList: [], //项目名称list
+      drawer: false,
+      tableData: [],
+      drawerW: "764px",
+      title: "",
+      fromData: {},
+      fromObj: {},
+      sourceFromList: ["工单", "内部", "微信", "QQ", "上门", "电话"], //服务来源list
+      typeList: [
+        "售前交流",
+        "平台配置",
+        "售后培训",
+        "硬件安装",
+        "bug反馈",
+        "操作指导",
+        "功能优化",
+        "新加功能",
+        "回访客户",
+        "好评反馈",
+        "其他类型"
+      ], //服务类型list
+      baseUrl: baseUrl,
+      data: {
+        comId: null,
+        comName: null,
+        pageNo: 1,
+        pageSize: 10,
+        projId: null
+      },
+      total: 0,
+      isshow: false,
+      serverId: "", //选中服务项的id
+      file: {
+        nbys: {
+          data: { id: null, type: 7, uploadType: "server", userId: null },
+          list: []
         },
-        editFn() {
-            this.drawer = true;
-            this.title = "编辑服务记录";
-            this.drawerW = "764px";
+        yjaz: {
+          data: { id: null, type: 8, uploadType: "server", userId: null },
+          list: []
         },
-        submitFn(){
-
+        pxzm: {
+          data: { id: null, type: 9, uploadType: "server", userId: null },
+          list: []
+        },
+        hpjt: {
+          data: { id: null, type: 10, uploadType: "server", userId: null },
+          list: []
+        },
+        qtwj: {
+          data: { id: null, type: 11, uploadType: "server", userId: null },
+          list: []
         }
+      }
+    };
+  },
+  watch: {
+    // 监控集合
+    comid: function(val, old) {
+      if (val != "") {
+        this.projectList = [];
+        this.isshow = true;
+        this.data.comId = val;
+        this.data.comName = this.comName;
+        this.ajax();
+        this.getProList();
+      } else {
+        this.isshow = false;
+        this.tableData.splice(0);
+      }
     }
+  },
+  props: {
+    // 集成父级参数
+    comid: {
+      default: ""
+    },
+    comName: {
+      default: ""
+    },
+    allotUserName: {
+      default: ""
+    }
+  },
+  beforeCreate() {
+    // console.group('创建前状态  ===============》beforeCreate');
+  },
+  created() {
+    // console.group('创建完毕状态===============》created');
+    if (this.comid != "") {
+      this.isshow = true;
+      this.data.comId = this.comid;
+      this.data.comName = this.comName;
+      this.ajax();
+      this.getProList();
+    }
+  },
+  beforeMount() {
+    // console.group('挂载前状态  ===============》beforeMount');
+  },
+  mounted() {
+    // console.group('挂载结束状态===============》mounted');
+    this.$nextTick(function() {
+      // console.log('执行完后，执行===============》mounted');
+    });
+  },
+  beforeUpdate() {
+    // console.group('更新前状态  ===============》beforeUpdate');
+  },
+  updated() {
+    // console.group('更新完成状态===============》updated');
+  },
+  beforeDestroy() {
+    // console.group('销毁前状态  ===============》beforeDestroy');
+  },
+  destroyed() {
+    // console.group('销毁完成状态===============》destroyed');
+  },
+  methods: {
+    // 方法 集合
+    indexFn(index) {
+      let n = (this.data.pageNo - 1) * this.data.pageSize + (index + 1);
+      return n;
+    },
+    pageNoChange(val) {
+      this.data.pageNo = val;
+      this.ajax();
+    },
+    creatFn() {
+      this.fromData = new Object();
+      if (this.$refs.fromData) {
+        this.$refs.fromData.resetFields();
+      }
+      this.file.nbys.data.id = this.comid;
+      this.file.yjaz.data.id = this.comid;
+      this.file.pxzm.data.id = this.comid;
+      this.file.hpjt.data.id = this.comid;
+      this.file.qtwj.data.id = this.comid;
+      this.file.nbys.list = [];
+      this.file.yjaz.list = [];
+      this.file.pxzm.list = [];
+      this.file.hpjt.list = [];
+      this.file.qtwj.list = [];
+      this.drawerW = "764px";
+      this.title = "新建服务记录";
+      this.drawer = true;
+    },
+    editFn() {
+      this.fromData = new Object();
+      if (this.$refs.fromData) {
+        this.$refs.fromData.resetFields();
+      }
+      let that = this;
+      this.$http({
+        method: "post",
+        url: "/so/problem/detail",
+        data: {
+          id: this.serverId
+        }
+      }).then(res => {
+        if (res.data.files) {
+          for (let x of res.data.files) {
+            let d = {
+              name: x.fileName
+            };
+            if (x.type == 7) {
+              that.file.nbys.id = x.fileId;
+              that.file.nbys.list[0] = d;
+            } else if (x.type == 8) {
+              that.file.yjaz.id = x.fileId;
+              that.file.yjaz.list[0] = d;
+            } else if (x.type == 9) {
+              that.file.pxzm.id = x.fileId;
+              that.file.pxzm.list[0] = d;
+            } else if (x.type == 10) {
+              that.file.hpjt.id = x.fileId;
+              that.file.hpjt.list[0] = d;
+            } else if (x.type == 11) {
+              that.file.qtwj.id = x.fileId;
+              that.file.qtwj.list[0] = d;
+            }
+          }
+        }
+
+        this.fromObj = res.data;
+        this.fromData = JSON.parse(JSON.stringify(this.fromObj));
+        this.drawer = true;
+        this.title = "编辑服务记录";
+        this.drawerW = "764px";
+      });
+    },
+    deleteFn() {
+      this.$confirm("您确定删除该项吗？", "提示", {
+        confirmButtonText: "删除",
+        showClose: false,
+        distinguishCancelAndClose: true,
+        confirmButtonClass: "red-btn",
+        cancelButtonClass: "cancel-btn"
+      }).then(() => {
+        this.$http({
+          method: "post",
+          data: {
+            id: this.serverId
+          },
+          url: "/so/problem/del"
+        }).then(res => {
+          if (res.succ) {
+            this.$message({
+              title: "成功",
+              message: res.data,
+              type: "success"
+            });
+            this.ajax();
+          }
+        });
+      });
+    },
+    /**文件 */
+    /**内部验收 */
+    nbysSucFn(res, file, fileList) {
+      this.$refs.nbys.clearFiles();
+      if (res.succ) {
+        this.upLoadfn.uploadSucFn();
+        this.file.nbys.list.push(file);
+        this.file.nbys.id = res.data.id;
+      } else {
+        this.$message({
+          message: res.msg,
+          type: "warning"
+        });
+      }
+    },
+    // nbysBefore(){
+    //     this.$refs.nbys.clearFiles();
+    // },
+    nbysPreviewFn(file) {
+      //预览
+      this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.nbys.id);
+    },
+    /**硬件安装 */
+    yjazSucFn(res, file, fileList) {
+      this.$refs.yjaz.clearFiles();
+      if (res.succ) {
+        this.upLoadfn.uploadSucFn();
+        this.file.yjaz.list.push(file);
+        this.file.yjaz.id = res.data.id;
+      } else {
+        this.$message({
+          message: res.msg,
+          type: "warning"
+        });
+      }
+    },
+    // yjazBefore(){
+    //     this.$refs.yjaz.clearFiles();
+    // },
+    yjazPreviewFn(file) {
+      //预览
+      this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.yjaz.id);
+    },
+    /**培训证明*/
+    pxzmSucFn(res, file, fileList) {
+      this.$refs.pxzm.clearFiles();
+      if (res.succ) {
+        this.upLoadfn.uploadSucFn();
+        this.file.pxzm.list.push(file);
+        this.file.pxzm.id = res.data.id;
+      } else {
+        this.$message({
+          message: res.msg,
+          type: "warning"
+        });
+      }
+    },
+    // yjazBefore(){
+    //     this.$refs.yjaz.clearFiles();
+    // },
+    pxzmPreviewFn(file) {
+      //预览
+      this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.pxzm.id);
+    },
+    /**好评截图*/
+    hpjtSucFn(res, file, fileList) {
+      this.$refs.hpjt.clearFiles();
+      if (res.succ) {
+        this.upLoadfn.uploadSucFn();
+        this.file.hpjt.list.push(file);
+        this.file.hpjt.id = res.data.id;
+      } else {
+        this.$message({
+          message: res.msg,
+          type: "warning"
+        });
+      }
+    },
+    // yjazBefore(){
+    //     this.$refs.yjaz.clearFiles();
+    // },
+    hpjtPreviewFn(file) {
+      //预览
+      this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.hpjt.id);
+    },
+    /**其他文件*/
+    qtwjSucFn(res, file, fileList) {
+      this.$refs.qtwj.clearFiles();
+      if (res.succ) {
+        this.upLoadfn.uploadSucFn();
+        this.file.qtwj.list.push(file);
+        this.file.qtwj.id = res.data.id;
+      } else {
+        this.$message({
+          message: res.msg,
+          type: "warning"
+        });
+      }
+    },
+    // yjazBefore(){
+    //     this.$refs.yjaz.clearFiles();
+    // },
+    qtwjPreviewFn(file) {
+      //预览
+      this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.qtwj.id);
+    },
+    /**文件end */
+    submitFn() {
+      this.$refs.fromData.validate(valid => {
+        if (valid) {
+          let d = JSON.parse(JSON.stringify(this.fromData));
+          let arr = [];
+          for (let x in this.file) {
+            if (this.file[x].id) {
+              arr.push(this.file[x].id);
+            }
+          }
+          d.files = JSON.parse(JSON.stringify(this.file));
+          d.fileId = arr.join(",");
+          d.comId = this.comid;
+          d.company = this.comName;
+          d.creator = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+          d.role = "server"; //当前用户角色
+          this.$http({
+            method: "post",
+            url: "/so/problem/save",
+            data: d
+          }).then(res => {
+            if (res.succ) {
+              this.$message({
+                title: "成功",
+                message: res.data,
+                type: "success"
+              });
+              for (let x in this.file) {
+                this.file[x].list = [];
+              }
+              this.drawer = false;
+              this.ajax();
+            }
+          });
+        }
+      });
+    },
+    tableSelectFn(currentRow, oldCurrentRow) {
+      //表格选中时
+      if (currentRow) {
+        let obj = JSON.parse(JSON.stringify(currentRow));
+        this.serverId = obj.id;
+        // this.fromObj = obj;
+        // this.id = currentRow.depId;
+      }
+    },
+    selectChange() {
+      this.data.pageNo = 1;
+      this.total = 0;
+      this.ajax();
+    },
+    ajax() {
+      let d = JSON.parse(JSON.stringify(this.data));
+      this.$http({
+        method: "post",
+        url: "/so/problem/list",
+        data: d
+      }).then(res => {
+        if (res.succ) {
+          this.tableData = res.data.data;
+          this.total = res.data.total;
+          this.$refs.list.setCurrentRow(this.tableData[0]);
+        }
+      });
+    },
+    corpCodeSelect(item) {
+      this.fromData.contact = item.userNickname;
+    },
+    corpCodeAjax(str, cb) {
+      this.$http({
+        method: "post",
+        url: "/so/user/userNameList",
+        data: {
+          comId: this.comid,
+          userName: this.fromData.contact
+        }
+      }).then(res => {
+        cb(res.data);
+      });
+    },
+    getProList() {
+      this.$http({
+        method: "post",
+        url: "/so/project/comPrject/list",
+        data: {
+          comId: this.comid,
+          comName: this.comName
+        }
+      }).then(res => {
+        this.projectList = res.data;
+        this.projectList.unshift({ projName: "请选择", projId: null });
+      });
+    }
+  }
 };
 </script>
 <!-- 增加 "scoped" 属性 限制 CSS 属于当前部分 -->
 <style lang="less" scoped>
 .head-box {
-    height: 40px;
-    i {
-        margin-right: 5px;
-    }
+  height: 40px;
+  i {
+    margin-right: 5px;
+  }
 }
 .el-form /deep/ .el-form-item__label {
-    font-size: 13px;
-    color: #5a5e66;
+  font-size: 13px;
+  color: #5a5e66;
 }
 .upload-btn {
-    width: 68px;
-    line-height: 23px;
-    border: 1px solid #1989fa;
-    background: #fff;
-    color: #1989fa;
-    outline: none;
-    border-radius: 12px;
+  width: 68px;
+  line-height: 23px;
+  border: 1px solid #1989fa;
+  background: #fff;
+  color: #1989fa;
+  outline: none;
+  border-radius: 12px;
+}
+.el-form /deep/ .el-upload--text {
+  margin-right: 27px;
+}
+.el-form /deep/ .el-form-item__content > div {
+  display: flex;
+  align-items: center;
+  max-width: 600px;
+}
+.el-form /deep/ .el-upload-list {
+  width: calc(100% - 160px);
+}
+.el-form /deep/ .el-upload-list__item {
+  margin-top: 0;
 }
 </style>

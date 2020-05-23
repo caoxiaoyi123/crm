@@ -29,12 +29,19 @@ Vue.prototype.upLoadfn = (function() {
     },
     uploadExcFn() {
       Message({
-        message: "最多只能上传一个文件",
+        message: "最多只能上传一个文件（test）",
         type: "warning"
       });
     }
   };
 })();
+
+Vue.prototype.openLink = function(url) {
+  //新开链接
+  if (url && url != "") {
+    window.open(url, "_blank");
+  }
+};
 
 new Vue({
   router,
