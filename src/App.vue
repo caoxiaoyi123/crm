@@ -237,9 +237,15 @@
                 <el-table-column
                   align="center"
                   label="服务进度"
-                  min-width="245"
+                  min-width="270"
                   prop="process"
-                ></el-table-column>
+                >
+                  <template slot-scope="scope">
+                    <span :class="scope.row.process != '无' ? 'red-txt' : ''">{{
+                      scope.row.process
+                    }}</span>
+                  </template>
+                </el-table-column>
                 <el-table-column
                   align="center"
                   label="销售添加时间"

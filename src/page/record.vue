@@ -111,7 +111,12 @@
           </template>
         </el-table-column>
       </el-table>
-      <v-drawer :title="'查看详情'" :drawer="drawer" :readOnly="true">
+      <v-drawer
+        :title="'查看详情'"
+        :drawer="drawer"
+        :drawerW="'680px'"
+        :readOnly="true"
+      >
         <el-form
           :disabled="true"
           :model="fromData"

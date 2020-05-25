@@ -188,7 +188,7 @@ export default {
       }
     },
     previewFn(row) {
-      if (row.servFileType == "company") {
+      if (row.servFileType == "company" || row.servFileType == "server") {
         this.openLink(baseUrl + "/so/file/view?fileId=" + row.fileId);
       } else {
         this.openLink(row.fileAddress);

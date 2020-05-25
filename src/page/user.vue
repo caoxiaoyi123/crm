@@ -380,6 +380,7 @@ export default {
     comid: function(val, old) {
       if (val != "") {
         this.isshow = true;
+        this.pageNo = 1;
         this.ajax();
       } else {
         this.isshow = false;

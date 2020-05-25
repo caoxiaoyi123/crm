@@ -26,7 +26,7 @@
       <span
         class="drc cp mr20"
         @click="editFn"
-        v-if="tableData && tableData.length > 0"
+        v-if="tableData && tableData.length > 0 && isoperation"
       >
         <i class="el-icon-edit"></i>
         <font class="fs13">编辑</font>
@@ -34,7 +34,7 @@
       <span
         class="drc cp"
         @click="deleteFn"
-        v-if="tableData && tableData.length > 0"
+        v-if="tableData && tableData.length > 0 && isoperation"
       >
         <i class="el-icon-remove-outline"></i>
         <font class="fs13">删除</font>
@@ -89,10 +89,15 @@
           label="服务人员"
           prop="person"
         ></el-table-column>
+        <!-- <el-table-column align="center" label="服务时间" prop="createtime">
+                    <template slot-scope="scope">
+                        <span>{{formatDate(scope.row.createtime)}}</span>
+                    </template>
+                </el-table-column> -->
         <el-table-column
           align="center"
           label="服务时间"
-          prop="createtime"
+          prop="serverTime"
         ></el-table-column>
         <el-table-column align="center" label="服务内容" prop="description">
           <template slot-scope="scope">
@@ -101,12 +106,26 @@
             }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          align="center"
-          label="处理阶段"
-          prop="status"
-        ></el-table-column>
-        <el-table-column align="center" label="操作"></el-table-column>
+        <el-table-column align="center" label="处理阶段" prop="status">
+          <template slot-scope="scope">
+            <span v-if="scope.row.status == '未处理'" class="red-txt fs14">{{
+              scope.row.status
+            }}</span>
+            <span
+              v-else-if="scope.row.status == '进行中'"
+              class="yellow-txt fs14"
+              >{{ scope.row.status }}</span
+            >
+            <span v-else class="green-txt fs14">{{ scope.row.status }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="操作">
+          <template slot-scope="scope">
+            <span class="draw-tit cp fs14" @click="feedbackFn(scope.row)"
+              >反馈</span
+            >
+          </template>
+        </el-table-column>
       </el-table>
       <div class="page-box dfrcb">
         <span class="fs13">
@@ -160,7 +179,7 @@
               style="width:202px"
             >
               <el-option
-                v-for="item in projectList"
+                v-for="item in projectList1"
                 :key="item.projId"
                 :label="item.projName"
                 :value="item.projId"
@@ -180,17 +199,19 @@
             prop="contact"
             :rules="{ required: true, message: '客户联系人不得为空' }"
           >
-            <el-autocomplete
-              placeholder="请输入客户联系人"
+            <el-select
               v-model="fromData.contact"
-              @select="corpCodeSelect"
-              :fetch-suggestions="corpCodeAjax"
-              :trigger-on-focus="false"
+              filterable
+              placeholder="请选择客户联系人"
             >
-              <template slot-scope="{ item }">
-                <span :title="item.userNickname">{{ item.userNickname }}</span>
-              </template>
-            </el-autocomplete>
+              <el-option
+                v-for="item in userNameList"
+                :key="item.userId"
+                :label="item.userNickname"
+                :value="item.userNickname"
+              >
+              </el-option>
+            </el-select>
           </el-form-item>
         </div>
         <div class="dfrb">
@@ -241,10 +262,13 @@
             type="date"
             value-format="timestamp"
             placeholder="请选择服务时间"
-          >
-          </el-date-picker>
+          ></el-date-picker>
         </el-form-item>
-        <el-form-item label="服务内容" prop="description">
+        <el-form-item
+          label="服务内容"
+          prop="description"
+          :rules="{ required: true, message: '服务内容不得为空' }"
+        >
           <el-input
             placeholder="请输入服务内容"
             type="textarea"
@@ -269,6 +293,7 @@
               :data="file.nbys.data"
               :file-list="file.nbys.list"
               :on-preview="nbysPreviewFn"
+              :on-remove="nbysRemove"
             >
               <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
             </el-upload>
@@ -289,6 +314,7 @@
               :data="file.yjaz.data"
               :file-list="file.yjaz.list"
               :on-preview="yjazPreviewFn"
+              :on-remove="yjazRemove"
             >
               <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
             </el-upload>
@@ -309,6 +335,7 @@
               :data="file.pxzm.data"
               :file-list="file.pxzm.list"
               :on-preview="pxzmPreviewFn"
+              :on-remove="pxzmRemove"
             >
               <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
             </el-upload>
@@ -329,6 +356,7 @@
               :data="file.hpjt.data"
               :file-list="file.hpjt.list"
               :on-preview="hpjtPreviewFn"
+              :on-remove="hpjtRemove"
             >
               <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
             </el-upload>
@@ -349,6 +377,7 @@
               :data="file.qtwj.data"
               :file-list="file.qtwj.list"
               :on-preview="qtwjPreviewFn"
+              :on-remove="qtwjRemove"
             >
               <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
             </el-upload>
@@ -356,25 +385,32 @@
         </div>
       </el-form>
     </v-drawer>
+    <v-d :drawer="drawer1" :id="id" :from="rowFrom"></v-d>
   </div>
 </template>
 <script>
 import {
   baseUrl //引入baseUrl
 } from "../../config/env";
+import drawer1 from "@/components/drawer1";
 export default {
   name: "service", // 结构名称
   data() {
     return {
       // 数据模型a
       projectList: [], //项目名称list
+      projectList1: [],
+      userNameList: [], //客户联系人list
       drawer: false,
+      drawer1: false,
+      id: "", //反馈问题id
+      rowFrom: "", //反馈问题来源
       tableData: [],
       drawerW: "764px",
       title: "",
       fromData: {},
       fromObj: {},
-      sourceFromList: ["工单", "内部", "微信", "QQ", "上门", "电话"], //服务来源list
+      sourceFromList: ["微信", "QQ", "上门", "电话"], //服务来源list
       typeList: [
         "售前交流",
         "平台配置",
@@ -398,30 +434,59 @@ export default {
       },
       total: 0,
       isshow: false,
+      isoperation: true,
       serverId: "", //选中服务项的id
       file: {
         nbys: {
-          data: { id: null, type: 7, uploadType: "server", userId: null },
+          data: {
+            id: null,
+            type: 8,
+            uploadType: "server",
+            userId: null
+          },
           list: []
         },
         yjaz: {
-          data: { id: null, type: 8, uploadType: "server", userId: null },
+          data: {
+            id: null,
+            type: 9,
+            uploadType: "server",
+            userId: null
+          },
           list: []
         },
         pxzm: {
-          data: { id: null, type: 9, uploadType: "server", userId: null },
+          data: {
+            id: null,
+            type: 10,
+            uploadType: "server",
+            userId: null
+          },
           list: []
         },
         hpjt: {
-          data: { id: null, type: 10, uploadType: "server", userId: null },
+          data: {
+            id: null,
+            type: 11,
+            uploadType: "server",
+            userId: null
+          },
           list: []
         },
         qtwj: {
-          data: { id: null, type: 11, uploadType: "server", userId: null },
+          data: {
+            id: null,
+            type: 12,
+            uploadType: "server",
+            userId: null
+          },
           list: []
         }
       }
     };
+  },
+  components: {
+    "v-d": drawer1
   },
   watch: {
     // 监控集合
@@ -431,11 +496,13 @@ export default {
         this.isshow = true;
         this.data.comId = val;
         this.data.comName = this.comName;
+        this.data.pageNo = 1;
         this.ajax();
         this.getProList();
+        this.getUserNameList();
       } else {
         this.isshow = false;
-        this.tableData.splice(0);
+        // this.tableData.splice(0);
       }
     }
   },
@@ -462,6 +529,7 @@ export default {
       this.data.comName = this.comName;
       this.ajax();
       this.getProList();
+      this.getUserNameList();
     }
   },
   beforeMount() {
@@ -495,6 +563,10 @@ export default {
       this.data.pageNo = val;
       this.ajax();
     },
+    feedbackFn(row) {
+      this.id = row.id;
+      this.drawer1 = true;
+    },
     creatFn() {
       this.fromData = new Object();
       if (this.$refs.fromData) {
@@ -519,6 +591,16 @@ export default {
       if (this.$refs.fromData) {
         this.$refs.fromData.resetFields();
       }
+      this.file.nbys.data.id = this.comid;
+      this.file.yjaz.data.id = this.comid;
+      this.file.pxzm.data.id = this.comid;
+      this.file.hpjt.data.id = this.comid;
+      this.file.qtwj.data.id = this.comid;
+      this.file.nbys.list = [];
+      this.file.yjaz.list = [];
+      this.file.pxzm.list = [];
+      this.file.hpjt.list = [];
+      this.file.qtwj.list = [];
       let that = this;
       this.$http({
         method: "post",
@@ -530,23 +612,25 @@ export default {
         if (res.data.files) {
           for (let x of res.data.files) {
             let d = {
-              name: x.fileName
+              name: x.fileName,
+              status: "success",
+              uid: new Date().getTime()
             };
-            if (x.type == 7) {
+            if (x.type == 8) {
               that.file.nbys.id = x.fileId;
-              that.file.nbys.list[0] = d;
-            } else if (x.type == 8) {
-              that.file.yjaz.id = x.fileId;
-              that.file.yjaz.list[0] = d;
+              that.$set(that.file.nbys.list, 0, d);
             } else if (x.type == 9) {
-              that.file.pxzm.id = x.fileId;
-              that.file.pxzm.list[0] = d;
+              that.file.yjaz.id = x.fileId;
+              that.$set(that.file.yjaz.list, 0, d);
             } else if (x.type == 10) {
-              that.file.hpjt.id = x.fileId;
-              that.file.hpjt.list[0] = d;
+              that.file.pxzm.id = x.fileId;
+              that.$set(that.file.pxzm.list, 0, d);
             } else if (x.type == 11) {
+              that.file.hpjt.id = x.fileId;
+              that.$set(that.file.hpjt.list, 0, d);
+            } else if (x.type == 12) {
               that.file.qtwj.id = x.fileId;
-              that.file.qtwj.list[0] = d;
+              that.$set(that.file.qtwj.list, 0, d);
             }
           }
         }
@@ -599,6 +683,10 @@ export default {
         });
       }
     },
+    nbysRemove() {
+      this.file.nbys.id = null;
+      this.file.nbys.list = [];
+    },
     // nbysBefore(){
     //     this.$refs.nbys.clearFiles();
     // },
@@ -619,6 +707,10 @@ export default {
           type: "warning"
         });
       }
+    },
+    yjazRemove() {
+      this.file.yjaz.id = null;
+      this.file.yjaz.list = [];
     },
     // yjazBefore(){
     //     this.$refs.yjaz.clearFiles();
@@ -641,6 +733,10 @@ export default {
         });
       }
     },
+    pxzmRemove() {
+      this.file.pxzm.id = null;
+      this.file.pxzm.list = [];
+    },
     // yjazBefore(){
     //     this.$refs.yjaz.clearFiles();
     // },
@@ -661,6 +757,10 @@ export default {
           type: "warning"
         });
       }
+    },
+    hpjtRemove() {
+      this.file.hpjt.id = null;
+      this.file.hpjt.list = [];
     },
     // yjazBefore(){
     //     this.$refs.yjaz.clearFiles();
@@ -683,6 +783,10 @@ export default {
         });
       }
     },
+    qtwjRemove() {
+      this.file.qtwj.id = null;
+      this.file.qtwj.list = [];
+    },
     // yjazBefore(){
     //     this.$refs.yjaz.clearFiles();
     // },
@@ -695,6 +799,39 @@ export default {
       this.$refs.fromData.validate(valid => {
         if (valid) {
           let d = JSON.parse(JSON.stringify(this.fromData));
+          if (d.type == "平台配置") {
+            if (!this.file.nbys.id) {
+              this.$message({
+                message: "服务类型为平台配置时，必须上传内部验收单",
+                type: "warning"
+              });
+              return false;
+            }
+          } else if (d.type == "硬件安装") {
+            if (!this.file.yjaz.id) {
+              this.$message({
+                message: "服务类型为硬件安装时，必须上传硬件安装验收单",
+                type: "warning"
+              });
+              return false;
+            }
+          } else if (d.type == "售后培训") {
+            if (!this.file.pxzm.id) {
+              this.$message({
+                message: "服务类型为售后培训时，必须上传培训证明",
+                type: "warning"
+              });
+              return false;
+            }
+          } else if (d.type == "好评反馈") {
+            if (!this.file.hpjt.id) {
+              this.$message({
+                message: "服务类型为好评反馈时，必须上传好评截图",
+                type: "warning"
+              });
+              return false;
+            }
+          }
           let arr = [];
           for (let x in this.file) {
             if (this.file[x].id) {
@@ -723,6 +860,8 @@ export default {
               }
               this.drawer = false;
               this.ajax();
+              // this.$parent.data.pageNo=1;
+              // this.$parent.ajax();
             }
           });
         }
@@ -732,7 +871,18 @@ export default {
       //表格选中时
       if (currentRow) {
         let obj = JSON.parse(JSON.stringify(currentRow));
+        this.rowFrom = false;
+        this.isoperation = true;
         this.serverId = obj.id;
+        if (
+          currentRow.sourceFrom == "工单" ||
+          currentRow.sourceFrom == "内部"
+        ) {
+          this.isoperation = false;
+          if (currentRow.sourceFrom == "工单") {
+            this.rowFrom = true;
+          }
+        }
         // this.fromObj = obj;
         // this.id = currentRow.depId;
       }
@@ -749,26 +899,27 @@ export default {
         url: "/so/problem/list",
         data: d
       }).then(res => {
-        if (res.succ) {
+        if (res.succ && res.data.data) {
           this.tableData = res.data.data;
           this.total = res.data.total;
           this.$refs.list.setCurrentRow(this.tableData[0]);
         }
       });
     },
-    corpCodeSelect(item) {
-      this.fromData.contact = item.userNickname;
-    },
-    corpCodeAjax(str, cb) {
+    // corpCodeSelect(item) {
+    //     this.fromData.contact = item.userNickname;
+    // },
+    getUserNameList() {
       this.$http({
         method: "post",
         url: "/so/user/userNameList",
         data: {
           comId: this.comid,
-          userName: this.fromData.contact
+          userName: ""
         }
       }).then(res => {
-        cb(res.data);
+        // cb(res.data);
+        this.userNameList = res.data;
       });
     },
     getProList() {
@@ -780,7 +931,8 @@ export default {
           comName: this.comName
         }
       }).then(res => {
-        this.projectList = res.data;
+        this.projectList = JSON.parse(JSON.stringify(res.data));
+        this.projectList1 = JSON.parse(JSON.stringify(res.data));
         this.projectList.unshift({ projName: "请选择", projId: null });
       });
     }
@@ -807,6 +959,12 @@ export default {
   color: #1989fa;
   outline: none;
   border-radius: 12px;
+}
+.yellow-txt {
+  color: #f7aa12;
+}
+.green-txt {
+  color: #67c23a;
 }
 .el-form /deep/ .el-upload--text {
   margin-right: 27px;
