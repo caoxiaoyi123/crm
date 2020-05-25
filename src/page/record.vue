@@ -152,7 +152,6 @@
               <span class="filter-font">{{
                 fromData.lxMethod | lxMethod
               }}</span>
-              <!-- <el-input>{{fromData.lxMethod | lxMethod}}</el-input> -->
             </el-form-item>
             <el-form-item label="漏斗阶段" prop="isHk">
               <el-input></el-input>
@@ -267,6 +266,8 @@ export default {
         userId: null
       },
       fromData: {},
+      lxMethodList: [],
+      isHkList: [],
       drawer: false
     };
   },
@@ -384,6 +385,9 @@ export default {
     seeDetail(row) {
       //查看详情
       // this.fromData=row;
+      this.isHkList = [];
+      this.lxMethodList = [];
+      let that = this;
       this.$http({
         method: "post",
         url: "/so/record/detail",
@@ -394,7 +398,11 @@ export default {
         if (res.data) {
           if (res.data.files && res.data.files.length > 0) {
             for (let x of res.data.files) {
-              if (x.type == 3) {
+              if (x.type == 1) {
+                that.lxlxMethodList.push(x.fileAddress);
+              } else if (x.type == 2) {
+                that.isHkList.push(x.fileAddress);
+              } else if (x.type == 3) {
                 res.data.hpurl = x.fileAddress;
               } else if (x.type == 4) {
                 res.data.qdurl = x.fileAddress;
