@@ -423,7 +423,11 @@ export default {
       this.ajax();
       this.isshow = true;
       this.fileData.id = this.comid;
-      this.fileData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      if(sessionStorage.getItem('userid')){
+        this.fileData.userId=sessionStorage.getItem('userid')
+      }else{
+        this.fileData.userId= "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      }
     }
   },
   beforeMount() {
@@ -582,7 +586,11 @@ export default {
     },
     beforeUp() {
       this.fileData.id = this.comid;
-      this.fileData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      if(sessionStorage.getItem('userid')){
+        this.fileData.userId=sessionStorage.getItem('userid')
+      }else{
+        this.fileData.userId= "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      }
     },
     submitFn() {
       //新建or修改
@@ -590,8 +598,11 @@ export default {
       this.$refs.fromData.validate(valid => {
         if (valid) {
           let data = JSON.parse(JSON.stringify(this.fromData));
-          data.creator = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户的id
-
+          if(sessionStorage.getItem('userid')){
+            data.creator=sessionStorage.getItem('userid')
+          }else{
+            data.creator= "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+          }
           if (this.title == "新建用户") {
             data.comId = this.comid;
           }

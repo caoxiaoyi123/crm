@@ -116,6 +116,11 @@ export default {
       if (val != "") {
         this.isshow = true;
         this.fromData.fileName = "";
+        if (sessionStorage.getItem("userid")) {
+          this.fromData.userId = sessionStorage.getItem("userid");
+        }else{
+          this.fromData.userId="60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+        }
         this.fromData.id = this.comid;
         this.ajax();
       } else {
@@ -141,7 +146,9 @@ export default {
       this.isshow = true;
     }
     if (sessionStorage.getItem("userid")) {
-      this.userId = sessionStorage.getItem("userid");
+      this.fromData.userId = sessionStorage.getItem("userid");
+    }else{
+      this.fromData.userId="60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
     }
   },
   beforeMount() {

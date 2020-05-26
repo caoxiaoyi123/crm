@@ -286,7 +286,20 @@ export default {
             //监听地区组件返回的值
             this.$refs.cascader.dropDownVisible =false//选中后隐藏下拉框
             let d = JSON.parse(JSON.stringify(this.fromData));
-            d = this.fromData.re[this.fromData.re.length - 1];
+            if(this.fromData.re&&this.fromData.re.length>0){
+                d = this.fromData.re[this.fromData.re.length - 1];
+            }else{
+                let arr=this.fromData.comRegion.split('-',3);
+                let arr1=[];
+                let str=''
+                arr.map(item=>{
+                    str=str+item+'-';
+                    arr1.push(str)
+                })
+                console.log(arr1);
+                this.fromData.re=arr1;
+            }
+            
             this.fromData.comRegion = d;
         },
         returnRegion(row) {
