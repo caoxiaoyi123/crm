@@ -69,7 +69,7 @@
         header-cell-class-name="table-header table-h"
         border
         ref="list"
-        height="32vh"
+        height="calc(65vh - 231px)"
         :data="tableData"
         style="width:100%"
       >
@@ -333,7 +333,7 @@
 <script>
 import {
   baseUrl //引入baseUrl
-} from "../../config/env";
+} from "../../../config/env";
 export default {
   name: "user", // 结构名称
   data() {
@@ -423,10 +423,10 @@ export default {
       this.ajax();
       this.isshow = true;
       this.fileData.id = this.comid;
-      if(sessionStorage.getItem('userid')){
-        this.fileData.userId=sessionStorage.getItem('userid')
-      }else{
-        this.fileData.userId= "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      if (sessionStorage.getItem("userid")) {
+        this.fileData.userId = sessionStorage.getItem("userid");
+      } else {
+        this.fileData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
       }
     }
   },
@@ -536,6 +536,13 @@ export default {
       });
     },
     isAdminFn(row) {
+      if (row.userState == 1) {
+        this.$message({
+          message: "该人员已离职",
+          type: "warning"
+        });
+        return false;
+      }
       //管理员授权
       let str, isAdmin;
       if (row.isAdmin == 1) {
@@ -586,10 +593,10 @@ export default {
     },
     beforeUp() {
       this.fileData.id = this.comid;
-      if(sessionStorage.getItem('userid')){
-        this.fileData.userId=sessionStorage.getItem('userid')
-      }else{
-        this.fileData.userId= "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      if (sessionStorage.getItem("userid")) {
+        this.fileData.userId = sessionStorage.getItem("userid");
+      } else {
+        this.fileData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
       }
     },
     submitFn() {
@@ -598,10 +605,10 @@ export default {
       this.$refs.fromData.validate(valid => {
         if (valid) {
           let data = JSON.parse(JSON.stringify(this.fromData));
-          if(sessionStorage.getItem('userid')){
-            data.creator=sessionStorage.getItem('userid')
-          }else{
-            data.creator= "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+          if (sessionStorage.getItem("userid")) {
+            data.creator = sessionStorage.getItem("userid");
+          } else {
+            data.creator = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
           }
           if (this.title == "新建用户") {
             data.comId = this.comid;

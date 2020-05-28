@@ -43,7 +43,7 @@
         <div class="table-box">
             <el-table
                 ref="list"
-                height="32vh"
+                height="calc(65vh - 231px)"
                 cell-class-name="fs13 table-h"
                 header-cell-class-name="table-header table-h"
                 border
@@ -249,6 +249,7 @@
                             :file-list="file.nbys.list"
                             :on-preview="nbysPreviewFn"
                             :on-remove="nbysRemove"
+                            :before-upload="upLoadfn.beforeUpload"
                         >
                             <button slot="trigger" class="fs12 text-c cp upload-btn ml30">上传文件</button>
                             <div slot="tip"></div>
@@ -271,6 +272,7 @@
                             :file-list="file.yjaz.list"
                             :on-preview="yjazPreviewFn"
                             :on-remove="yjazRemove"
+                            :before-upload="upLoadfn.beforeUpload"
                         >
                             <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
                         </el-upload>
@@ -292,6 +294,7 @@
                             :file-list="file.pxzm.list"
                             :on-preview="pxzmPreviewFn"
                             :on-remove="pxzmRemove"
+                            :before-upload="upLoadfn.beforeUpload"
                         >
                             <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
                         </el-upload>
@@ -313,6 +316,7 @@
                             :file-list="file.hpjt.list"
                             :on-preview="hpjtPreviewFn"
                             :on-remove="hpjtRemove"
+                            :before-upload="upLoadfn.beforeUpload"
                         >
                             <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
                         </el-upload>
@@ -320,6 +324,7 @@
                 </div>
                 <div class="dfrb">
                     <el-form-item label="其他文件" label-width="115px" style="width:100%">
+                        <!-- <v-upload :fileData="file.qtwj"></v-upload> -->
                         <el-upload
                             ref="qtwj"
                             :action="baseUrl + '/so/file/upload'"
@@ -334,6 +339,7 @@
                             :file-list="file.qtwj.list"
                             :on-preview="qtwjPreviewFn"
                             :on-remove="qtwjRemove"
+                            :before-upload="upLoadfn.beforeUpload"
                         >
                             <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
                         </el-upload>
@@ -347,8 +353,9 @@
 <script>
 import {
     baseUrl //引入baseUrl
-} from "../../config/env";
+} from "../../../config/env";
 import drawer1 from "@/components/drawer1";
+import upload from "@/components/upload";
 export default {
     name: "service", // 结构名称
     data() {
@@ -442,7 +449,8 @@ export default {
         };
     },
     components: {
-        "v-d": drawer1
+        "v-d": drawer1,
+        "v-upload": upload
     },
     watch: {
         // 监控集合
@@ -670,9 +678,12 @@ export default {
         // },
         nbysPreviewFn(file) {
             //预览
-            this.openLink(
-                baseUrl + "/so/file/view?fileId=" + this.file.nbys.id
-            );
+            let str=file.name.substr(file.name.lastIndexOf('.'))
+            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
+                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.nbys.id);
+            }else{
+                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.nbys.id);
+            }
         },
         /**硬件安装 */
         yjazSucFn(res, file, fileList) {
@@ -697,9 +708,12 @@ export default {
         // },
         yjazPreviewFn(file) {
             //预览
-            this.openLink(
-                baseUrl + "/so/file/view?fileId=" + this.file.yjaz.id
-            );
+            let str=file.name.substr(file.name.lastIndexOf('.'))
+            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
+                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.yjaz.id);
+            }else{
+                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.yjaz.id);
+            }
         },
         /**培训证明*/
         pxzmSucFn(res, file, fileList) {
@@ -724,9 +738,12 @@ export default {
         // },
         pxzmPreviewFn(file) {
             //预览
-            this.openLink(
-                baseUrl + "/so/file/view?fileId=" + this.file.pxzm.id
-            );
+            let str=file.name.substr(file.name.lastIndexOf('.'))
+            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
+                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.pxzm.id);
+            }else{
+                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.pxzm.id);
+            }
         },
         /**好评截图*/
         hpjtSucFn(res, file, fileList) {
@@ -751,9 +768,12 @@ export default {
         // },
         hpjtPreviewFn(file) {
             //预览
-            this.openLink(
-                baseUrl + "/so/file/view?fileId=" + this.file.hpjt.id
-            );
+            let str=file.name.substr(file.name.lastIndexOf('.'))
+            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
+                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.hpjt.id);
+            }else{
+                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.hpjt.id);
+            }
         },
         /**其他文件*/
         qtwjSucFn(res, file, fileList) {
@@ -778,9 +798,12 @@ export default {
         // },
         qtwjPreviewFn(file) {
             //预览
-            this.openLink(
-                baseUrl + "/so/file/view?fileId=" + this.file.qtwj.id
-            );
+            let str=file.name.substr(file.name.lastIndexOf('.'))
+            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
+                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.qtwj.id);
+            }else{
+                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.qtwj.id);
+            }
         },
         /**文件end */
         submitFn() {
@@ -853,6 +876,7 @@ export default {
                             });
                             for (let x in this.file) {
                                 this.file[x].list = [];
+                                this.file[x].id=null;
                             }
                             this.drawer = false;
                             this.ajax();
@@ -946,15 +970,6 @@ export default {
 .el-form /deep/ .el-form-item__label {
     font-size: 13px;
     color: #5a5e66;
-}
-.upload-btn {
-    width: 68px;
-    line-height: 23px;
-    border: 1px solid #1989fa;
-    background: #fff;
-    color: #1989fa;
-    outline: none;
-    border-radius: 12px;
 }
 .yellow-txt {
     color: #f7aa12;

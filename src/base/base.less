@@ -527,18 +527,28 @@ body {
 	background: #999;
 	cursor: no-drop;
 }
-
+.upload-btn {
+	width: 68px;
+	line-height: 23px;
+	border: 1px solid #1989fa;
+	background: #fff;
+	color: #1989fa;
+	outline: none;
+	border-radius: 12px;
+}
 .tit-txt {
 	color: @titFontColor;
 }
-
-.el-form /deep/ .el-input {
+.el-drawer__wrapper .el-drawer.rtl{
+	outline: none;
+}
+.el-form .el-input {
 	width: 202px;
 }
-.el-form /deep/ .el-textarea__inner{
+.el-form .el-textarea__inner{
     height: 88px;
 }
-.el-upload /deep/ .el-upload-list__item .el-icon-close-tip{
+.el-upload .el-upload-list__item .el-icon-close-tip{
 	opacity: 0;
 	visibility: hidden;
 }
@@ -548,7 +558,7 @@ body {
 	font-weight: bold;
 }
 
-.el-table .table-header /deep/ .cell {
+.el-table .table-header .cell {
 	color: @titFontColor;
 }
 
@@ -556,21 +566,25 @@ body {
 	padding: 0;
 	height: 36px;
 }
-.el-table /deep/ .el-table__row.current-row .serial-num {
+.el-table .el-table__row.current-row .serial-num {
 	background: @titbgColor;
 }
-.el-table /deep/ .serial-num {
+.el-table .serial-num {
 	background: @titbgColor;
+}
+.el-table__fixed {
+	height:auto !important; // 让固定列的高自适应，且设置!important覆盖ele-ui的默认样式
+    bottom:17px; // 固定列默认设置了定位，    position: absolute;top: 0;left: 0;只需要再设置一下bottom的值，让固定列和父元素的底部出现距离即可
 }
 .el-button--primary span {
 	color: #fff
 }
 
-.el-message-box /deep/ .red-btn {
+.el-message-box .red-btn {
 	background: #FA5555;
 	border-color: #FA5555;
 }
-.el-table /deep/ .el-table__row.current-row>td{
+.el-table .el-table__row.current-row>td{
 	background: #FCF7DD
 }
 /*icon*/

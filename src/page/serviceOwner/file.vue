@@ -12,7 +12,7 @@
         cell-class-name="fs13 table-h"
         header-cell-class-name="table-header table-h"
         border
-        height="32vh"
+        height="calc(65vh - 199px)"
         :data="tableData"
         style="width:100%"
       >
@@ -90,7 +90,7 @@
 <script>
 import {
   baseUrl //引入baseUrl
-} from "../../config/env";
+} from "../../../config/env";
 export default {
   name: "file", // 结构名称
   data() {
@@ -118,8 +118,8 @@ export default {
         this.fromData.fileName = "";
         if (sessionStorage.getItem("userid")) {
           this.fromData.userId = sessionStorage.getItem("userid");
-        }else{
-          this.fromData.userId="60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+        } else {
+          this.fromData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
         }
         this.fromData.id = this.comid;
         this.ajax();
@@ -147,8 +147,8 @@ export default {
     }
     if (sessionStorage.getItem("userid")) {
       this.fromData.userId = sessionStorage.getItem("userid");
-    }else{
-      this.fromData.userId="60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+    } else {
+      this.fromData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
     }
   },
   beforeMount() {
@@ -196,27 +196,21 @@ export default {
     },
     previewFn(row) {
       if (row.servFileType == "company" || row.servFileType == "server") {
-        this.openLink(baseUrl + "/so/file/view?fileId=" + row.fileId);
+        if (
+          row.fileType.toLocaleLowerCase() == ".ppt" ||
+          row.fileType.toLocaleLowerCase() == ".doc" ||
+          row.fileType.toLocaleLowerCase() == ".docx" ||
+          row.fileType.toLocaleLowerCase() == ".pdf" ||
+          row.fileType.toLocaleLowerCase() == ".pptx"
+        ) {
+          this.openPdf(baseUrl + "/so/file/view?fileId=" + row.fileId);
+        } else {
+          this.openLink(baseUrl + "/so/file/view?fileId=" + row.fileId);
+        }
       } else {
         this.openLink(row.fileAddress);
       }
-      // this.$http({
-      //   method: "get",
-      //   params: {
-      //     fileId: row.fileId
-      //   },
-      //   url: "/so/file/view"
-      // }).then(res => {
-      //   console.log(res)
-      //   // this.openLink(res.data);
-      // });
     },
-    // openLink(url) {
-    //     //新开链接
-    //     if (url && url != "") {
-    //         window.open(url, "_blank");
-    //     }
-    // },
     sucFn(response, file, fileList) {
       if (response.succ) {
         this.upLoadfn.uploadSucFn();
@@ -235,12 +229,15 @@ export default {
     beforeAvatarUpload(file) {
       this.btnTxt = "上传中";
       this.disabled = true;
-      const isLt2M = file.size / 1024 / 1024 < 50;
+      const isLt2M = file.size / 1024 / 1024 < 20;
       if (!isLt2M) {
         this.$message({
-          message: "上传附件大小不能超过 50MB!",
+          message: "上传附件大小不能超过 20MB!",
           type: "warning"
         });
+        this.btnTxt = "点击上传";
+        this.disabled = false;
+        return false;
       }
       return isLt2M;
     }
@@ -258,14 +255,5 @@ export default {
 .el-form /deep/ .el-form-item__label {
   font-size: 13px;
   color: #5a5e66;
-}
-.upload-btn {
-  width: 68px;
-  line-height: 23px;
-  border: 1px solid #1989fa;
-  background: #fff;
-  color: #1989fa;
-  outline: none;
-  border-radius: 12px;
 }
 </style>

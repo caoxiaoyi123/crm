@@ -16,7 +16,7 @@
         <font class="fs20 draw-tit">{{ title }}</font>
         <i class="el-icon-close cp" @click="closeFn"></i>
       </header>
-      <section>
+      <section id="content-box">
         <slot></slot>
         <div
           class="btn-box mt30 text-r"
@@ -96,6 +96,9 @@ export default {
   },
   updated() {
     // console.group('更新完成状态===============》updated');
+    if (document.getElementById("content-box")) {
+      document.getElementById("content-box").scrollTop = 0;
+    }
   },
   beforeDestroy() {
     // console.group('销毁前状态  ===============》beforeDestroy');

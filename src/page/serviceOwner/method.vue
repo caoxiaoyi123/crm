@@ -24,7 +24,7 @@
         cell-class-name="fs13 table-h"
         header-cell-class-name="table-header table-h"
         border
-        height="32vh"
+        height="calc(65vh - 199px)"
         :data="tableData"
         style="width:100%"
       >

@@ -31,7 +31,7 @@
         highlight-current-row
         header-cell-class-name="table-header table-h"
         border
-        height="32vh"
+        height="calc(65vh - 231px)"
         :data="tableData"
         style="width:100%"
       >

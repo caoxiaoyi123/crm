@@ -13,7 +13,7 @@ Vue.component("v-drawer", drawer);
 Vue.use(ElementUI);
 
 Vue.config.productionTip = false;
-
+//时间戳转字符串
 Vue.prototype.formatDate = function(param, type = null) {
   var a = new Date(param);
   var m = a.getMonth() + 1;
@@ -43,7 +43,7 @@ Vue.prototype.formatDate = function(param, type = null) {
   }
   return b;
 };
-
+//上传
 Vue.prototype.upLoadfn = (function() {
   return {
     uploadSucFn() {
@@ -62,15 +62,32 @@ Vue.prototype.upLoadfn = (function() {
         message: "最多只能上传一个文件（test）",
         type: "warning"
       });
+    },
+    beforeUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 20;
+      if (!isLt2M) {
+        Message({
+          message: "上传附件大小不能超过 20MB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return isLt2M;
     }
   };
 })();
-
+//新开页
 Vue.prototype.openLink = function(url) {
   //新开链接
   if (url && url != "") {
     window.open(url, "_blank");
   }
+};
+//打开pdf
+Vue.prototype.openPdf = function(url) {
+  window.open(
+    "/static/pdf/web/viewer.html?file=" + encodeURIComponent(url) + "&.pdf"
+  );
 };
 
 new Vue({
