@@ -11,7 +11,7 @@
         @click="editFn"
         v-if="tableData && tableData.length > 0"
       >
-        <i class="el-icon-edit"></i>
+        <i class="icon iconfont iconbianji"></i>
         <font class="fs13">编辑</font>
       </span>
       <span
@@ -159,7 +159,7 @@
             ></el-input>
           </el-form-item>
         </div>
-        <el-form-item label="备注" prop="depMemo">
+        <el-form-item label="备注" prop="depMemo" class="text-line">
           <el-input
             placeholder="请输入备注"
             type="textarea"
@@ -365,9 +365,5 @@ export default {
   i {
     margin-right: 5px;
   }
-}
-.el-form /deep/ .el-form-item__label {
-  font-size: 13px;
-  color: #5a5e66;
 }
 </style>

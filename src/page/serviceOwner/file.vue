@@ -68,7 +68,7 @@
             :show-file-list="false"
             :multiple="false"
             :on-success="sucFn"
-            :on-error="upLoadfn.uploadErrFn"
+            :on-error="errorFn"
             :limit="1"
             :on-exceed="upLoadfn.uploadExcFn"
             :data="fromData"
@@ -212,11 +212,11 @@ export default {
       }
     },
     sucFn(response, file, fileList) {
+      this.btnTxt = "点击上传";
+      this.disabled = false;
+      this.$refs.upload.clearFiles();
       if (response.succ) {
         this.upLoadfn.uploadSucFn();
-        this.$refs.upload.clearFiles();
-        this.btnTxt = "点击上传";
-        this.disabled = false;
         this.drawer = false;
         this.ajax();
       } else {
@@ -240,6 +240,11 @@ export default {
         return false;
       }
       return isLt2M;
+    },
+    errorFn(){
+      this.btnTxt = "点击上传";
+      this.disabled = false;
+      this.upLoadfn.uploadErrFn
     }
   }
 };
@@ -251,9 +256,5 @@ export default {
   i {
     margin-right: 5px;
   }
-}
-.el-form /deep/ .el-form-item__label {
-  font-size: 13px;
-  color: #5a5e66;
 }
 </style>

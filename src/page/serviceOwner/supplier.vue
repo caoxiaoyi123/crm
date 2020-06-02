@@ -11,7 +11,7 @@
         @click="editFn"
         v-if="tableData && tableData.length > 0"
       >
-        <i class="el-icon-edit"></i>
+        <i class="icon iconfont iconbianji"></i>
         <font class="fs13">编辑</font>
       </span>
     </div>
@@ -360,7 +360,7 @@ export default {
       if (this.fromData.re && this.fromData.re.length > 0) {
         d = this.fromData.re[this.fromData.re.length - 1];
         this.fromData.comRegion = d;
-      } else {
+      } else if(!this.fromData.re) {
         let arr = this.fromData.comRegion.split("-");
         arr.pop();
         let arr1 = [];
@@ -479,9 +479,5 @@ export default {
   text-align: center;
   outline: none;
   background: #fff;
-}
-.el-form /deep/ .el-form-item__label {
-  font-size: 13px;
-  color: #5a5e66;
 }
 </style>

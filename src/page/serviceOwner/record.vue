@@ -198,35 +198,35 @@
               <el-input v-model="fromData.qmoney"></el-input>
             </el-form-item>
           </div>
-          <el-form-item label="反思" prop="fs">
+          <el-form-item label="反思" prop="fs" class="text-line">
             <el-input
               type="textarea"
               resize="none"
               v-model="fromData.fs"
             ></el-input>
           </el-form-item>
-          <el-form-item label="下次追踪思路" prop="nextSl">
+          <el-form-item label="下次追踪思路" prop="nextSl" class="text-line">
             <el-input
               type="textarea"
               resize="none"
               v-model="fromData.nextSl"
             ></el-input>
           </el-form-item>
-          <el-form-item label="跟踪内容" prop="recordRemarks">
+          <el-form-item label="跟踪内容" prop="recordRemarks" class="text-line">
             <el-input
               type="textarea"
               resize="none"
               v-model="fromData.recordRemarks"
             ></el-input>
           </el-form-item>
-          <el-form-item label="AB对话" prop="abask">
+          <el-form-item label="AB对话" prop="abask" class="text-line">
             <el-input
               type="textarea"
               resize="none"
               v-model="fromData.abask"
             ></el-input>
           </el-form-item>
-          <el-form-item label="备注" prop="followContent">
+          <el-form-item label="备注" prop="followContent" class="text-line">
             <el-input
               type="textarea"
               resize="none"
@@ -502,15 +502,6 @@ export default {
   i {
     margin-right: 5px;
   }
-}
-.drawer /deep/ .el-form h4 {
-  height: 44px;
-  line-height: 44px;
-  margin-bottom: 15px;
-}
-.el-form /deep/ .el-form-item__label {
-  font-size: 13px;
-  color: #5a5e66;
 }
 .el-form /deep/ .el-form-item__content {
   position: relative;

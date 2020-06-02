@@ -28,7 +28,7 @@
                 @click="editFn"
                 v-if="tableData && tableData.length > 0 && isoperation"
             >
-                <i class="el-icon-edit"></i>
+                <i class="icon iconfont iconbianji"></i>
                 <font class="fs13">编辑</font>
             </span>
             <span
@@ -76,13 +76,9 @@
                     </template>
                 </el-table-column>-->
                 <el-table-column align="center" label="服务时间" prop="serverTime"></el-table-column>
-                <el-table-column align="center" label="服务内容" prop="description">
+                <el-table-column header-align="center" align="left" label="服务内容" prop="description">
                     <template slot-scope="scope">
-                        <span class="text-over" :title="scope.row.description">
-                            {{
-                            scope.row.description
-                            }}
-                        </span>
+                        <span class="text-over" :title="scope.row.description">{{scope.row.description}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="处理阶段" prop="resStatus">
@@ -215,11 +211,13 @@
                     <el-date-picker
                         v-model="fromData.created"
                         type="date"
+                        :editable="false"
                         value-format="timestamp"
                         placeholder="请选择服务时间"
                     ></el-date-picker>
                 </el-form-item>
                 <el-form-item
+                    class="text-line"
                     label="服务内容"
                     prop="description"
                     :rules="{ required: true, message: '服务内容不得为空' }"
@@ -235,114 +233,27 @@
                 <h4 class="bor-b mb20"></h4>
                 <div class="dfrb">
                     <el-form-item label="内部验收单" label-width="115px" style="width:100%">
-                        <el-upload
-                            ref="nbys"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="true"
-                            list-type="text"
-                            :multiple="false"
-                            :on-success="nbysSucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="file.nbys.data"
-                            :file-list="file.nbys.list"
-                            :on-preview="nbysPreviewFn"
-                            :on-remove="nbysRemove"
-                            :before-upload="upLoadfn.beforeUpload"
-                        >
-                            <button slot="trigger" class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                            <div slot="tip"></div>
-                        </el-upload>
+                        <v-upload :fileData="file.nbys"></v-upload>
                     </el-form-item>
                 </div>
                 <div class="dfrb">
                     <el-form-item label="硬件安装验收单" label-width="115px" style="width:100%">
-                        <el-upload
-                            ref="yjaz"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="true"
-                            list-type="text"
-                            :multiple="false"
-                            :on-success="yjazSucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="file.yjaz.data"
-                            :file-list="file.yjaz.list"
-                            :on-preview="yjazPreviewFn"
-                            :on-remove="yjazRemove"
-                            :before-upload="upLoadfn.beforeUpload"
-                        >
-                            <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                        </el-upload>
+                        <v-upload :fileData="file.yjaz"></v-upload>
                     </el-form-item>
                 </div>
                 <div class="dfrb">
                     <el-form-item label="培训证明" label-width="115px" style="width:100%">
-                        <el-upload
-                            ref="pxzm"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="true"
-                            list-type="text"
-                            :multiple="false"
-                            :on-success="pxzmSucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="file.pxzm.data"
-                            :file-list="file.pxzm.list"
-                            :on-preview="pxzmPreviewFn"
-                            :on-remove="pxzmRemove"
-                            :before-upload="upLoadfn.beforeUpload"
-                        >
-                            <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                        </el-upload>
+                        <v-upload :fileData="file.pxzm"></v-upload>
                     </el-form-item>
                 </div>
                 <div class="dfrb">
                     <el-form-item label="好评截图" label-width="115px" style="width:100%">
-                        <el-upload
-                            ref="hpjt"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="true"
-                            list-type="text"
-                            :multiple="false"
-                            :on-success="hpjtSucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="file.hpjt.data"
-                            :file-list="file.hpjt.list"
-                            :on-preview="hpjtPreviewFn"
-                            :on-remove="hpjtRemove"
-                            :before-upload="upLoadfn.beforeUpload"
-                        >
-                            <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                        </el-upload>
+                        <v-upload :fileData="file.hpjt"></v-upload>
                     </el-form-item>
                 </div>
                 <div class="dfrb">
                     <el-form-item label="其他文件" label-width="115px" style="width:100%">
-                        <!-- <v-upload :fileData="file.qtwj"></v-upload> -->
-                        <el-upload
-                            ref="qtwj"
-                            :action="baseUrl + '/so/file/upload'"
-                            :show-file-list="true"
-                            list-type="text"
-                            :multiple="false"
-                            :on-success="qtwjSucFn"
-                            :on-error="upLoadfn.uploadErrFn"
-                            :limit="1"
-                            :on-exceed="upLoadfn.uploadExcFn"
-                            :data="file.qtwj.data"
-                            :file-list="file.qtwj.list"
-                            :on-preview="qtwjPreviewFn"
-                            :on-remove="qtwjRemove"
-                            :before-upload="upLoadfn.beforeUpload"
-                        >
-                            <button class="fs12 text-c cp upload-btn ml30">上传文件</button>
-                        </el-upload>
+                        <v-upload :fileData="file.qtwj"></v-upload>
                     </el-form-item>
                 </div>
             </el-form>
@@ -654,158 +565,6 @@ export default {
                 });
             });
         },
-        /**文件 */
-        /**内部验收 */
-        nbysSucFn(res, file, fileList) {
-            this.$refs.nbys.clearFiles();
-            if (res.succ) {
-                this.upLoadfn.uploadSucFn();
-                this.file.nbys.list.push(file);
-                this.file.nbys.id = res.data.id;
-            } else {
-                this.$message({
-                    message: res.msg,
-                    type: "warning"
-                });
-            }
-        },
-        nbysRemove() {
-            this.file.nbys.id = null;
-            this.file.nbys.list = [];
-        },
-        // nbysBefore(){
-        //     this.$refs.nbys.clearFiles();
-        // },
-        nbysPreviewFn(file) {
-            //预览
-            let str=file.name.substr(file.name.lastIndexOf('.'))
-            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
-                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.nbys.id);
-            }else{
-                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.nbys.id);
-            }
-        },
-        /**硬件安装 */
-        yjazSucFn(res, file, fileList) {
-            this.$refs.yjaz.clearFiles();
-            if (res.succ) {
-                this.upLoadfn.uploadSucFn();
-                this.file.yjaz.list.push(file);
-                this.file.yjaz.id = res.data.id;
-            } else {
-                this.$message({
-                    message: res.msg,
-                    type: "warning"
-                });
-            }
-        },
-        yjazRemove() {
-            this.file.yjaz.id = null;
-            this.file.yjaz.list = [];
-        },
-        // yjazBefore(){
-        //     this.$refs.yjaz.clearFiles();
-        // },
-        yjazPreviewFn(file) {
-            //预览
-            let str=file.name.substr(file.name.lastIndexOf('.'))
-            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
-                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.yjaz.id);
-            }else{
-                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.yjaz.id);
-            }
-        },
-        /**培训证明*/
-        pxzmSucFn(res, file, fileList) {
-            this.$refs.pxzm.clearFiles();
-            if (res.succ) {
-                this.upLoadfn.uploadSucFn();
-                this.file.pxzm.list.push(file);
-                this.file.pxzm.id = res.data.id;
-            } else {
-                this.$message({
-                    message: res.msg,
-                    type: "warning"
-                });
-            }
-        },
-        pxzmRemove() {
-            this.file.pxzm.id = null;
-            this.file.pxzm.list = [];
-        },
-        // yjazBefore(){
-        //     this.$refs.yjaz.clearFiles();
-        // },
-        pxzmPreviewFn(file) {
-            //预览
-            let str=file.name.substr(file.name.lastIndexOf('.'))
-            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
-                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.pxzm.id);
-            }else{
-                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.pxzm.id);
-            }
-        },
-        /**好评截图*/
-        hpjtSucFn(res, file, fileList) {
-            this.$refs.hpjt.clearFiles();
-            if (res.succ) {
-                this.upLoadfn.uploadSucFn();
-                this.file.hpjt.list.push(file);
-                this.file.hpjt.id = res.data.id;
-            } else {
-                this.$message({
-                    message: res.msg,
-                    type: "warning"
-                });
-            }
-        },
-        hpjtRemove() {
-            this.file.hpjt.id = null;
-            this.file.hpjt.list = [];
-        },
-        // yjazBefore(){
-        //     this.$refs.yjaz.clearFiles();
-        // },
-        hpjtPreviewFn(file) {
-            //预览
-            let str=file.name.substr(file.name.lastIndexOf('.'))
-            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
-                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.hpjt.id);
-            }else{
-                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.hpjt.id);
-            }
-        },
-        /**其他文件*/
-        qtwjSucFn(res, file, fileList) {
-            this.$refs.qtwj.clearFiles();
-            if (res.succ) {
-                this.upLoadfn.uploadSucFn();
-                this.file.qtwj.list.push(file);
-                this.file.qtwj.id = res.data.id;
-            } else {
-                this.$message({
-                    message: res.msg,
-                    type: "warning"
-                });
-            }
-        },
-        qtwjRemove() {
-            this.file.qtwj.id = null;
-            this.file.qtwj.list = [];
-        },
-        // yjazBefore(){
-        //     this.$refs.yjaz.clearFiles();
-        // },
-        qtwjPreviewFn(file) {
-            //预览
-            let str=file.name.substr(file.name.lastIndexOf('.'))
-            if (str== ".ppt" ||str== ".doc"||str== ".docx"||str== ".pdf"||str== ".pptx") {
-                this.openPdf(baseUrl+"/so/file/view?fileId="+this.file.qtwj.id);
-            }else{
-                this.openLink(baseUrl + "/so/file/view?fileId=" + this.file.qtwj.id);
-            }
-        },
-        /**文件end */
         submitFn() {
             this.$refs.fromData.validate(valid => {
                 if (valid) {
@@ -966,29 +725,5 @@ export default {
     i {
         margin-right: 5px;
     }
-}
-.el-form /deep/ .el-form-item__label {
-    font-size: 13px;
-    color: #5a5e66;
-}
-.yellow-txt {
-    color: #f7aa12;
-}
-.green-txt {
-    color: #67c23a;
-}
-.el-form /deep/ .el-upload--text {
-    margin-right: 27px;
-}
-.el-form /deep/ .el-form-item__content > div {
-    display: flex;
-    align-items: center;
-    max-width: 600px;
-}
-.el-form /deep/ .el-upload-list {
-    width: calc(100% - 125px);
-}
-.el-form /deep/ .el-upload-list__item {
-    margin-top: 0;
 }
 </style>

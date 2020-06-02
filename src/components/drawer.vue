@@ -96,7 +96,7 @@ export default {
   },
   updated() {
     // console.group('更新完成状态===============》updated');
-    if (document.getElementById("content-box")) {
+    if (this.readOnly&&document.getElementById("content-box")) {
       document.getElementById("content-box").scrollTop = 0;
     }
   },

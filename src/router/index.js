@@ -14,6 +14,13 @@ import file from "../page/serviceOwner/file"; //归档
 import empower from "../page/serviceOwner/empower"; //单位授权
 /**服务业主end */
 import salesContract from "../page/salesContract/salesContract"; //销售合同
+/*服务报表*/
+import reportForm from "../page/reportForm/reportForm"
+import daily from "../page/reportForm/daily"
+import detailed from "../page/reportForm/detailed"
+import customers from "../page/reportForm/customers"
+/*计划查询*/
+import planSearch from "../page/servicePlan/planSearch"
 Vue.use(VueRouter);
 
 const routes = [
@@ -87,12 +94,39 @@ const routes = [
         component: empower
       }
     ]
-    // redirect: '/organize'
   },
   {
     path: "/salesContract",
     name: "salesContract",
     component: salesContract
+  },
+  {
+    path: "/reportForm",
+    name: "reportForm",
+    component: reportForm,
+    redirect: "/reportForm/daily",
+    children: [
+      {//服务日报
+        path:'daily',
+        name:'daily',
+        component:daily
+      },
+      {//服务明细
+        path:'detailed',
+        name:'detailed',
+        component:detailed
+      },
+      {//重点客户复盘
+        path:'customers',
+        name:'customers',
+        component:customers
+      }
+    ]
+  },
+  {
+    path:'/planSearch',
+    name:'planSearch',
+    component:planSearch,
   }
 ];
 

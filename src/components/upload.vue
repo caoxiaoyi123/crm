@@ -18,7 +18,7 @@
       :before-upload="beforeAvatarUpload"
     >
       <button
-        class="fs12 text-c cp upload-btn ml30"
+        class="fs12 text-c cp upload-btn"
         :disabled="disabled"
         :class="disabled ? 'ban' : ''"
       >
@@ -135,9 +135,12 @@ export default {
   max-width: 600px;
 }
 .upload /deep/ .el-upload-list {
-  width: calc(100% - 160px);
+  width: calc(100% - 95px);
 }
 .upload /deep/ .el-upload-list__item {
   margin-top: 0;
+}
+.upload /deep/ .el-upload-list__item .el-progress{
+	display: none;
 }
 </style>

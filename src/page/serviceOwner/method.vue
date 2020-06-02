@@ -53,7 +53,11 @@
           label="要带资料"
           min-width="160"
           prop="filesdata"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span class="text-over" :title="scope.row.filesdata">{{scope.row.filesdata}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="总分"

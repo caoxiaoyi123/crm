@@ -11,7 +11,7 @@
         @click="editFn"
         v-if="tableData && tableData.length > 0"
       >
-        <i class="el-icon-edit"></i>
+        <i class="icon iconfont iconbianji"></i>
         <font class="fs13">编辑</font>
       </span>
       <span
@@ -19,7 +19,7 @@
         @click="exportFn"
         v-if="tableData && tableData.length > 0"
       >
-        <i class="icon icon-daochu el-icon-upload2"></i>
+        <i class="icon iconfont icondaochu"></i>
         <font class="fs13">导出excel</font>
       </span>
       <span class="drc cp mr20">
@@ -35,7 +35,7 @@
           :on-exceed="upLoadfn.uploadExcFn"
           :before-upload="beforeUp"
         >
-          <i class="icon icon-daoru el-icon-download"></i>
+          <i class="icon iconfont icondaoru"></i>
           <font class="fs13">批量导入</font>
         </el-upload>
       </span>
@@ -190,7 +190,6 @@
               placeholder="请输入密码"
               v-model="fromData.password"
               show-password
-              style="width:200px"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -205,7 +204,6 @@
               placeholder="请确认密码"
               v-model="fromData.password2"
               show-password
-              style="width:200px"
             ></el-input>
           </el-form-item>
         </div>
@@ -591,13 +589,22 @@ export default {
         });
       }
     },
-    beforeUp() {
+    beforeUp(file) {
       this.fileData.id = this.comid;
       if (sessionStorage.getItem("userid")) {
         this.fileData.userId = sessionStorage.getItem("userid");
       } else {
         this.fileData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
       }
+      const isLt2M = file.size / 1024 / 1024 < 20;
+      if (!isLt2M) {
+        this.$message({
+          message: "上传附件大小不能超过 20MB!",
+          type: "warning"
+        });
+        return false;
+      }
+      return isLt2M;
     },
     submitFn() {
       //新建or修改
@@ -650,15 +657,6 @@ export default {
   i {
     margin-right: 5px;
   }
-}
-.drawer /deep/ .el-form h4 {
-  height: 44px;
-  line-height: 44px;
-  margin-bottom: 15px;
-}
-.el-form /deep/ .el-form-item__label {
-  font-size: 13px;
-  color: #5a5e66;
 }
 .red-font {
   color: #fa5555;

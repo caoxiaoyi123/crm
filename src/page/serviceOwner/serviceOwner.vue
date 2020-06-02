@@ -138,7 +138,7 @@
                   @click="editFn"
                   v-if="tableData && tableData.length > 0"
                 >
-                  <i class="el-icon-edit"></i>
+                  <i class="icon iconfont iconbianji"></i>
                   <font class="fs13">修改</font>
                 </div>
               </div>
@@ -433,7 +433,7 @@
             ></el-input>
           </el-form-item>
         </div>
-        <el-form-item label="备注" prop="comMemo">
+        <el-form-item label="备注" prop="comMemo" class="text-line">
           <el-input
             placeholder="请输入备注"
             type="textarea"

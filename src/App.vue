@@ -20,4 +20,6 @@ export default {
   methods: {}
 };
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+// @import '//at.alicdn.com/t/font_1832696_4cwetrybfbr.css'
+</style>

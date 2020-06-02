@@ -59,7 +59,7 @@ Vue.prototype.upLoadfn = (function() {
     },
     uploadExcFn() {
       Message({
-        message: "最多只能上传一个文件（test）",
+        message: "最多只能上传一个文件",
         type: "warning"
       });
     },

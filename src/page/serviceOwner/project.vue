@@ -11,7 +11,7 @@
         @click="editFn"
         v-if="tableData && tableData.length > 0"
       >
-        <i class="el-icon-edit"></i>
+        <i class="icon iconfont iconbianji"></i>
         <font class="fs13">编辑</font>
       </span>
       <span
@@ -19,7 +19,7 @@
         @click="exportFn"
         v-if="tableData && tableData.length > 0"
       >
-        <i class="icon icon-daochu el-icon-upload2"></i>
+        <i class="icon iconfont icondaochu"></i>
         <font class="fs13">导出excel</font>
       </span>
     </div>
@@ -206,6 +206,7 @@
               type="daterange"
               value-format="yyyy-MM-dd"
               range-separator="至"
+              :editable="false"
               style="width:280px"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
@@ -347,7 +348,7 @@
             style="width:202px"
           ></el-input>
         </el-form-item>
-        <el-form-item label="项目概况" prop="projMemo">
+        <el-form-item label="项目概况" prop="projMemo" class="text-line">
           <el-input
             placeholder="请输入项目概况"
             type="textarea"
@@ -439,6 +440,7 @@
             <el-date-picker
               v-model="fromData.bidDate"
               type="date"
+              :editable="false"
               style="width:202px"
               placeholder="请选择招标日期"
             ></el-date-picker>
@@ -543,7 +545,7 @@
             ></el-input>
           </el-form-item>
         </div>
-        <el-form-item label="优缺点" prop="competitiveUnitInfo">
+        <el-form-item label="优缺点" prop="competitiveUnitInfo" class="text-line">
           <el-input
             placeholder="请输入优缺点"
             type="textarea"
@@ -628,7 +630,7 @@
             ></el-input>
           </el-form-item>
         </div>
-        <el-form-item label="其他信息" prop="projInsiderInfo">
+        <el-form-item label="其他信息" prop="projInsiderInfo" class="text-line">
           <el-input
             placeholder="请输入其他信息"
             type="textarea"
@@ -677,7 +679,7 @@
         </div>
         <!-- 分割线 -->
         <h4 class="bor-b tit-txt fs16">相关新闻</h4>
-        <el-form-item label="相关新闻" prop="relatedNews">
+        <el-form-item label="相关新闻" prop="relatedNews" class="text-line">
           <el-input
             placeholder="请输入相关新闻"
             type="textarea"
@@ -705,7 +707,7 @@
         <el-table
           ref="userTable"
           :row-key="getRowKey"
-          height="175px"
+          height="310px"
           cell-class-name="fs13 table-h"
           header-cell-class-name="table-header table-h"
           border
@@ -1211,18 +1213,6 @@ export default {
   i {
     margin-right: 5px;
   }
-}
-.drawer /deep/ .el-form h4 {
-  height: 44px;
-  line-height: 44px;
-  margin-bottom: 15px;
-}
-.el-form /deep/ .el-form-item__label {
-  font-size: 13px;
-  color: #5a5e66;
-}
-.el-form /deep/ .el-input--medium {
-  font-size: 13px;
 }
 .page-box {
   height: 44px;

@@ -5,6 +5,7 @@
 	font-family: '微软雅黑';
 	// font-family: Georgia, 'Times New Roman', Times, serif;
 }
+
 li{
 	list-style: none;
 }
@@ -13,14 +14,6 @@ body {
 	margin: 0;
 	padding: 0;
 }
-
-// 背景图片地址和大小
-.bis(@url) {
-	background-image: url(@url);
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-}
-
 //transform上下左右居中
 .ctt {
 	position: absolute;
@@ -47,24 +40,6 @@ body {
 .wh(@width, @height) {
 	width: @width;
 	height: @height;
-}
-
-//字体大小、行高、字体
-.ft(@size, @line-height) {
-	font-size: @size;
-	line-height: @line-height;
-}
-
-//字体大小，颜色
-.sc(@size, @color) {
-	font-size: @size;
-	color: @color;
-}
-
-//flex 布局和 子元素 对其方式
-.fj(@type: space-between) {
-	display: flex;
-	justify-content: @type;
 }
 
 .bor {
@@ -170,49 +145,6 @@ body {
 	font-size: 16px;
 }
 
-.fs18 {
-	font-size: 18px;
-}
-
-.fs20 {
-	font-size: 20px;
-}
-
-.fs24 {
-	font-size: 24px;
-}
-
-.fs26 {
-	font-size: 26px;
-}
-
-.fs28 {
-	font-size: 28px;
-}
-
-.fs30 {
-	font-size: 30px;
-}
-
-.fs34 {
-	font-size: 34px;
-}
-
-.fs40 {
-	font-size: 40px;
-}
-
-.fs45 {
-	font-size: 45px;
-}
-
-.fs50 {
-	font-size: 50px;
-}
-
-.fs52 {
-	font-size: 52px;
-}
 .text-over{
 	overflow:hidden;
     text-overflow:ellipsis;
@@ -225,9 +157,6 @@ body {
 	overflow: hidden;
 }
 
-.fw500 {
-	font-weight: 500;
-}
 
 .fw600 {
 	font-weight: 600;
@@ -587,6 +516,24 @@ body {
 .el-table .el-table__row.current-row>td{
 	background: #FCF7DD
 }
+.el-form /deep/ .el-form-item__label {
+	font-size: 13px;
+	color: #5a5e66;
+}
+.el-form /deep/ .text-line  .el-form-item__label{
+	line-height: 88px;
+}
+.drawer /deep/ .el-form h4 {
+	height: 44px;
+	line-height: 44px;
+	margin-bottom: 15px;
+}
+.el-form /deep/ .el-input--medium {
+	font-size: 13px;
+}
+.el-message{
+	min-width: auto;
+}
 /*icon*/
 .icon {
 	.wh(16px, 16px);
@@ -601,4 +548,10 @@ body {
 }
 .red-txt{
     color: #FA5555;
+}
+.yellow-txt {
+    color: #f7aa12;
+}
+.green-txt {
+    color: #67c23a;
 }
