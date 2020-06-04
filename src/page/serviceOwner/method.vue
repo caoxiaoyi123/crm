@@ -41,21 +41,43 @@
           label="名称"
           min-width="195"
           prop="stagename"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-tooltip :content="scope.row.stagename" placement="right">
+                <span class="clamp-2">
+                    {{ scope.row.stagename }}
+                </span> 
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column
-          align="center"
+          header-align="center"
+          align="left"
           label="关键约束条件"
           min-width="230"
           prop="standard"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <el-tooltip :content="scope.row.standard" placement="right">
+                <span class="clamp-2">
+                    {{ scope.row.standard }}
+                </span> 
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column
-          align="center"
+          header-align="center"
+          align="left"
           label="要带资料"
           min-width="160"
           prop="filesdata"
         >
           <template slot-scope="scope">
-            <span class="text-over" :title="scope.row.filesdata">{{scope.row.filesdata}}</span>
+            <el-tooltip :content="scope.row.filesdata" placement="right">
+                <span class="clamp-2">
+                    {{ scope.row.filesdata }}
+                </span> 
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
@@ -96,9 +118,11 @@
           prop="remarks"
         >
           <template slot-scope="scope">
-            <span class="text-over" :title="scope.row.remarks">{{
-              scope.row.remarks
-            }}</span>
+            <el-tooltip :content="scope.row.remarks" placement="right">
+                <span class="clamp-2">
+                    {{ scope.row.remarks }}
+                </span> 
+            </el-tooltip>
           </template>
         </el-table-column>
       </el-table>

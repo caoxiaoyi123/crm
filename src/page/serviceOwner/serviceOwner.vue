@@ -194,9 +194,11 @@
                   prop="city"
                 >
                   <template slot-scope="scope">
-                    <span class="text-over" :title="scope.row.city">
-                      {{ scope.row.city }}
-                    </span>
+                    <el-tooltip :content="scope.row.city" placement="left">
+                      <span class="text-over">
+                        {{ scope.row.city }}
+                      </span>
+                    </el-tooltip>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -208,9 +210,11 @@
                   prop="comName"
                 >
                   <template slot-scope="scope">
-                    <span class="text-over" :title="scope.row.comName">
-                      {{ scope.row.comName }}
-                    </span>
+                    <el-tooltip :content="scope.row.comName" placement="right">
+                      <span class="clamp-2">
+                        {{ scope.row.comName }}
+                      </span> 
+                    </el-tooltip>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -831,17 +835,6 @@ li {
   .table-box {
     .el-table /deep/ .serial-num {
       background: @titbgColor;
-    }
-  }
-  .page-box {
-    height: 44px;
-    .el-pagination /deep/ .el-pagination__sizes {
-      margin: 0 15px;
-    }
-    .el-icon-refresh-right {
-      color: @buleColor;
-      margin-right: 8px;
-      font-weight: bold;
     }
   }
 }

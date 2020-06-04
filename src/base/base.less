@@ -150,10 +150,10 @@ body {
     text-overflow:ellipsis;
     white-space:nowrap
 }
-.clamp-3 {
+.clamp-2 {
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 3;
+	-webkit-line-clamp: 2;
 	overflow: hidden;
 }
 
@@ -533,6 +533,17 @@ body {
 }
 .el-message{
 	min-width: auto;
+}
+.page-box {
+    height: 44px;
+    .el-pagination /deep/ .el-pagination__sizes {
+		margin: 0 15px;
+	}
+	.el-icon-refresh-right {
+		color: @buleColor;
+		margin-right: 8px;
+		font-weight: bold;
+	}
 }
 /*icon*/
 .icon {

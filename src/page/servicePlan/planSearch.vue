@@ -1,6 +1,6 @@
 <!-- 模型： DOM 结构 -->
 <template>
-    <div class="customers">
+    <div class="planSearch">
         <div class="top-box dfrcb">
             <div class="drc">
                 <font class="fs13">起止时间</font>
@@ -40,12 +40,28 @@
                 cell-class-name="fs13 table-h"
                 header-cell-class-name="table-header table-h"
                 border
+                row-key="id"
+                :tree-props="{children:'children',hasChildren:'hasChildren'}"
                 ref="list"
                 height="calc(100vh - 135px)"
                 :data="tableData"
                 style="width:100%"
+                @expand-change="expandedChange"
             >
-
+                <el-table-column align="center" class-name="serial-num" width="50" label="序号" type="index" ></el-table-column>
+                <el-table-column header-align="center" align="left" prop="comName" label="部门名称">
+                    <template slot-scope="scope">
+                        <i class="left-icon" :class="scope.row.selected?'el-icon-folder-remove':'el-icon-folder-add'" v-if="scope.row.children"></i>
+                        <i class="left-icon el-icon-document" v-else></i>
+                        {{scope.row.comName}}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="责任人"></el-table-column>
+                <el-table-column align="center" label="指派人"></el-table-column>
+                <el-table-column align="center" label="计划类型"></el-table-column>
+                <el-table-column align="center" label="事项数量"></el-table-column>
+                <el-table-column align="center" label="支撑明细"></el-table-column>
+                <el-table-column align="center" label="报表"></el-table-column>
             </el-table>
         </div>
     </div>
@@ -60,7 +76,45 @@ export default {
             data:{
                 state:''
             },
-            tableData:['1'],
+            tableData:[
+                {
+                    id: 2,
+                    date: '2016-05-04',
+                    comName: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                },{
+                    id: 3,
+                    date: '2016-05-04',
+                    comName: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄',
+                    children:[
+                        {
+                            id: 31,
+                            date: '2016-05-01',
+                            comName: '王小虎',
+                            address: '上海市普陀区金沙江路 1519 弄'
+                        },{
+                            id: 32,
+                            date: '2016-05-01',
+                            comName: '王小虎',
+                            address: '上海市普陀区金沙江路 1519 弄',
+                            children:[
+                                {
+                                    id: 333,
+                                    date: '2016-05-01',
+                                    comName: '王小虎',
+                                    address: '上海市普陀区金沙江路 1519 弄'
+                                }
+                            ]
+                        }
+                    ]
+                },{
+                    id: 4,
+                    date: '2016-05-04',
+                    comName: '王小虎',
+                    address: '上海市普陀区金沙江路 1517 弄'
+                }
+            ],
             stateList: [
                 {
                 label: "在职",
@@ -115,6 +169,13 @@ export default {
             this.data.projStartime = val[0];
             this.data.projEndtime = val[1];
         },
+        expandedChange(row){
+            if(row.selected){
+                row.selected=!row.selected
+            }else{
+                row.selected=true
+            }
+        }
     }
 
 }
@@ -123,6 +184,7 @@ export default {
 <!-- 增加 "scoped" 属性 限制 CSS 属于当前部分 -->
 <style  lang='less' scoped>
 .planSearch{
+    padding: 15px;
     .top-box{
         margin-bottom: 15px;
         .operate{
@@ -130,6 +192,21 @@ export default {
                 margin-right: 5px;
             }
         }
+    }
+    .table-box{
+        .left-icon {
+            color: #f7aa12;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .el-table /deep/ .cell{
+            position: relative;
+            & .el-table__expand-icon{
+                position: absolute;
+                right: 10px;
+            }
+        }
+
     }
 }
 </style>

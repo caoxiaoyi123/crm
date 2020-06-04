@@ -41,9 +41,11 @@
           prop="comName"
         >
           <template slot-scope="scope">
-            <span class="text-over" :title="scope.row.comName">{{
-              scope.row.comName
-            }}</span>
+            <el-tooltip :content="scope.row.comName" placement="right">
+                <span class="clamp-2">
+                    {{ scope.row.comName }}
+                </span> 
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
@@ -57,7 +59,14 @@
           prop="comPhone"
         ></el-table-column>
         <el-table-column align="center" label="省/市/区/县" prop="comRegion">
-          <template slot-scope="scope">{{ returnRegion(scope.row) }}</template>
+            <template slot-scope="scope">
+                <el-tooltip :content="returnRegion(scope.row)" placement="right">
+                    <span class="text-over">
+                        {{ returnRegion(scope.row) }}
+                    </span>
+                </el-tooltip>
+            </template>
+          <!-- <template slot-scope="scope">{{ returnRegion(scope.row) }}</template> -->
         </el-table-column>
         <el-table-column align="center" label="认证状态" prop="comAuthstatus">
           <template slot-scope="scope">

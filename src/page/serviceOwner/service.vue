@@ -60,12 +60,16 @@
                     type="index"
                     :index="indexFn"
                 ></el-table-column>
-                <el-table-column header-align="center" align="left" label="项目名称" prop="projName"></el-table-column>
-                <el-table-column align="center" label="销售人员">
-                    {{
-                    allotUserName
-                    }}
+                <el-table-column header-align="center" align="left" label="项目名称" prop="projName">
+                    <template slot-scope="scope">
+                        <el-tooltip :content="scope.row.projName" placement="right">
+                            <span class="clamp-2">
+                                {{ scope.row.projName }}
+                            </span> 
+                        </el-tooltip>
+                    </template>
                 </el-table-column>
+                <el-table-column align="center" label="销售人员">{{allotUserName}}</el-table-column>
                 <el-table-column align="center" label="客户联系人" prop="contact"></el-table-column>
                 <el-table-column align="center" label="服务来源" prop="sourceFrom"></el-table-column>
                 <el-table-column align="center" label="服务类型" prop="type"></el-table-column>
@@ -78,7 +82,11 @@
                 <el-table-column align="center" label="服务时间" prop="serverTime"></el-table-column>
                 <el-table-column header-align="center" align="left" label="服务内容" prop="description">
                     <template slot-scope="scope">
-                        <span class="text-over" :title="scope.row.description">{{scope.row.description}}</span>
+                        <el-tooltip :content="scope.row.description" placement="right">
+                            <span class="clamp-2">
+                                {{ scope.row.description }}
+                            </span> 
+                        </el-tooltip>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="处理阶段" prop="resStatus">
