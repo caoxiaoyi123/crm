@@ -19,12 +19,12 @@
                     ></el-option>
                 </el-select>
             </span>
-            <span class="drc cp mr20" @click="creatFn" v-if="isshow">
-                <i class="el-icon-plus"></i>
+            <span class="drc cp mr20 hover-color" @click="creatFn" v-if="isshow">
+                <i class="icon iconfont iconxinjian"></i>
                 <font class="fs13">新建</font>
             </span>
             <span
-                class="drc cp mr20"
+                class="drc cp mr20 hover-color"
                 @click="editFn"
                 v-if="tableData && tableData.length > 0 && isoperation"
             >
@@ -32,7 +32,7 @@
                 <font class="fs13">编辑</font>
             </span>
             <span
-                class="drc cp"
+                class="drc cp hover-color"
                 @click="deleteFn"
                 v-if="tableData && tableData.length > 0 && isoperation"
             >

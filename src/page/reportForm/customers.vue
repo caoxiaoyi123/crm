@@ -49,11 +49,11 @@
                         ></el-option>
                     </el-select>
                 </span>
-                <span class="drc cp ml30" @click="editFn" v-if="tableData && tableData.length > 0">
+                <span class="drc cp ml30 hover-color" @click="editFn" v-if="tableData && tableData.length > 0">
                     <i class="icon iconfont iconbianji"></i>
                     <font class="fs13">编辑</font>
                 </span>
-                <span class="drc cp operate ml30" @click="exportFn" v-if="tableData && tableData.length > 0">
+                <span class="drc cp operate ml30 hover-color" @click="exportFn" v-if="tableData && tableData.length > 0">
                     <i class="icon iconfont icondaochu"></i>
                     <font class="fs13">导出excel</font>
                 </span>

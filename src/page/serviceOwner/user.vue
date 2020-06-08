@@ -2,19 +2,19 @@
 <template>
     <div class="user">
         <div class="head-box drc">
-            <span class="drc cp mr20" @click="creatFn" v-if="isshow">
-                <i class="el-icon-plus"></i>
+            <span class="drc cp mr20 hover-color" @click="creatFn" v-if="isshow">
+                <i class="icon iconfont iconxinjian"></i>
                 <font class="fs13">新建</font>
             </span>
-            <span class="drc cp mr20" @click="editFn" v-if="tableData && tableData.length > 0">
+            <span class="drc cp mr20 hover-color" @click="editFn" v-if="tableData && tableData.length > 0">
                 <i class="icon iconfont iconbianji"></i>
                 <font class="fs13">编辑</font>
             </span>
-            <span class="drc cp mr20" @click="exportFn" v-if="tableData && tableData.length > 0">
+            <span class="drc cp mr20 hover-color" @click="exportFn" v-if="tableData && tableData.length > 0">
                 <i class="icon iconfont icondaochu"></i>
                 <font class="fs13">导出excel</font>
             </span>
-            <span class="drc cp mr20">
+            <span class="drc cp mr20 hover-color">
                 <el-upload
                     ref="upload"
                     :action="baseUrl + '/so/user/upload'"
@@ -31,8 +31,8 @@
                     <font class="fs13">批量导入</font>
                 </el-upload>
             </span>
-            <span class="drc cp mr20" @click="tempFn">
-                <i class="icon icon-yhmb"></i>
+            <span class="drc cp mr20 hover-color" @click="tempFn">
+                <i class="icon iconfont iconmoban"></i>
                 <font class="fs13">用户模板</font>
             </span>
             <span class="drc">

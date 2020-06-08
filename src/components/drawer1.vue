@@ -90,7 +90,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn-box mt30 text-r fix">
+                <div class="btn-box mt30 text-r fix" :class="type==1?'fixed':''">
                     <template v-if="type==1">
                         <button class="cancel-btn text-c fs14 cp" @click="closeFn">关闭</button>
                     </template>
@@ -271,7 +271,7 @@ export default {
                     row.fileType.toLocaleLowerCase() == ".pdf"
                 ) {
                     this.openPdf(
-                        baseUrl + "/so/file/view?fileId=" + row.fileId
+                        baseUrl + "/so/file/view?fileId=" + row.fileId+"&fileName="+row.fileName
                     );
                 } else {
                     this.openLink(
@@ -401,6 +401,9 @@ section {
         right: 0;
         padding-right: 35px;
         box-sizing: border-box;
+    }
+    .fixed{
+        width: 480px;
     }
 }
 </style>

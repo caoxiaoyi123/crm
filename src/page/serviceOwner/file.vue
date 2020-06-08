@@ -2,8 +2,8 @@
 <template>
   <div class="file">
     <div class="head-box drc">
-      <span class="drc cp mr20" v-if="isshow" @click="upFn">
-        <i class="icon icon-sc"></i>
+      <span class="drc cp mr20 hover-color" v-if="isshow" @click="upFn">
+        <i class="icon iconfont iconshangchuan"></i>
         <font class="fs13">上传</font>
       </span>
     </div>
@@ -203,7 +203,7 @@ export default {
           row.fileType.toLocaleLowerCase() == ".pdf" ||
           row.fileType.toLocaleLowerCase() == ".pptx"
         ) {
-          this.openPdf(baseUrl + "/so/file/view?fileId=" + row.fileId);
+          this.openPdf(baseUrl + "/so/file/view?fileId=" + row.fileId+"&fileName="+row.fileName);
         } else {
           this.openLink(baseUrl + "/so/file/view?fileId=" + row.fileId);
         }

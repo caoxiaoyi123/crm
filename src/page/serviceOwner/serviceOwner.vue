@@ -134,7 +134,7 @@
                 </div>
                 <!--  -->
                 <div
-                  class="drc cp"
+                  class="drc cp hover-color"
                   @click="editFn"
                   v-if="tableData && tableData.length > 0"
                 >
@@ -629,21 +629,6 @@ export default {
       //     this.$refs.fromData.resetFields()
       // }
     },
-    getTreeDic(pid, data) {
-      //根据pid获取树状图
-      let result = [],
-        temp;
-      for (let i in data) {
-        if (data[i].pid == pid) {
-          result.push(data[i]);
-          temp = this.getTreeDic(data[i].areaId, data);
-          if (temp.length > 0) {
-            data[i].children = temp;
-          }
-        }
-      }
-      return result;
-    },
     tableSelectFn(currentRow, oldCurrentRow) {
       //表格选中时
       if (currentRow) {
@@ -794,7 +779,7 @@ li {
     height: auto;
   }
   .listbg {
-    background: #fcf7dd;
+    background:#FFE088;
   }
 }
 .el-main {

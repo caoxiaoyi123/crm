@@ -99,7 +99,7 @@ export default {
         str == ".pdf" ||
         str == ".pptx"
       ) {
-        this.openPdf(baseUrl + "/so/file/view?fileId=" + this.fileData.id);
+        this.openPdf(baseUrl + "/so/file/view?fileId=" + this.fileData.id+"&fileName="+this.fileData.list[0].name);
       } else {
         this.openLink(baseUrl + "/so/file/view?fileId=" + this.fileData.id);
       }

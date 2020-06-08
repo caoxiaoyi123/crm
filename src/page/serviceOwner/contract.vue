@@ -162,7 +162,7 @@ export default {
                 row.file.fileType.toLocaleLowerCase() == ".pdf" ||
                 row.file.fileType.toLocaleLowerCase() == ".pptx"
             ) {
-                this.openPdf(baseUrl + "/so/file/view?fileId=" + row.fileId);
+                this.openPdf(baseUrl + "/so/file/view?fileId=" + row.fileId+"&fileName="+row.fileName);
             } else {
                 this.openLink(baseUrl + "/so/file/view?fileId=" + row.fileId);
             }

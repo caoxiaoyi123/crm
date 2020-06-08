@@ -2,12 +2,12 @@
 <template>
   <div class="supplier">
     <div class="head-box drc">
-      <span class="drc cp mr20" @click="creatFn" v-if="isshow">
-        <i class="el-icon-plus"></i>
+      <span class="drc cp mr20 hover-color" @click="creatFn" v-if="isshow">
+        <i class="icon iconfont iconxinjian"></i>
         <font class="fs13">新建</font>
       </span>
       <span
-        class="drc cp mr20"
+        class="drc cp mr20 hover-color"
         @click="editFn"
         v-if="tableData && tableData.length > 0"
       >

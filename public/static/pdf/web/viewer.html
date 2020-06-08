@@ -355,6 +355,17 @@ See https://github.com/adobe-type-tools/cmap-resources
 
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
+    <script>
+      function getParam(name){  //获取参数
+        var url=decodeURIComponent(window.location.search);  //获取问号之后的字0符
+        var reg=new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        if(url!=null && url.toString().length>1){ 
+          var r=url.substr(1).match(reg);
+          if(r!=null)return unescape(r[2]); return null;
+        }
+      }
+      document.title=getParam('fileName');
+    </script>
   </body>
 </html>
 

@@ -21,6 +21,10 @@ import detailed from "../page/reportForm/detailed"
 import customers from "../page/reportForm/customers"
 /*计划查询*/
 import planSearch from "../page/servicePlan/planSearch"
+/*服务计划*/
+import planList from "../page/servicePlan/planList"
+import servicePlan from "../page/servicePlan/servicePlan"
+import planDetailed from "../page/servicePlan/planDetailed"
 Vue.use(VueRouter);
 
 const routes = [
@@ -127,6 +131,23 @@ const routes = [
     path:'/planSearch',
     name:'planSearch',
     component:planSearch,
+  },
+  {
+    path:'/planList',
+    name:'planList',
+    component:planList,
+    redirect: "/planList/servicePlan",
+    children:[
+      {
+        path:'servicePlan',
+        name:'servicePlan',
+        component:servicePlan
+      },{
+        path:'planDetailed',
+        name:'planDetailed',
+        component:planDetailed
+      }
+    ]
   }
 ];
 

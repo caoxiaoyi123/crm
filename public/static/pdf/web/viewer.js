@@ -1254,7 +1254,7 @@ var PDFViewerApplication = {
     if (this.isViewerEmbedded) {
       return;
     }
-    document.title = '文档预览';
+    // document.title = '文档预览';
   },
   close: function close() {
     var errorWrapper = this.appConfig.errorWrapper.container;

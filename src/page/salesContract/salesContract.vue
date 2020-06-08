@@ -21,19 +21,19 @@
                     <input type="text" v-model="data.keyword" placeholder="请输入关键字"/>
                     <i class="el-icon-search cp" slot="append" @click="keywordFn" ></i>
                 </div>
-                <span class="drc cp mr20 operate" @click="creatFn">
-                    <i class="el-icon-plus"></i>
+                <span class="drc cp mr20 operate hover-color" @click="creatFn">
+                    <i class="icon iconfont iconxinjian"></i>
                     <font class="fs13">新建</font>
                 </span>
-                <span class="drc cp mr20 operate" @click="editFn" v-if="tableData && tableData.length > 0">
+                <span class="drc cp mr20 operate hover-color" @click="editFn" v-if="tableData && tableData.length > 0">
                     <i class="icon iconfont iconbianji"></i>
                     <font class="fs13">编辑</font>
                 </span>
-                <span class="drc cp mr20 operate" @click="deleteFn" v-if="tableData && tableData.length > 0 ">
+                <span class="drc cp mr20 operate hover-color" @click="deleteFn" v-if="tableData && tableData.length > 0 ">
                     <i class="el-icon-remove-outline"></i>
                     <font class="fs13">删除</font>
                 </span>
-                <span class="drc cp operate" @click="exportFn" v-if="tableData && tableData.length > 0">
+                <span class="drc cp operate hover-color" @click="exportFn" v-if="tableData && tableData.length > 0">
                     <i class="icon iconfont icondaochu"></i>
                     <font class="fs13">导出excel</font>
                 </span>
@@ -56,6 +56,9 @@
                 height="calc(100vh - 125px)"
                 :data="tableData"
                 style="width:100%"
+                v-loading="isajax"
+                element-loading-text="数据正在加载中"
+                element-loading-spinner="el-icon-loading"
             >
                 <el-table-column align="center" class-name="serial-num" width="50" label="序号" type="index" :index="indexFn"></el-table-column>
                 <el-table-column align="left" header-align="center"  min-width="120" label="合同编号" prop="contractNo">
@@ -226,11 +229,11 @@
                 </div>
                 <div class="dfrb">
                     <el-form-item label="金额(万)" prop="amount" :rules="
-                        [{pattern: /^(([1-9]\d*)|0)(\.\d+)?$/,message: '金额必须为正数',
+                        [{pattern: /^\d{1,5}\.\d{1,2}$|^\d{1,5}$/,message: '金额最多5位，小数点后不超过2位',
                         trigger: ['blur', 'change']},{ required: true, message: '金额不得为空' }]">
                         <el-input placeholder="请输入金额(万)" v-model="fromData.amount"></el-input>
                     </el-form-item>
-                    <el-form-item label="回款(万)" prop="receivedPayments" :rules="{pattern: /^(([1-9]\d*)|0)(\.\d+)?$/,message: '回款必须为正数'}">
+                    <el-form-item label="回款(万)" prop="receivedPayments" :rules="{pattern: /^\d{1,5}\.\d{1,2}$|^\d{1,5}$/,message: '回款最多5位，小数点后不超过2位'}">
                         <el-input placeholder="请输入回款(万)" v-model="fromData.receivedPayments"></el-input>
                     </el-form-item>
                 </div>
@@ -259,6 +262,7 @@ export default {
     data() {
         return {
             // 数据模型a
+            isajax: true,
             timer:"",
             userId:'',//当前用户id
             total:0,
@@ -267,7 +271,7 @@ export default {
                 start:'',
                 end:'',
                 pageNo:1,
-                pageSize:20
+                pageSize:30
             },
             tableData:[],
             drawer:false,
@@ -358,6 +362,7 @@ export default {
         },
         timeClick(val) {
             //时间监听
+            this.data.pageNo = 1;
             if(val){
                 this.data.start = val[0];
                 this.data.end = val[1];
@@ -404,7 +409,7 @@ export default {
                 status: "success",
                 uid: new Date().getTime()
             };
-            this.fileData.list[0]=d;
+            this.$set(this.fileData.list,0,d);
             this.drawer=true;
         },
         exportFn() {//导出
@@ -421,7 +426,7 @@ export default {
                 this.$http({
                     method: "get",
                     params: {
-                        contractId: this.fromData.contractId
+                        contractId: this.fromObj.contractId
                     },
                     url: "/so/contract/del"
                 }).then(res => {
@@ -432,15 +437,18 @@ export default {
                             type: "success"
                         });
                         this.ajax();
+                        this.getCount()
                     }
                 });
             });
         },
         tableSelectFn(currentRow, oldCurrentRow) {//表格选中时
-            let obj = JSON.parse(JSON.stringify(currentRow));
-            obj.re = obj.contractRegion;
-            obj.confirmDate=this.formatDate(obj.time)
-            this.fromObj=obj;
+            if(currentRow){
+                let obj = JSON.parse(JSON.stringify(currentRow));
+                obj.re = obj.contractRegion;
+                obj.confirmDate=this.formatDate(obj.time)
+                this.fromObj=obj;
+            }
         },
         submitFn(){
             this.$refs.fromData.validate(valid => {
@@ -504,6 +512,7 @@ export default {
             }
         },
         ajax(){
+            this.isajax = true;
             this.tableData.splice(0);
             let that = this;
             let d=this.data
@@ -513,6 +522,7 @@ export default {
                 url:"/so/contract/sales/list"
             }).then(res=>{
                 if(res.succ){
+                    this.isajax = false;
                     this.tableData = res.data.data;
                     this.total=res.data.total
                     this.$refs.list.setCurrentRow(this.tableData[0]);
@@ -560,12 +570,6 @@ export default {
                 this.count=res.data
             })
         },
-        // pageSizeChange(val) {
-        //     this.data.pageNo = 1;
-        //     this.total = 0;
-        //     this.data.pageSize = val;
-        //     this.ajax();
-        // },
         pageNoChange(val) {
             this.data.pageNo = val;
             this.ajax();

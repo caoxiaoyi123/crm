@@ -468,11 +468,23 @@ body {
 .tit-txt {
 	color: @titFontColor;
 }
+.hover-color:hover{
+	i,font{
+		color: #1989FA;
+	}
+}
 .el-drawer__wrapper .el-drawer.rtl{
 	outline: none;
 }
 .el-form .el-input {
 	width: 202px;
+}
+.plan.el-form .el-input {
+	width: 245px;
+}
+.el-input--small .el-input__inner{
+	height: 36px;
+    line-height: 36px;
 }
 .el-form .el-textarea__inner{
     height: 88px;
@@ -514,7 +526,7 @@ body {
 	border-color: #FA5555;
 }
 .el-table .el-table__row.current-row>td{
-	background: #FCF7DD
+	background: #FFE088
 }
 .el-form /deep/ .el-form-item__label {
 	font-size: 13px;
@@ -546,17 +558,6 @@ body {
 	}
 }
 /*icon*/
-.icon {
-	.wh(16px, 16px);
-	background-size: 100% 100%;
-}
-
-.icon-yhmb {
-	background-image: url(../assets/icon/yhmb.png);
-}
-.icon-sc {
-	background-image: url(../assets/icon/sc.png);
-}
 .red-txt{
     color: #FA5555;
 }

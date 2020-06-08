@@ -6,7 +6,7 @@
                 <li class="fs13 cp" v-for="(o,i) of tabList" :key="i" :class="tabNum==o.path?'active':''" @click="tabChangeFn(o)">{{o.name}}</li>
             </ul>
         </div>
-        <div class="content"></div>
+        <div class="content"><router-view/></div>
     </div>
 </template>
 <script>
@@ -15,12 +15,28 @@ export default {
     data() {
         return {
             // 数据模型a
+            tabList:[
+                {
+                    name: "计划列表",
+                    path: "servicePlan"
+                },{
+                    name:"计划明细",
+                    path:"planDetailed"
+                }
+            ],
+            tabNum:"servicePlan"
         }
     },
     components: {
     },
     watch: {
         // 监控集合
+        $route:{
+            deep:true,
+            handler(val,old){
+                this.tabNum=val.name
+            }
+        }
     },
     props: {
         // 集成父级参数
@@ -30,6 +46,7 @@ export default {
     },
     created() {
         // console.group('创建完毕状态===============》created');
+        this.tabNum=this.$route.name
     },
     beforeMount() {
         // console.group('挂载前状态  ===============》beforeMount');
@@ -56,6 +73,13 @@ export default {
         // 方法 集合
         tabChangeFn(o) {
             //重新赋值comid，触发子组件监听器
+            if(o.path=='planDetailed'){
+                return false
+            }
+            this.tabNum=o.path
+            this.$router.push({
+                path: o.path
+            });
         },
     }
 
@@ -91,6 +115,9 @@ export default {
                 color: #2796FF;
             }
         }
+    }
+    .content{
+        padding: 15px;
     }
 }
 </style>

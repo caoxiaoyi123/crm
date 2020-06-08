@@ -89,7 +89,26 @@ Vue.prototype.openPdf = function(url) {
     "/static/pdf/web/viewer.html?file=" + encodeURIComponent(url) + "&.pdf"
   );
 };
-
+//根据pid获取树状图
+Vue.prototype.getTreeDic=function(pid, data,type=0) {
+  let result = [],
+    temp;
+  for (let i in data) {
+    if (data[i].pid == pid) {
+      result.push(data[i]);
+      if(type==0){
+        temp = this.getTreeDic(data[i].areaId, data);
+      }else{
+        temp = this.getTreeDic(data[i].depCode, data);
+      }
+      
+      if (temp.length > 0) {
+        data[i].children = temp;
+      }
+    }
+  }
+  return result;
+},
 new Vue({
   router,
   render: function(h) {
