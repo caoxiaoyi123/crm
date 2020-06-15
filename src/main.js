@@ -99,7 +99,7 @@ Vue.prototype.getTreeDic=function(pid, data,type=0) {
       if(type==0){
         temp = this.getTreeDic(data[i].areaId, data);
       }else{
-        temp = this.getTreeDic(data[i].depCode, data);
+        temp = this.getTreeDic(data[i].depCode, data,1);
       }
       
       if (temp.length > 0) {

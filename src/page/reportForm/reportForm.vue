@@ -18,7 +18,7 @@ export default {
             tabNum:'daily',
             tabList:[
                 {
-                    name:'服务日程',
+                    name:'服务日报',
                     path:'daily'
                 },{
                     name:'服务明细',

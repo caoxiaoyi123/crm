@@ -10,6 +10,7 @@
       :show-close="true"
       :withHeader="false"
       :destroy-on-close="true"
+      :append-to-body="isAppend"
       ref="drref"
     >
       <header>
@@ -46,7 +47,8 @@ export default {
   data() {
     return {
       // 数据模型
-      d: false
+      d: false,
+      isAppend:false,
     };
   },
   watch: {
@@ -55,7 +57,14 @@ export default {
       this.d = val;
     },
     d(val, old) {
-      this.$parent.drawer = val;
+      if(this.type==0){
+        this.$parent.drawer = val;
+      }else if(this.type==2){
+        this.$parent.drawer2 = val;
+      }else if(this.type==3){
+        this.$parent.drawer3 = val;
+      }
+      
     }
   },
   props: {
@@ -74,13 +83,16 @@ export default {
     },
     readOnly: {
       default: false
-    }
+    },
   },
   beforeCreate() {
     // console.group('创建前状态  ===============》beforeCreate');
   },
   created() {
     // console.group('创建完毕状态===============》created');
+    if(this.title=='新建支撑'){
+      this.isAppend=true;
+    }
   },
   beforeMount() {
     // console.group('挂载前状态  ===============》beforeMount');
@@ -109,8 +121,13 @@ export default {
   methods: {
     // 方法 集合
     closeFn() {
-      // this.$parent.drawer=false
-      this.$refs.drref.closeDrawer();
+      
+      if(this.drawerW=='803px'){
+        this.$parent.drawer=false
+      }else{
+        this.$refs.drref.closeDrawer();
+      }
+      
     },
     sumbitFn() {
       this.$emit("submitFn");
@@ -130,7 +147,7 @@ header {
   }
 }
 section {
-  max-height: calc(100vh - 140px);
+  max-height: calc(100vh - 90px);
   overflow-y: auto;
   padding: 0 35px;
   .btn-box {

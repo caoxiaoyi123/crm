@@ -236,6 +236,16 @@ export default {
                 this.fromData.startDate=''
                 this.fromData.endDate=''
             }
+        },
+        fileData:{
+            deep:true,
+            handler(val,old){
+                if(!val.id&&val.list.length==0){
+                    if(this.fromData.planFile){
+                        this.fromData.planFile=""
+                    }
+                }
+            }
         }
     },
     filters: {
@@ -414,7 +424,7 @@ export default {
         submitFn() {
             this.$refs.fromData.validate(valid => {
                 if (valid) {
-                    if(this.timeValue==''){
+                    if(!this.timeValue){
                         this.$message({
                             message:'起止时间不得为空',
                             type: "warning"

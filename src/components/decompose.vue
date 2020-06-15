@@ -1,9 +1,9 @@
 <!-- 模型： DOM 结构 -->
 <template>
     <div class="decompose">
-        <div class="top-box drc">
-            <span class="mr40">计划内容：<font class="red-txt">签约</font></span>
-            <span class="mr10">输出：<font class="red-txt">30</font>万</span>
+        <div class="top-box drc mb10">
+            <span class="mr40">计划内容：<font class="red-txt">{{contentTxt}}</font></span>
+            <span class="mr10">输出：<font class="red-txt">{{outTxt}}</font></span>
         </div>
         <div class="table-box">
             <el-table
@@ -12,9 +12,10 @@
                 :tree-props="{children:'children',hasChildren:'hasChildren'}"
                 @expand-change="expandedChange"
                 border
+                :row-key="getRowKey"
                 :data="tableData"
                 height="calc(60vh - 160px)"
-                ref="list"
+                ref="depList"
                 style="flex:1.2"
                 highlight-current-row
                 @current-change="tableSelectFn"
@@ -36,18 +37,19 @@
                 row-key="id"
                 :data="leftData"
                 @selection-change="leftChange"
+                height="calc(60vh - 160px)"
                 @selection-all="leftAll"
                 @select="leftRow"
-                style="flex:0.8"
+                
             >
-                <el-table-column align="center" type="selection"></el-table-column>
+                <el-table-column align="center"  type="selection"></el-table-column>
                 <el-table-column align="center" label="姓名" prop="name"></el-table-column>
             </el-table>
             <div class="left-or-right">
                 <p class="transfer-btn mb20" @click="toRight" :class="leftList.length>0?'acitve':''">
                     <i class="icon el-icon-d-arrow-right fs16"></i>
                 </p>
-                <p class="transfer-btn" :class="rightList.length>0?'acitve':''">
+                <p class="transfer-btn" @click="toLeft" :class="rightList.length>0?'acitve':''">
                     <i class="icon el-icon-d-arrow-left fs16"></i>
                 </p>
             </div>
@@ -58,6 +60,7 @@
                 row-key="id"
                 :data="rightData"
                 @selection-change="rightChange"
+                height="calc(60vh - 160px)"
                 @selection-all="rightAll"
                 @select="rightRow"
                 style="flex:2"
@@ -71,9 +74,15 @@
                 ></el-table-column>
                 <el-table-column align="center" label="姓名" prop="name"></el-table-column>
                 <el-table-column align="center" label="输出标准">
-                    
+                    <template slot-scope="scope">
+                        <el-input type="text" v-model="scope.row.output" placeholder="点击输入"/>
+                    </template>
                 </el-table-column>
             </el-table>
+        </div>
+        <div class="btn-box text-r mt20">
+            <button class="cancel-btn mr30 text-c fs14 cp" @click="closeFn">取消</button>
+            <button class="sure-btn text-c fs14 cp" @click="sumbitFn">保存</button>
         </div>
     </div>
 </template>
@@ -84,7 +93,7 @@ export default {
         return {
             // 数据模型a
             tableData:[],
-            leftData:[],
+            leftData:[1,2,3],
             rightData:[],
             leftList:[],//左侧勾选承载数组
             rightList:[],//右侧勾选承载数组
@@ -92,22 +101,51 @@ export default {
     },
     watch: {
         // 监控集合
+        list:{
+            deep:true,
+            handler(val,old){
+                if(val.length>0){
+                    this.rightData=JSON.parse(JSON.stringify(val));
+                }
+            }
+        }
     },
     props: {
         // 集成父级参数
+        detailId:{//计划明细id
+            default:null
+        },
+        outTxt:{//输出
+            default:''
+        },
+        contentTxt:{//内容
+            default:""
+        },
+        list:{
+            default:[]
+        },
+        id:{
+            default:null
+        }
     },
     beforeCreate() {
         // console.group('创建前状态  ===============》beforeCreate');
     },
     created() {
         // console.group('创建完毕状态===============》created');
-        this.getDepart()
+        // if(this.list.length>0){
+        //     this.rightData=JSON.parse(JSON.stringify(this.list));
+        // }
     },
     beforeMount() {
         // console.group('挂载前状态  ===============》beforeMount');
     },
     mounted() {
         // console.group('挂载结束状态===============》mounted');
+        this.getDepart()
+        if(this.list.length>0){
+            this.rightData=JSON.parse(JSON.stringify(this.list));
+        }
     },
     beforeUpdate() {
         // console.group('更新前状态  ===============》beforeUpdate');
@@ -123,6 +161,9 @@ export default {
     },
     methods: {
         // 方法 集合
+        getRowKey(row){
+            return row.depId;
+        },
         expandedChange(row){
             if(row.selected){
                 row.selected=!row.selected
@@ -130,8 +171,40 @@ export default {
                 row.selected=true
             }
         },
+        forInRight(obj){
+            for(let x of this.rightData){
+                if(x.dealUserId==obj.userId){
+                    return false
+                }
+            }
+            return true
+        },
         toRight(){
-            this.rightData=JSON.parse(JSON.stringify(this.leftList));
+            let r=JSON.parse(JSON.stringify(this.leftList));
+            for(let x of r){
+                if(this.forInRight(x)){
+                    let d={
+                        dealUserId:x.userId,
+                        name:x.name
+                    }
+                    if(this.detailId){
+                        d.detailId=this.detailId;
+                    }
+                    this.rightData.push(d)
+                }
+            }
+        },
+        toLeft(){
+            let r1=JSON.parse(JSON.stringify(this.rightData));
+            let r2=JSON.parse(JSON.stringify(this.rightList));
+            for(let x in r1){
+                for(let y in r2){
+                    if(r1[x].dealUserId==r2[y].dealUserId){
+                        r1.splice(x,1);
+                    }
+                }
+            }
+            this.rightData=JSON.parse(JSON.stringify(r1));
         },
         /*监听多选框*/
         leftChange(sele) {
@@ -179,9 +252,9 @@ export default {
         /**监听多选框end */
         getDepart(){//获取组织关系
             let d = JSON.parse(sessionStorage.getItem('depart'));
-            let c = this.getTreeDic('039-011-',d,1);
+            let c = this.getTreeDic('',d,1);
             this.tableData=c;
-            this.$refs.list.setCurrentRow(this.tableData[0]);
+            this.$refs.depList.setCurrentRow(this.tableData[0]);
         },
         tableSelectFn(currentRow, oldCurrentRow) {
             //表格选中时
@@ -199,6 +272,52 @@ export default {
                 })
             }
         },
+        closeFn() {
+            let d=JSON.parse(JSON.stringify(this.rightData));
+            this.$emit("closeFn",{list:d});
+        },
+        sumbitFn() {
+            let d=JSON.parse(JSON.stringify(this.rightData))
+            if(d.length&&d.length>0){
+                for(let x of d){
+                    if(d[0].detailId){
+                        x.detailId=d[0].detailId
+                    }else if(this.id){
+                        x.detailId=this.id
+                    }
+                    if(!x.output){
+                        this.$message({
+                            message: "请填写输出标准",
+                            type: "warning"
+                        })
+                        return false
+                    }
+                    for(let i in x){
+                        if(i=='name'){
+                            delete x[i]
+                        }
+                    }
+                }
+                this.$http({
+                    method:'post',
+                    url:'/sv/plan/resolve/update',
+                    data:d
+                }).then(res=>{
+                    if(res.succ){
+                        let obj={
+                            resolveIds:res.data,
+                            list:this.rightData
+                        }
+                        this.$emit("submitFn",obj);
+                    }
+                })
+            }else{
+                this.$message({
+                    message: "请选择人员",
+                    type: "warning"
+                });
+            }
+        }
     }
 
 }
@@ -226,7 +345,21 @@ export default {
             }
         }
         .el-table /deep/ .is-center .cell{
+            padding: 0;
             justify-content: center;
+        }
+        .el-table /deep/ .el-input__inner{
+            border: none;
+            text-align: center;
+        }
+        .el-table /deep/ .el-input__inner::-webkit-input-placeholder {
+            color:#2796FF;
+        }
+        .el-table /deep/ .el-input__inner::-moz-input-placeholder {
+            color:#2796FF;
+        }
+        .el-table /deep/ .el-input__inner::-ms-input-placeholder {
+            color:#2796FF;
         }
         .left-or-right{
             align-self:center;
@@ -251,6 +384,23 @@ export default {
                     color: #fff
                 }
             }
+        }
+    }
+    .btn-box {
+        button {
+            width: 62px;
+            line-height: 32px;
+            border: 1px solid #1989fa;
+            border-radius: 4px;
+            outline: none;
+        }
+        .cancel-btn {
+            background: #fff;
+            color: #1989fa;
+        }
+        .sure-btn {
+            background: #1989fa;
+            color: #fff;
         }
     }
 }

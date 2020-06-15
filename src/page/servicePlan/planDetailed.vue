@@ -16,17 +16,17 @@
                     <i class="el-icon-remove-outline"></i>
                     <font class="fs13">删除</font>
                 </span>
-                <span class="drc cp mr20  hover-color">
+                <span class="drc cp mr20  hover-color" @click="resolveFn" v-if="tableData && tableData.length > 0 ">
                     <i class="icon iconfont iconrenwufenjie"></i>
                     <font class="fs13">任务分解</font>
                 </span>
-                <span class="drc cp mr20  hover-color">
+                <span class="drc cp mr20  hover-color" @click="drawer3=true">
                     <i class="icon iconfont iconxiaoshourenwuzhicheng"></i>
                     <font class="fs13">销售任务支撑</font>
                 </span>
-                <span class="drc cp mr20  hover-color">
+                <span class="drc cp mr20  hover-color" @click="drawer2=true">
                     <i class="icon iconfont iconfuwurenwuzhicheng"></i>
-                    <font class="fs13">销售任务支撑</font>
+                    <font class="fs13">服务任务支撑</font>
                 </span>
             </div>
             <div class="drc fs13">
@@ -63,8 +63,12 @@
                         {{scope.row.startDate?scope.row.startDate.replace('-','/'):''}}-{{scope.row.endDate?scope.row.endDate.replace('-','/'):''}}
                     </template>
                 </el-table-column>
-                <el-table-column align="left" header-align="center" label="任务分解"></el-table-column>
-                <el-table-column align="left" header-align="center" label="备注"></el-table-column>
+                <el-table-column align="left" header-align="center" label="任务分解" prop="resolve">
+                    <template slot-scope="scope">
+                        <span v-html="returnResolve(scope.row.resolve)"></span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="left" header-align="center" label="备注" prop="remark"></el-table-column>
             </el-table>
             <div class="page-box dfrcb">
                 <span class="fs13">
@@ -87,26 +91,27 @@
             <el-form :model="fromData" label-width="80px" class="plan" ref="fromData" size="medium" @submit.native.prevent>
                 <el-form-item label="工作性质">
                     <el-select v-model="fromData.workNature" style="width:200px">
-                        <el-option label="量化" value="0"></el-option>
-                        <el-option label="非量化" value="1"></el-option>
+                        <el-option v-for="(x,i) of workNatureList" :key="i" :label="x.label" :value="x.value"></el-option>
+                        <!-- <el-option label="量化" value="0"></el-option>
+                        <el-option label="非量化" value="1"></el-option> -->
                     </el-select>
                 </el-form-item>
-                <el-form-item label="内容">
+                <el-form-item label="内容" prop="content" :rules="{ required: true, message: '内容不得为空' }">
                     <el-input placeholder="请输入内容" v-model="fromData.content"></el-input>
                 </el-form-item>
-                <el-form-item label="输出">
+                <el-form-item label="输出" prop="output" :rules="{ required: true, message: '输出不得为空' }">
                     <el-input placeholder="请输入输出" v-model="fromData.output"></el-input>
                 </el-form-item>
                 <div class="drc">
                     <el-form-item label="任务分解">
-                        <el-input placeholder="任务分解" v-model="fromData.fj" style="position: relative;"></el-input>
-                        <button class="ml10 search-btn cp" @click.prevent="addFj">添加</button>
+                        <el-input placeholder="任务分解" v-model="fromData.resolve" style="position: relative;" :disabled="true"></el-input>
+                        <button class="ml10 search-btn cp" @click.prevent="mask=true;">添加</button>
                         <div class="mask-box" v-if="mask">
                             <div class="dia-tit dfrcb">
                                 <span class="color-fff">添加任务分解</span>
                                 <i class="color-fff el-icon-close cp" @click="mask = false;"></i>
                             </div>
-                            <v-decompose></v-decompose>
+                            <v-decompose @closeFn="mask = false;" @submitFn="addResolve" :outTxt="fromData.output" :id="fromData.detailId" :list="fromFjList" :contentTxt="fromData.content"></v-decompose>
                         </div>
                     </el-form-item>
                 </div>
@@ -137,20 +142,45 @@
                         </el-date-picker>
                     </template>
                 </el-form-item>
-                <el-form-item label="备注" prop="depMemo" class="text-line">
+                <el-form-item label="备注" prop="remark" class="text-line">
                     <el-input
                         placeholder="请输入备注"
                         type="textarea"
                         resize="none"
-                        v-model="fromData.depMemo"
+                        v-model="fromData.remark"
                         maxlength="50"
                     ></el-input>
                 </el-form-item>
             </el-form>
         </v-drawer>
+        <el-drawer
+            :close-on-press-escape="false"
+            :wrapperClosable="false"
+            :visible.sync="drawer1"
+            :modal-append-to-body="false"
+            size="820px"
+            :show-close="true"
+            :withHeader="false"
+            :destroy-on-close="true">
+            <header>
+                <font class="fs20 draw-tit">任务分解</font>
+                <i class="el-icon-close cp" @click="drawer1 = false;"></i>
+            </header>
+            <section id="section-box">
+                <v-decompose @closeFn="drawer1 = false;" :id="fromObj.detailId" @submitFn="resolveUpdate" :outTxt="fromObj.output" :list="FjList" :contentTxt="fromObj.content"></v-decompose>
+            </section>
+        </el-drawer>
+        <v-drawer :title="'项目/单位支撑-服务'" :drawerW="'975px'" :drawer="drawer2"  :readOnly="true" :type="2">
+            <v-braceService></v-braceService>
+        </v-drawer>
+        <v-drawer :title="'项目/单位支撑-销售'" :drawerW="'975px'" :drawer="drawer3" @submitFn="xsSaveFn" :type="3">
+            <v-braceSell @returnList="receiveFn"></v-braceSell>
+        </v-drawer>
     </div>
 </template>
 <script>
+import braceService from "@/components/braceService";
+import braceSell from "@/components/braceSell";
 import decompose from "@/components/decompose";
 export default {
     name: 'planDetailed', // 结构名称
@@ -159,7 +189,7 @@ export default {
             // 数据模型a
             timeValue:'',
             typeTxt:'',
-            tableData:['1'],
+            tableData:[],
             count:{
                 receivedPayments:100,
                 total:12,
@@ -174,8 +204,24 @@ export default {
             isajax:true,
             title:"",
             drawer:false,
+            drawer1:false,
+            drawer2:false,
+            drawer3:false,
             fromData:{},
+            fromObj:{},
+            workNatureList:[
+                {
+                    label:'量化',
+                    value:0
+                },{
+                    label:'非量化',
+                    value:1
+                }
+            ],
             mask:false,
+            fromFjList:[],//表单内分解的list
+            FjList:[],
+            receiveList:[],
         }
     },
     watch: {
@@ -185,13 +231,13 @@ export default {
                 let start,end;
                 let nowY=new Date(val).getFullYear();
                 const oneD=86400000;
-                if(this.fromData.type==0){//年计划
+                if(this.$route.query.type==0){//年计划
                     start=val;
                     let nextY=nowY+1;
                     let nextStr=nextY+'-01-01';
                     let nextTime=new Date(nextStr).getTime()-oneD;
                     end=this.formatDate(nextTime)
-                }else if(this.fromData.type==1){//月计划
+                }else if(this.$route.query.type==1){//月计划
                     start=val;
                     let nextM=new Date(val).getMonth()+2;
                     if (nextM < 10) {
@@ -200,7 +246,7 @@ export default {
                     let nextStr=nowY+'-'+nextM+'-01';
                     let nextTime=new Date(nextStr).getTime()-oneD;
                     end=this.formatDate(nextTime)
-                }else if(this.fromData.type==2){//周计划
+                }else if(this.$route.query.type==2){//周计划
                     let nowTimestr=new Date(val).getTime();
                     start=this.formatDate(nowTimestr-oneD);
                     let nextW=nowTimestr+5*oneD;
@@ -216,6 +262,8 @@ export default {
     },
     components: {
         "v-decompose": decompose,//任务分解
+        "v-braceService":braceService,//服务支撑
+        "v-braceSell":braceSell,//销售支撑
     },
     props: {
         // 集成父级参数
@@ -258,18 +306,54 @@ export default {
     },
     methods: {
         // 方法 集合
+        returnResolve(val){
+            return val.replace(/;/g,'<br>');
+        },
         indexFn(index) {
             let n = (this.data.pageNo - 1) * this.data.pageSize + (index + 1);
             return n;
         },
-        addFj(){
-            this.mask=true;
+        resolveUpdate(){
+            this.drawer1=false;
+            this.ajax()
+        },
+        resolveFn(){
+            this.$http({
+                method:'get',
+                url:'/sv/plan/resolve/list',
+                params:{
+                    detailId:this.fromObj.detailId
+                }
+            }).then(res=>{
+                if(res.succ){
+                    this.FjList=res.data;
+                    this.drawer1=true;
+                }
+            })
         },
         creatFn(){
+            let d= new Object();
+            d.workNature=0;
+            this.fromData=JSON.parse(JSON.stringify(d));
+            this.fromFjList=[];
+            this.timeValue='';
             this.drawer = true;
             this.title = "新建计划";
         },
         editFn(){
+            this.$http({
+                method:'get',
+                url:'/sv/plan/resolve/list',
+                params:{
+                    detailId:this.fromObj.detailId
+                }
+            }).then(res=>{
+                if(res.succ){
+                    this.fromFjList=res.data
+                }
+            })
+            this.fromData = JSON.parse(JSON.stringify(this.fromObj));
+            this.timeValue=this.fromData.startDate
             this.drawer = true;
             this.title = "编辑计划";
         },
@@ -281,70 +365,78 @@ export default {
                 confirmButtonClass: "red-btn",
                 cancelButtonClass: "cancel-btn"
             }).then(() => {
-                // this.$http({
-                //     method: "get",
-                //     params: {
-                //         planId: this.fromObj.planId,
-                //         userId : this.data.userId 
-                //     },
-                //     url: "/sv/plan/main/delete"
-                // }).then(res => {
-                //     if (res.succ) {
-                //         this.$message({
-                //             title: "成功",
-                //             message: res.data,
-                //             type: "success"
-                //         });
-                //         this.ajax();
-                //     }
-                // });
+                this.$http({
+                    method: "get",
+                    params: {
+                        detailId : this.fromObj.detailId,
+                    },
+                    url: "/sv/plan/detail/delete"
+                }).then(res => {
+                    if (res.succ) {
+                        this.$message({
+                            title: "成功",
+                            message: res.data,
+                            type: "success"
+                        });
+                        this.ajax();
+                    }
+                });
             });
         },
         submitFn() {
             this.$refs.fromData.validate(valid => {
                 if (valid) {
-                    // let d=JSON.parse(JSON.stringify(this.fromData));
-                    // d.designeeId=this.data.userId;
-                    // d.responsibleId=this.data.userId;
-                    // if(this.fileData.id){
-                    //     d.planFile=this.fileData.id
-                    // }
-                    // for (let x in d) {
-                    //     if (x == "detailTotal") {
-                    //         delete d[x];
-                    //     }
-                    //     if (x == "responsibleName") {
-                    //         delete d[x];
-                    //     }
-                    //     if (x == "designeeName") {
-                    //         delete d[x];
-                    //     }
-                    //     if (x == "pubFileEntity") {
-                    //         delete d[x];
-                    //     }
-                    // }
-                    // this.$http({
-                    //     method:'post',
-                    //     url:'/sv/plan/main/update',
-                    //     data:d
-                    // }).then(res=>{
-                    //     if (res.succ) {
-                    //         this.$message({
-                    //             title: "成功",
-                    //             message: res.data,
-                    //             type: "success"
-                    //         });
-                    //         this.fileData.list = [];
-                    //         this.fileData.id=null;
-                    //         this.drawer = false;
-                    //         this.ajax();
-                    //     }
-                    // })
+                    let d=JSON.parse(JSON.stringify(this.fromData));
+                    d.planId=this.$route.query.id;
+                    if((!d.resolveIds)&&(!d.resolve)){
+                        this.$message({
+                            message:'任务分解不得为空',
+                            type: "warning"
+                        })
+                        return false
+                    }
+                    for (let x in d) {
+                        if (x == "resolve") {
+                            delete d[x];
+                        }
+                    }
+                    this.$http({
+                        method:'post',
+                        url:'/sv/plan/detail/update',
+                        data:d
+                    }).then(res=>{
+                        if (res.succ) {
+                            this.$message({
+                                title: "成功",
+                                message: res.data,
+                                type: "success"
+                            });
+                            this.drawer = false;
+                            this.ajax();
+                        }
+                    })
                 }
             });
         },
+        addResolve(p){
+            let arr=[]
+            for(let x of p.list){
+                let str=x.name+','+x.output;
+                arr.push(str)
+            }
+            this.fromFjList=JSON.parse(JSON.stringify(p.list));
+            // let d=new Object();
+            // d.resolve=arr.join(';');
+            // d.resolveIds=p.resolveIds;
+            this.fromData.resolve=arr.join(';');
+            this.fromData.resolveIds=p.resolveIds;
+            // this.fromData=Object.assign(d,this.fromData);
+            this.mask=false;
+        },
         tableSelectFn(currentRow, oldCurrentRow) {//表格选中时
             if(currentRow){
+                let obj = JSON.parse(JSON.stringify(currentRow));
+                this.fromObj=obj;
             }
         },
         pageNoChange(val) {
@@ -370,7 +462,30 @@ export default {
                 
             })
         },
-        
+        receiveFn(p){
+            this.receiveList=JSON.parse(JSON.stringify(p.list));
+        },
+        xsSaveFn(){
+            let d=JSON.parse(JSON.stringify(this.receiveList));
+            this.$http({
+                method:'post',
+                url:'/sv/plan/support/sell/save',
+                data:d
+            }).then(res=>{
+                if (res.data) {
+                    this.$message({
+                        title: "成功",
+                        message:'保存成功',
+                        type: "success"
+                    });
+                    this.drawer3 = false;
+                }else{
+                    this.$message.error({
+                        message:'保存失败',
+                    });
+                }
+            })
+        }
     }
 
 }
@@ -443,4 +558,21 @@ export default {
 .planDetailed /deep/ #content-box{
     overflow-y: inherit;
 }
+.el-drawer{
+    header {
+            padding: 20px;
+            position: relative;
+        i {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+    }
+    section {
+        max-height: calc(100vh - 140px);
+        overflow-y: auto;
+        padding: 0 25px;
+    }
+}
+
 </style>

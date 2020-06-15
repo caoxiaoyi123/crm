@@ -38,7 +38,7 @@
                     <font class="fs13">导出excel</font>
                 </span>
             </div>
-            <div class="drc fs13">
+            <div class="drc fs13 blod">
                 <span class="mr10">合同数：<font class="red-txt">{{count.total}}</font>份</span>
                 <span class="mr10">签约金额：<font class="red-txt">{{count.amount}}</font>万</span>
                 <span class="mr10">回款金额：<font class="red-txt">{{count.receivedPayments}}</font>万</span>
@@ -178,16 +178,16 @@
                             :clearable="true"
                         ></el-cascader>
                     </el-form-item>
-                    <el-form-item label="销售姓名" prop="userName" :rules="{ required: true, message: '销售姓名不得为空' }">
-                        <el-input placeholder="请输入销售姓名" v-model="fromData.userName"></el-input>
-                        <!-- <el-select v-model="fromData.projState" placeholder="请选择销售姓名" style="width:202px">
+                    <el-form-item label="销售姓名" prop="userId" :rules="{ required: true, message: '销售姓名不得为空' }">
+                        <!-- <el-input placeholder="请输入销售姓名" v-model="fromData.userName"></el-input> -->
+                        <el-select v-model="fromData.userId" placeholder="请选择销售姓名" style="width:202px">
                             <el-option
                                 v-for="item in userList"
-                                :key="item"
-                                :label="item"
-                                :value="item"
+                                :key="item.userId"
+                                :label="item.userName"
+                                :value="item.userId"
                             ></el-option>
-                        </el-select> -->
+                        </el-select>
                     </el-form-item>
                 </div>
                 <div class="dfrb">
@@ -277,7 +277,6 @@ export default {
             drawer:false,
             title:'',
             fromData:{
-                userName:'qqa',
                 isTicket:1
             },
             fromObj:{},
@@ -329,9 +328,10 @@ export default {
         }
         this.fileData.data.userId=this.userId;
         this.options = city;
-        this.getCount()
         this.ajax()
+        this.getCount()
         this.getComName()
+        this.getUserList()
     },
     beforeMount() {
         // console.group('挂载前状态  ===============》beforeMount');
@@ -371,24 +371,23 @@ export default {
                 this.data.end ="";
             }
             this.ajax()
+            this.getCount()
         },
         keywordFn(){
             this.data.pageNo = 1;
             // this.total = 0;
             this.ajax();
+            this.getCount();
         },
         creatFn() {//新建
             // this.fromData = new Object();
             let d={
-                userName:'qqa',
                 isTicket:'1',
                 confirmDate:this.formatDate(new Date())
             }
             this.fromData=JSON.parse(JSON.stringify(d))
-            // this.fromData.userName='qqa';
-            // this.fromData.isTicket='1';
-            // this.fromData.confirmDate=this.formatDate(new Date());
             this.fileData.list=[];
+            this.projectList=[];
             this.fileData.id=null;
             this.title='新建合同';
             this.drawer=true;
@@ -563,16 +562,28 @@ export default {
             });
         },
         getCount(){
+            let that = this;
+            let d=this.data
             this.$http({
-                method:'get',
+                method:'post',
                 url:'/so/contract/count',
+                data:d,
             }).then(res=>{
                 this.count=res.data
+            })
+        },
+        getUserList(){
+            this.$http({
+                method:"get",
+                url:'/so/user/depart/list'
+            }).then(res=>{
+                this.userList=res.data;
             })
         },
         pageNoChange(val) {
             this.data.pageNo = val;
             this.ajax();
+            this.getCount()
         },
     }
 

@@ -513,13 +513,7 @@
             </div>
             <!-- 操作 -->
             <div slot="footer" class="btn-box text-r">
-                <button
-                    class="cancel-btn text-c fs14 cp"
-                    @click="
-            isDialog = false;
-            tableData1 = new Array();
-          "
-                >取消</button>
+                <button class="cancel-btn text-c fs14 cp" @click=" isDialog = false; tableData1 = new Array();">取消</button>
                 <button class="sure-btn text-c fs14 cp" @click="sumbitFn">保存</button>
             </div>
         </el-dialog>
@@ -857,13 +851,15 @@ export default {
                 if (res.data.projPlantype) {
                     this.planChange1(res.data);
                 }
-                this.fromObj = res.data;
+                this.fromObj =JSON.parse(JSON.stringify(res.data));
+                console.log(this.fromObj);
                 if (this.fromObj.projStartime && this.fromObj.projEndtime) {
                     this.fromObj.timer = [
                         this.fromObj.projStartime,
                         this.fromObj.projEndtime
                     ];
                 }
+                console.log(this.fromObj)
                 this.fromData = JSON.parse(JSON.stringify(this.fromObj));
                 this.drawer = true;
                 this.title = "编辑项目";

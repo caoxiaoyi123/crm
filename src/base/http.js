@@ -8,7 +8,7 @@ Vue.prototype.$http = axios;
 axios.defaults.retry = 4; //重复请求次数
 axios.defaults.retryDelay = 1000; //重复请求间隔
 axios.defaults.baseURL = baseUrl; //设置默认接口地址
-
+axios.defaults.timeout = 50000;
 axios.interceptors.request.use(
   function(config) {
     // 将token给到一个前后台约定好的key中，作为请求发送
