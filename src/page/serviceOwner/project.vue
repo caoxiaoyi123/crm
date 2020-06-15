@@ -70,7 +70,7 @@
                 <el-table-column align="center" label="创建时间" prop="projCreatime"></el-table-column>
             </el-table>
         </div>
-        <v-drawer :title="title" :drawer="drawer" :drawerW="'803px'" :type="1" @submitFn="submitFn">
+        <v-drawer :title="title" :drawer="drawer" :drawerW="'803px'" @submitFn="submitFn">
             <el-form ref="fromData" :model="fromData" label-width="86px" size="medium">
                 <h4 class="bor-b tit-txt fs16">基本信息</h4>
                 <div class="dfrb">

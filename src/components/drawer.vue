@@ -122,11 +122,11 @@ export default {
     // 方法 集合
     closeFn() {
       
-      if(this.drawerW=='803px'){
-        this.$parent.drawer=false
-      }else{
+      // if(this.drawerW=='803px'){
+        // this.$parent.drawer=false
+      // }else{
         this.$refs.drref.closeDrawer();
-      }
+      // }
       
     },
     sumbitFn() {
