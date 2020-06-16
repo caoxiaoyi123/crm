@@ -213,7 +213,7 @@
                     <el-tooltip :content="scope.row.comName" placement="right">
                       <span class="clamp-2">
                         {{ scope.row.comName }}
-                      </span> 
+                      </span>
                     </el-tooltip>
                   </template>
                 </el-table-column>
@@ -580,9 +580,7 @@ export default {
   },
   created() {
     // console.log(this.getJsUrl('userId'))
-    if (this.getJsUrl("userId")) {
-      sessionStorage.setItem("userid", this.getJsUrl("userId"));
-    }
+
     if (sessionStorage.getItem("cityTree")) {
       let city = JSON.parse(sessionStorage.getItem("cityTree"));
       // let city=JSON.parse(localStorage.getItem('cityAllTree'))
@@ -611,17 +609,7 @@ export default {
       let n = (this.data.pageNo - 1) * this.data.pageSize + (index + 1);
       return n;
     },
-    getJsUrl(name) {
-      var pos, str, para, url;
-      str = document.referrer;
-      url = str.split("?")[1];
-      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-      if (url != null && url.toString().length > 1) {
-        var r = url.match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
-      }
-    },
+
     editFn() {
       this.drawer = true;
       // this.fromData=JSON.parse(JSON.stringify(this.fromObj));
@@ -779,7 +767,7 @@ li {
     height: auto;
   }
   .listbg {
-    background:#FFE088;
+    background: #ffe088;
   }
 }
 .el-main {
