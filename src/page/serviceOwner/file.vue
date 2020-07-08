@@ -203,7 +203,13 @@ export default {
           row.fileType.toLocaleLowerCase() == ".pdf" ||
           row.fileType.toLocaleLowerCase() == ".pptx"
         ) {
-          this.openPdf(baseUrl + "/so/file/view?fileId=" + row.fileId+"&fileName="+row.fileName);
+          this.openPdf(
+            baseUrl +
+              "/so/file/view?fileId=" +
+              row.fileId +
+              "&fileName=" +
+              row.fileName
+          );
         } else {
           this.openLink(baseUrl + "/so/file/view?fileId=" + row.fileId);
         }
@@ -241,10 +247,10 @@ export default {
       }
       return isLt2M;
     },
-    errorFn(){
+    errorFn() {
       this.btnTxt = "点击上传";
       this.disabled = false;
-      this.upLoadfn.uploadErrFn
+      this.upLoadfn.uploadErrFn;
     }
   }
 };

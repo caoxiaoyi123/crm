@@ -44,9 +44,9 @@
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.stagename" placement="right">
-                <span class="clamp-2">
-                    {{ scope.row.stagename }}
-                </span> 
+              <span class="clamp-2">
+                {{ scope.row.stagename }}
+              </span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -59,9 +59,9 @@
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.standard" placement="right">
-                <span class="clamp-2">
-                    {{ scope.row.standard }}
-                </span> 
+              <span class="clamp-2">
+                {{ scope.row.standard }}
+              </span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -74,9 +74,9 @@
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.filesdata" placement="right">
-                <span class="clamp-2">
-                    {{ scope.row.filesdata }}
-                </span> 
+              <span class="clamp-2">
+                {{ scope.row.filesdata }}
+              </span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -119,9 +119,9 @@
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.remarks" placement="right">
-                <span class="clamp-2">
-                    {{ scope.row.remarks }}
-                </span> 
+              <span class="clamp-2">
+                {{ scope.row.remarks }}
+              </span>
             </el-tooltip>
           </template>
         </el-table-column>

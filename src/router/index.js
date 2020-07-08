@@ -13,18 +13,26 @@ import contract from "../page/serviceOwner/contract"; //合同
 import file from "../page/serviceOwner/file"; //归档
 import empower from "../page/serviceOwner/empower"; //单位授权
 /**服务业主end */
-import salesContract from "../page/salesContract/salesContract"; //销售合同
+const salesContract = ()=>import("../page/salesContract/salesContract")
+// import salesContract from "../page/salesContract/salesContract"; //销售合同
 /*服务报表*/
-import reportForm from "../page/reportForm/reportForm"
-import daily from "../page/reportForm/daily"
-import detailed from "../page/reportForm/detailed"
-import customers from "../page/reportForm/customers"
+const reportForm = ()=>import("../page/reportForm/reportForm")
+const daily = ()=>import("../page/reportForm/daily")
+const detailed = ()=>import("../page/reportForm/detailed")
+const customers = ()=>import("../page/reportForm/customers")
+// import reportForm from "../page/reportForm/reportForm";
+// import daily from "../page/reportForm/daily";
+// import detailed from "../page/reportForm/detailed";
+// import customers from "../page/reportForm/customers";
 /*计划查询*/
-import planSearch from "../page/servicePlan/planSearch"
+import planSearch from "../page/servicePlan/planSearch";
 /*服务计划*/
-import planList from "../page/servicePlan/planList"
-import servicePlan from "../page/servicePlan/servicePlan"
-import planDetailed from "../page/servicePlan/planDetailed"
+// const planList = ()=>import("../page/servicePlan/planList")
+// const servicePlan = ()=>import("../page/servicePlan/servicePlan")
+// const planDetailed = ()=>import("../page/servicePlan/planDetailed")
+import planList from "../page/servicePlan/planList";
+import servicePlan from "../page/servicePlan/servicePlan";
+import planDetailed from "../page/servicePlan/planDetailed";
 Vue.use(VueRouter);
 
 const routes = [
@@ -110,42 +118,46 @@ const routes = [
     component: reportForm,
     redirect: "/reportForm/daily",
     children: [
-      {//服务日报
-        path:'daily',
-        name:'daily',
-        component:daily
+      {
+        //服务日报
+        path: "daily",
+        name: "daily",
+        component: daily
       },
-      {//服务明细
-        path:'detailed',
-        name:'detailed',
-        component:detailed
+      {
+        //服务明细
+        path: "detailed",
+        name: "detailed",
+        component: detailed
       },
-      {//重点客户复盘
-        path:'customers',
-        name:'customers',
-        component:customers
+      {
+        //重点客户复盘
+        path: "customers",
+        name: "customers",
+        component: customers
       }
     ]
   },
   {
-    path:'/planSearch',
-    name:'planSearch',
-    component:planSearch,
+    path: "/planSearch",
+    name: "planSearch",
+    component: planSearch
   },
   {
-    path:'/planList',
-    name:'planList',
-    component:planList,
+    path: "/planList",
+    name: "planList",
+    component: planList,
     redirect: "/planList/servicePlan",
-    children:[
+    children: [
       {
-        path:'servicePlan',
-        name:'servicePlan',
-        component:servicePlan
-      },{
-        path:'planDetailed',
-        name:'planDetailed',
-        component:planDetailed
+        path: "servicePlan",
+        name: "servicePlan",
+        component: servicePlan
+      },
+      {
+        path: "planDetailed",
+        name: "planDetailed",
+        component: planDetailed
       }
     ]
   }

@@ -79,7 +79,7 @@ export default {
   methods: {
     // 方法 集合
     handleChange() {
-      this.$refs.region.dropDownVisible =false//选中后隐藏下拉框
+      this.$refs.region.dropDownVisible = false; //选中后隐藏下拉框
       let d = JSON.parse(JSON.stringify(this.value));
       d = this.value[this.value.length - 1];
       console.log(d);

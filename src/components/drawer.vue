@@ -48,7 +48,7 @@ export default {
     return {
       // 数据模型
       d: false,
-      isAppend:false,
+      isAppend: false
     };
   },
   watch: {
@@ -57,14 +57,13 @@ export default {
       this.d = val;
     },
     d(val, old) {
-      if(this.type==0){
+      if (this.type == 0) {
         this.$parent.drawer = val;
-      }else if(this.type==2){
+      } else if (this.type == 2) {
         this.$parent.drawer2 = val;
-      }else if(this.type==3){
+      } else if (this.type == 3) {
         this.$parent.drawer3 = val;
       }
-      
     }
   },
   props: {
@@ -83,15 +82,15 @@ export default {
     },
     readOnly: {
       default: false
-    },
+    }
   },
   beforeCreate() {
     // console.group('创建前状态  ===============》beforeCreate');
   },
   created() {
     // console.group('创建完毕状态===============》created');
-    if(this.title=='新建支撑'){
-      this.isAppend=true;
+    if (this.title == "新建支撑") {
+      this.isAppend = true;
     }
   },
   beforeMount() {
@@ -108,7 +107,7 @@ export default {
   },
   updated() {
     // console.group('更新完成状态===============》updated');
-    if (this.readOnly&&document.getElementById("content-box")) {
+    if (this.readOnly && document.getElementById("content-box")) {
       document.getElementById("content-box").scrollTop = 0;
     }
   },
@@ -121,13 +120,12 @@ export default {
   methods: {
     // 方法 集合
     closeFn() {
-      
       // if(this.drawerW=='803px'){
-        // this.$parent.drawer=false
+      // this.$parent.drawer=false
       // }else{
-        this.$refs.drref.closeDrawer();
+      this.$refs.drref.closeDrawer();
+      this.$emit('closeFn');
       // }
-      
     },
     sumbitFn() {
       this.$emit("submitFn");

@@ -42,9 +42,9 @@
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.comName" placement="right">
-                <span class="clamp-2">
-                    {{ scope.row.comName }}
-                </span> 
+              <span class="clamp-2">
+                {{ scope.row.comName }}
+              </span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -59,13 +59,13 @@
           prop="comPhone"
         ></el-table-column>
         <el-table-column align="center" label="省/市/区/县" prop="comRegion">
-            <template slot-scope="scope">
-                <el-tooltip :content="returnRegion(scope.row)" placement="right">
-                    <span class="text-over">
-                        {{ returnRegion(scope.row) }}
-                    </span>
-                </el-tooltip>
-            </template>
+          <template slot-scope="scope">
+            <el-tooltip :content="returnRegion(scope.row)" placement="right">
+              <span class="text-over">
+                {{ returnRegion(scope.row) }}
+              </span>
+            </el-tooltip>
+          </template>
           <!-- <template slot-scope="scope">{{ returnRegion(scope.row) }}</template> -->
         </el-table-column>
         <el-table-column align="center" label="认证状态" prop="comAuthstatus">
@@ -369,7 +369,7 @@ export default {
       if (this.fromData.re && this.fromData.re.length > 0) {
         d = this.fromData.re[this.fromData.re.length - 1];
         this.fromData.comRegion = d;
-      } else if(!this.fromData.re) {
+      } else if (!this.fromData.re) {
         let arr = this.fromData.comRegion.split("-");
         arr.pop();
         let arr1 = [];

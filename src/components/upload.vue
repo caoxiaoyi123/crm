@@ -99,7 +99,13 @@ export default {
         str == ".pdf" ||
         str == ".pptx"
       ) {
-        this.openPdf(baseUrl + "/so/file/view?fileId=" + this.fileData.id+"&fileName="+this.fileData.list[0].name);
+        this.openPdf(
+          baseUrl +
+            "/so/file/view?fileId=" +
+            this.fileData.id +
+            "&fileName=" +
+            this.fileData.list[0].name
+        );
       } else {
         this.openLink(baseUrl + "/so/file/view?fileId=" + this.fileData.id);
       }
@@ -140,7 +146,7 @@ export default {
 .upload /deep/ .el-upload-list__item {
   margin-top: 0;
 }
-.upload /deep/ .el-upload-list__item .el-progress{
-	display: none;
+.upload /deep/ .el-upload-list__item .el-progress {
+  display: none;
 }
 </style>

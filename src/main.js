@@ -90,28 +90,51 @@ Vue.prototype.openPdf = function(url) {
   );
 };
 //根据pid获取树状图
-Vue.prototype.getTreeDic=function(pid, data,type=0) {
-  let result = [],
-    temp;
-  for (let i in data) {
-    if (data[i].pid == pid) {
-      result.push(data[i]);
-      if(type==0){
-        temp = this.getTreeDic(data[i].areaId, data);
-      }else{
-        temp = this.getTreeDic(data[i].depCode, data,1);
+Vue.prototype.toTree=function(data,id,pid) {
+  // 删除 所有 children,以防止多次调用
+  data.forEach(function (item) {
+    delete item.children;
+  });
+  // 将数据存储为 以 id 为 KEY 的 map 索引数据列
+  var map = {};
+  data.forEach(function (item) {
+    map[item[id]] = item;
+  });
+  var val = [];
+  data.forEach(function (item,index) {
+    item.index=index;
+    // 以当前遍历项的pid,去map对象中找到索引的id
+    var parent = map[item[pid]];
+    // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中
+    if (parent) {
+      (parent.children || (parent.children = [])).push(item);
+    } else {
+      //如果没有在map中找到对应的索引ID,那么直接把 当前的item添加到 val结果集中，作为顶级
+      val.push(item);
+    }
+  });
+  return val;
+}
+Vue.prototype.getTreeDic = function(pid, data, type = 0) {
+  let result = [],temp;
+  for (let x of data) {
+    if (x.pid == pid) {
+      result.push(x);
+      if (type == 0) {
+        temp = this.getTreeDic(x.areaId, data);
+      } else {
+        temp = this.getTreeDic(x.depCode, data, 1);
       }
-      
       if (temp.length > 0) {
-        data[i].children = temp;
+        x.children = temp;
       }
     }
   }
   return result;
-},
-new Vue({
-  router,
-  render: function(h) {
-    return h(App);
-  }
-}).$mount("#app");
+};
+  new Vue({
+    router,
+    render: function(h) {
+      return h(App);
+    }
+  }).$mount("#app");

@@ -549,16 +549,6 @@ export default {
   },
   beforeCreate() {
     let that = this;
-    if (!localStorage.getItem("cityAllTree")) {
-      this.$http({
-        method: "get",
-        url: "/so/area/all"
-      }).then(res => {
-        let d = JSON.parse(JSON.stringify(res.data));
-        let c = that.getTreeDic("", d);
-        localStorage.setItem("cityAllTree", JSON.stringify(c));
-      });
-    }
     if (!sessionStorage.getItem("cityTree")) {
       this.$http({
         method: "get",
@@ -566,7 +556,7 @@ export default {
       }).then(res => {
         sessionStorage.setItem("cityTree", JSON.stringify(res.data));
         let city = JSON.parse(sessionStorage.getItem("cityTree"));
-        city = this.getTreeDic("", city);
+        city = this.toTree(city,'areaId','pid');
         let obj = {
           areaId: "all",
           areaName: "全部",
@@ -584,7 +574,7 @@ export default {
     if (sessionStorage.getItem("cityTree")) {
       let city = JSON.parse(sessionStorage.getItem("cityTree"));
       // let city=JSON.parse(localStorage.getItem('cityAllTree'))
-      city = this.getTreeDic("", city);
+      city = this.toTree(city,'areaId','pid');
       let obj = {
         areaId: "all",
         areaName: "全部",
