@@ -19,7 +19,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
         ></el-table-column>
@@ -46,7 +46,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <v-drawer :title="'上传'" :drawer="drawer">
+    <v-drawer :title="'上传'" :drawer="drawer" @submitFn="submitFn">
       <el-form
         :model="fromData"
         ref="fromData"
@@ -59,6 +59,7 @@
             placeholder="请输入文档名称"
             :disabled="disabled"
             v-model="fromData.fileName"
+            :maxlength="50"
           ></el-input>
         </el-form-item>
         <el-form-item label="上传附件">
@@ -188,11 +189,11 @@ export default {
       });
     },
     upFn() {
-      if (this.isUpload) {
-        this.upLoadfn.uploadExcFn();
-      } else {
+      // if (this.isUpload) {
+        // this.upLoadfn.uploadExcFn();
+      // } else {
         this.drawer = true;
-      }
+      // }
     },
     previewFn(row) {
       if (row.servFileType == "company" || row.servFileType == "server") {
@@ -217,14 +218,18 @@ export default {
         this.openLink(row.fileAddress);
       }
     },
+    submitFn(){
+      this.drawer = false;
+      this.ajax();
+    },
     sucFn(response, file, fileList) {
       this.btnTxt = "点击上传";
       this.disabled = false;
       this.$refs.upload.clearFiles();
       if (response.succ) {
         this.upLoadfn.uploadSucFn();
-        this.drawer = false;
-        this.ajax();
+        // this.drawer = false;
+        // this.ajax();
       } else {
         this.$message({
           message: response.msg,

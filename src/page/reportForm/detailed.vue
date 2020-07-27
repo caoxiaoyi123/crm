@@ -86,7 +86,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -212,6 +212,9 @@
   </div>
 </template>
 <script>
+import {
+  baseUrl //引入baseUrl
+} from "../../../config/env";
 import drawer1 from "@/components/drawer1";
 export default {
   name: "detailed", // 结构名称
@@ -322,42 +325,47 @@ export default {
     exportFn() {
       //导出
       window.open(
-        // baseUrl +
-        // "/so/report/server/detail/excel?departId=" +this.data.departId +
-        // "&start=" +this.data.start+
-        // "&userId=" +this.data.userId+
-        // "&end=" +this.data.end,
-        // "_blank"
-        baseUrl + "/so/report/server/detail/excel",
+        baseUrl +
+        "/so/report/server/detail/excel?departId=" +this.data.departId +
+        "&start=" +this.data.start+
+        "&userId=" +this.data.userId+
+        "&end=" +this.data.end,
         "_blank"
+        // baseUrl + "/so/report/server/detail/excel",
+        // "_blank"
       );
     },
     getDepart() {
       //获取组织关系
       let c = JSON.parse(sessionStorage.getItem("depart"));
+      c.unshift({depName:'全部',depId:null})
       this.depList = c;
     },
     departFn() {
       this.data.userId = "";
       this.data.pageNo = 1;
       this.perponList = [];
-      let id;
-      if (val.length > 0) {
-        id = val[val.length - 1];
-      } else {
-        return false;
+      if(val[0]){
+        let id;
+        if (val.length > 0) {
+          id = val[val.length - 1];
+        } else {
+          return false;
+        }
+        this.$http({
+          method: "get",
+          url: "/common/departUser",
+          params: {
+            depId: id
+          }
+        }).then(res => {
+          if (res.succ) {
+            this.perponList = res.data;
+            this.perponList.unshift({name:'全部',userId:null})
+          }
+        });
       }
-      this.$http({
-        method: "get",
-        url: "/common/departUser",
-        params: {
-          depId: id
-        }
-      }).then(res => {
-        if (res.succ) {
-          this.perponList = res.data;
-        }
-      });
+      
     },
     pageNoChange(val) {
       this.data.pageNo = val;

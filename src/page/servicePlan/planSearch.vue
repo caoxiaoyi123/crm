@@ -43,7 +43,7 @@
                 header-cell-class-name="table-header table-h"
                 :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
                 border
-                row-key="index"
+                :row-key="getRowKey"
                 :data="depData"
                 height="calc(100vh - 135px)"
                 style="width:300px;float:left"
@@ -51,6 +51,9 @@
                 highlight-current-row
                 @expand-change="expandedChange"
                 @current-change="depSelectFn"
+                v-loading="depLoad"
+                element-loading-text="数据正在加载中"
+                element-loading-spinner="el-icon-loading"
             >
                 <el-table-column header-align="center" align="left" prop="depName" label="部门名称">
                     <template slot-scope="scope">
@@ -62,8 +65,8 @@
                                 </span>
                             </template>
                             <template v-else-if="scope.row.userId">
-                                <!-- <i class="left-icon" :class="scope.row.selected? 'el-icon-folder-remove': 'el-icon-folder-add'"></i> -->
-                                <i class="left-icon el-icon-user"></i>
+                                <!-- <i class="left-icon" el-icon-user :class="scope.row.selected? 'el-icon-folder-remove': 'el-icon-folder-add'"></i> -->
+                                <i class="left-icon el-icon-document"></i>
                                 <span class="text-over" :title="scope.row.name">
                                     {{scope.row.name}}
                                 </span>
@@ -95,7 +98,7 @@
                 <el-table-column
                     align="center"
                     class-name="serial-num"
-                    width="50"
+                    width="60"
                     label="序号"
                     type="index"
                     :index="indexFn"
@@ -154,7 +157,7 @@
                     element-loading-text="数据正在加载中"
                     element-loading-spinner="el-icon-loading"
                 >
-                    <el-table-column align="center" class-name="serial-num" width="50" label="序号" type="index" :index="indexFn1"></el-table-column>
+                    <el-table-column align="center" class-name="serial-num" width="60" label="序号" type="index" :index="indexFn1"></el-table-column>
                     <el-table-column align="center" label="工作性质">
                         <template slot-scope="scope">
                             {{ scope.row.workNature == 1 ? "非量化" : "量化" }}
@@ -162,9 +165,9 @@
                     </el-table-column>
                     <el-table-column align="left" header-align="center" label="内容" prop="content"></el-table-column>
                     <el-table-column align="left" header-align="center" label="输出" prop="output"></el-table-column>
-                    <el-table-column align="center" label="起止时间">
+                    <el-table-column align="center" width="175" label="起止时间">
                         <template slot-scope="scope">
-                            {{scope.row.startDate ? scope.row.startDate.replace("-", "/") : ""}}-{{scope.row.endDate ? scope.row.endDate.replace("-", "/") : ""}}
+                            {{scope.row.startDate ? scope.row.startDate.replace(/-/g,'/') : ""}}-{{scope.row.endDate ? scope.row.endDate.replace(/-/g,'/') : ""}}
                         </template>
                     </el-table-column>
                     <el-table-column align="left" header-align="center" label="任务分解" prop="resolve">
@@ -195,7 +198,7 @@
         <v-drawer :title="'支撑明细'" :drawer="drawer2" :drawerW="'70vw'" :readOnly="true" :type="2">
             <div class="dfrb">
                 <div class="tab-box">
-                    <span class="fs14 mr40 cp" :class="i==tabNum?'active':''" v-for="(item,i) of tabList" :key="i" @click="tabNum=i">{{item}}</span>
+                    <span class="fs14 mr40 cp" :class="i==tabNum?'active':''" v-for="(item,i) of tabList" :key="i" @click="tabChange(i)">{{item}}</span>
                 </div>
                 <div class="drc fs12">
                     <template v-if="tabNum==0">
@@ -220,12 +223,13 @@
                     border
                     height="calc(100vh - 250px)"
                     :data="list2"
+                    ref="list2"
                     style="width:100%"
                     v-loading="isajax2"
                     element-loading-text="数据正在加载中"
                     element-loading-spinner="el-icon-loading"
                 >
-                    <el-table-column align="center" class-name="serial-num" width="50" label="序号" type="index" :index="indexFn2"></el-table-column>
+                    <el-table-column align="center" class-name="serial-num" width="60" label="序号" type="index" :index="indexFn2"></el-table-column>
                     <el-table-column align="center" label="责任人姓名" width="100" prop="responsibleName"></el-table-column>
                     <el-table-column align="center" min-width="140" label="地区" prop="cityDetail">
                         <template slot-scope="scope">
@@ -259,16 +263,17 @@
                     <el-table-column align="center" label="可能意向产品" width="110" prop="intentProduct" v-if="tabNum==1"></el-table-column>
                     <el-table-column align="center" label="预估金额（万）" width="120" prop="gusAmount" v-if="tabNum==1"></el-table-column>
                     <el-table-column align="center" label="概率" width="125" prop="probability" v-if="tabNum==1"></el-table-column>
-                    <el-table-column width="80" v-for="o in num" :key="o" align="center" :label="o + ''">
+                    <el-table-column width="110" v-for="o in num" :key="o" align="center" :label="o + ''">
                         <template slot-scope="scope">
                             <el-tooltip placement="top" effect="light">
                                 <div slot="content">
                                     <p class="fs14">阶段：{{ scope.row.arr[o - 1].param }}</p>
                                     <p class="fs14" v-if="scope.row.arr[o - 1].param == '签约'||scope.row.arr[o - 1].param == '回款'">
-                                        金额：{{ scope.row.arr[o - 1].amount }}
+                                        金额：{{ scope.row.arr[o - 1].amount }}万
                                     </p>
                                     <p class="fs14">备注：{{ scope.row.arr[o - 1].remark }}</p>
                                 </div>
+                                <span class="cp fs14" @click="braceTap(scope.row.arr[o - 1], o)">{{ scope.row.arr[o - 1].param }}</span>
                             </el-tooltip>
                         </template>
                     </el-table-column>
@@ -304,6 +309,7 @@ export default {
         return {
             // 数据模型a
             isajax: true,
+            depLoad:true,
             timer:[],
             data: {
                 type: 99,
@@ -384,6 +390,10 @@ export default {
         },
         tabNum:{
             handler(val){
+                setTimeout(()=>{
+                    this.$refs.list2.doLayout()
+                })
+                
                 this.getCount()
                 this.ajax2()
             }
@@ -421,6 +431,10 @@ export default {
     },
     methods: {
         // 方法 集合
+        tabChange(i){
+            this.tabNum=i;
+            this.data2.pageNo=1;
+        },
         typeChange(val){
             let now=new Date();
             let nowM=now.getMonth();
@@ -437,6 +451,7 @@ export default {
                 this.data.startDate=this.formatDate(new Date(nowY,nowM,nowDate-nowDay+1))
                 this.data.endDate=this.formatDate(new Date(nowY,nowM,nowDate+(6-nowDay+1)))
             }
+            this.data.pageNo=1;
             this.$set(this.timer,0,this.data.startDate);
             this.$set(this.timer,1,this.data.endDate);
         },
@@ -446,18 +461,38 @@ export default {
         },
         getDepart() {
             //获取组织关系
-            let d = JSON.parse(sessionStorage.getItem("depart"));
-            let c = d;
-            c.unshift({ name: "全部", depId:'',children:[],index:-1});
-            this.depData =c;
+            if(sessionStorage.getItem("depart")){
+                let d = JSON.parse(sessionStorage.getItem("depart"));
+                let c = d;
+                c.unshift({ name: "全部", depId:'',children:[]});
+                c.map(function(item,index){
+                    item.index=index
+                })
+                this.depData =JSON.parse(JSON.stringify(c));
+                this.depLoad=false;
+            }else{
+                this.$http({
+                    method: "get",
+                    url: "/common/depart"
+                }).then(res => {
+                    let c = this.toTree(res.data,'depCode','pid');
+                    sessionStorage.setItem("depart", JSON.stringify(c));
+                    c.unshift({ name: "全部", depId:'',children:[]});
+                    c.map(function(item,index){
+                        item.index=index
+                    })
+                    this.depData =JSON.parse(JSON.stringify(c));
+                    this.depLoad=false;
+                });
+            }
             this.$refs.depList.setCurrentRow(this.depData[0]);
         },
         getRowKey(row) {
             
-            // if(row.userId){
-            //     return row.userId+row.depId+row.name+row.index
-            // }
-            // return row.depId+row.depName+row.index;
+            if(row.userId){
+                return row.userId+row.depId+row.name+row.index
+            }
+            return row.depId+row.depName+row.index;
         },
         depSelectFn(currentRow,oldRow) {
             //表格选中时
@@ -465,12 +500,14 @@ export default {
                 let d=JSON.parse(JSON.stringify(this.data));
                 if(currentRow.userId){//人员
                     d.userId=currentRow.userId;
+                    d.depCode=null;
                 }else if(currentRow.depCode){//组织
                     d.depCode=currentRow.depCode;
                 }else{//全部
                     d.userId=null;
                     d.depCode=null;
                 }
+                d.pageNo=1;
                 this.data=JSON.parse(JSON.stringify(d));
                 // this.ajax();
                 if((!currentRow.userId)&&currentRow.depCode){//如果是组织的情况
@@ -497,7 +534,7 @@ export default {
                                     }
                                 }
                                 
-                                this.$set(this.depData,currentRow.index+1,currentRow)
+                                this.$set(this.depData,currentRow.index,currentRow)
                             }
                         }
                     });
@@ -508,6 +545,7 @@ export default {
             //时间监听
             this.data.startDate = val[0];
             this.data.endDate = val[1];
+            this.data.pageNo=1;
         },
         expandedChange(row) {
             if (row.selected) {
@@ -560,12 +598,17 @@ export default {
         upload(row){
             window.open(
                 baseUrl + "/sv/plan/search/downloadReport?planId=" + row.planId+"&responsibleId="+row.responsibleId+"&responsibleName="+row.responsibleName,
-                "_self"
+                "_blank"
             );
         },
         /*事项数量start*/
         returnResolve(val) {
-            return val.replace(/;/g, "<br>");
+            if(val){
+                return val.replace(/;/g, "<br>");
+            }else{
+                return ''
+            }
+            
         },
         indexFn1(index) {
             let n = (this.data1.pageNo - 1) * this.data1.pageSize + (index + 1);
@@ -573,6 +616,7 @@ export default {
         },
         pageNoChange1(val){
             this.data1.pageNo = val;
+            this.ajax1()
         },
         ajax1(id){
             this.isajax1 = true;
@@ -596,6 +640,7 @@ export default {
         /*支撑明细*/
         pageNoChange2(val){
             this.data2.pageNo = val;
+            this.ajax2()
         },
         returnRegion(row) {
             //地区过滤器

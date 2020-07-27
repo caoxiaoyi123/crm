@@ -55,7 +55,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50px"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -530,6 +530,7 @@ export default {
       if (this.$refs.fromData) {
         this.$refs.fromData.resetFields();
       }
+      this.fromData.created=new Date()
       let u = this.userId;
       this.file.nbys.data.userId = u;
       this.file.yjaz.data.userId = u;

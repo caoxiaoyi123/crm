@@ -2,12 +2,14 @@
 <template>
   <div class="decompose">
     <div class="top-box drc mb10">
-      <span class="mr40"
-        >计划内容：<font class="red-txt">{{ contentTxt }}</font></span
-      >
-      <span class="mr10"
-        >输出：<font class="red-txt">{{ outTxt }}</font></span
-      >
+      <span class="mr40 text-over" :title="contentTxt">
+        计划内容：
+        <font class="red-txt">{{ contentTxt }}</font>
+      </span>
+      <span class="mr10 text-over" :title="outTxt">
+        输出：
+        <font class="red-txt">{{ outTxt }}</font>
+      </span>
     </div>
     <div class="table-box">
       <el-table
@@ -57,7 +59,9 @@
         header-cell-class-name="table-header table-h"
         border
         row-key="id"
+        ref="leftData"
         :data="leftData"
+        @row-click="leftTapFn"
         @selection-change="leftChange"
         height="calc(60vh - 160px)"
         @selection-all="leftAll"
@@ -68,6 +72,7 @@
           align="center"
           label="姓名"
           prop="name"
+          class-name="cp"
         ></el-table-column>
       </el-table>
       <div class="left-or-right">
@@ -92,7 +97,9 @@
         border
         row-key="id"
         :data="rightData"
+        ref="rList"
         @selection-change="rightChange"
+        @row-click="rightTapFn"
         height="calc(60vh - 160px)"
         @selection-all="rightAll"
         @select="rightRow"
@@ -102,10 +109,12 @@
           align="center"
           class-name="serial-num"
           type="selection"
+          :reserve-selection="true"
+          :selectable="selectable"
         ></el-table-column>
         <el-table-column
           align="center"
-          width="50"
+          width="60"
           label="序号"
           type="index"
         ></el-table-column>
@@ -120,6 +129,7 @@
               type="text"
               v-model="scope.row.output"
               placeholder="点击输入"
+              :maxlength="50"
             />
           </template>
         </el-table-column>
@@ -140,7 +150,8 @@ export default {
     return {
       // 数据模型a
       tableData: [],
-      leftData: [1, 2, 3],
+      lObj:null,
+      leftData: [],
       rightData: [],
       leftList: [], //左侧勾选承载数组
       rightList: [] //右侧勾选承载数组
@@ -155,7 +166,45 @@ export default {
           this.rightData = JSON.parse(JSON.stringify(val));
         }
       }
+    },
+    rightData:{
+      deep:true,
+      handler(val){
+        this.returnL();
+      }
     }
+    // lObj:{
+    //   deep:true,
+    //   handler(val){
+    //     let arr=JSON.parse(JSON.stringify(val));
+    //     let arr2=JSON.parse(JSON.stringify(this.rightData));
+    //     for(let x in arr){
+    //       for(let y of arr2){
+    //         if(arr[x].userId==y.dealUserId){
+    //           // val.splice(x,1);
+    //           arr[x].isshow=arr[x].isshow==0?1:0;
+    //         }
+    //       }
+    //     }
+    //     this.leftData=arr.filter(v=>{
+    //       return v.isshow!=0;
+    //     })
+    //   }
+    // }
+    // leftData:{
+    //   deep:true,
+    //   handler(val){
+    //     let arr=JSON.parse(JSON.stringify(val));
+    //     let arr2=JSON.parse(JSON.stringify(this.rightData));
+    //     for(let x in arr){
+    //       for(let y of arr2){
+    //         if(arr[x].userId==y.dealUserId){
+    //           val.splice(x,1);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   },
   props: {
     // 集成父级参数
@@ -211,6 +260,34 @@ export default {
   },
   methods: {
     // 方法 集合
+    leftTapFn(row){
+      this.$refs.leftData.toggleRowSelection(row)
+    },
+    rightTapFn(row){
+      // this.$refs.rList.toggleRowSelection(row)
+    },
+    returnL(){
+      let arr=JSON.parse(JSON.stringify(this.lObj));
+      let arr2=JSON.parse(JSON.stringify(this.rightData));
+      for(let x in arr){
+        for(let y of arr2){
+          if(arr[x].userId==y.dealUserId&&arr[x].depId==y.depId){
+            // val.splice(x,1);
+            arr[x].isshow=arr[x].isshow==0?1:0;
+          }
+        }
+      }
+      this.leftData=arr.filter(v=>{
+        return v.isshow!=0;
+      })
+    },
+    selectable(row){
+      if(row.resolveId){
+        return false
+      }else{
+        return true
+      }
+    },
     getRowKey(row) {
       return row.depId;
     },
@@ -231,11 +308,17 @@ export default {
     },
     toRight() {
       let r = JSON.parse(JSON.stringify(this.leftList));
+      this.$refs.leftData.clearSelection();
       for (let x of r) {
         if (this.forInRight(x)) {
           let d = {
             dealUserId: x.userId,
-            name: x.name
+            name: x.name,
+            planId:this.$route.query.id,
+            type:this.$route.query.type,
+            startDate:this.$route.query.startDate,
+            endDate:this.$route.query.endDate,
+            depId:x.depId,
           };
           if (this.detailId) {
             d.detailId = this.detailId;
@@ -254,6 +337,7 @@ export default {
           }
         }
       }
+      this.$refs.rList.clearSelection();
       this.rightData = JSON.parse(JSON.stringify(r1));
     },
     /*监听多选框*/
@@ -317,7 +401,8 @@ export default {
           }
         }).then(res => {
           if (res.succ) {
-            this.leftData = res.data;
+            this.lObj = res.data;
+            this.returnL();
           }
         });
       }
@@ -342,25 +427,26 @@ export default {
             });
             return false;
           }
-          for (let i in x) {
-            if (i == "name") {
-              delete x[i];
-            }
-          }
+          // for (let i in x) {
+          //   if (i == "name") {
+          //     delete x[i];
+          //   }
+          // }
         }
-        this.$http({
-          method: "post",
-          url: "/sv/plan/resolve/update",
-          data: d
-        }).then(res => {
-          if (res.succ) {
-            let obj = {
-              resolveIds: res.data,
-              list: this.rightData
-            };
-            this.$emit("submitFn", obj);
-          }
-        });
+        this.$emit("submitFn", d);
+        // this.$http({
+        //   method: "post",
+        //   url: "/sv/plan/resolve/update",
+        //   data: d
+        // }).then(res => {
+        //   if (res.succ) {
+        //     let obj = {
+        //       resolveIds: res.data,
+        //       list: this.rightData,
+        //     };
+        //     this.$emit("submitFn", obj);
+        //   }
+        // });
       } else {
         this.$message({
           message: "请选择人员",
@@ -375,6 +461,11 @@ export default {
 <style lang="less" scoped>
 .decompose {
   padding: 15px;
+  .top-box{
+    span{
+      width: calc((100% - 50px)/2);
+    }
+  }
   .table-box {
     display: flex;
     justify-content: space-between;

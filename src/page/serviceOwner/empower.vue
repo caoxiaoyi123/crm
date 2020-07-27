@@ -12,7 +12,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50px"
+          width="60px"
           label="序号"
           type="index"
         ></el-table-column>

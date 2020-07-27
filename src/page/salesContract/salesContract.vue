@@ -91,7 +91,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -196,7 +196,7 @@
           prop="amount"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.amount }}万</span>
+            <span v-if="scope.row.amount">{{ scope.row.amount }}万</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -207,7 +207,7 @@
           prop="receivedPayments"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.receivedPayments }}万</span>
+            <span v-if="scope.row.receivedPayments">{{ scope.row.receivedPayments }}万</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -264,6 +264,7 @@
             :rules="{ required: true, message: '合同编号不得为空' }"
           >
             <el-input
+              :maxlength="25"
               placeholder="请输入合同编号"
               v-model="fromData.contractNo"
             ></el-input>
@@ -315,11 +316,12 @@
               v-model="fromData.userId"
               placeholder="请选择销售姓名"
               style="width:202px"
+              @change="userChange"
             >
               <el-option
                 v-for="item in userList"
                 :key="item.userId"
-                :label="item.userName"
+                :label="item.userNickname"
                 :value="item.userId"
               ></el-option>
             </el-select>
@@ -389,6 +391,7 @@
             :rules="{ required: true, message: '合同单位不得为空' }"
           >
             <el-input
+              :maxlength="50"
               placeholder="请输入合同单位"
               v-model="fromData.contractUnit"
             ></el-input>
@@ -408,6 +411,7 @@
             ]"
           >
             <el-input
+              :maxlength="20"
               placeholder="请输入金额(万)"
               v-model="fromData.amount"
             ></el-input>
@@ -421,6 +425,7 @@
             }"
           >
             <el-input
+              :maxlength="20"
               placeholder="请输入回款(万)"
               v-model="fromData.receivedPayments"
             ></el-input>
@@ -505,7 +510,8 @@ export default {
         },
         list: []
       },
-      count: {}
+      count: {},
+      isSave:true,
     };
   },
   components: {
@@ -540,7 +546,7 @@ export default {
     this.options = city;
     this.ajax();
     this.getCount();
-    this.getComName();
+    // this.getComName();
     this.getUserList();
   },
   beforeMount() {
@@ -568,6 +574,9 @@ export default {
     // 方法 集合
     indexFn(index) {
       let n = (this.data.pageNo - 1) * this.data.pageSize + (index + 1);
+      if(n==1){
+        return '1'
+      }
       return n;
     },
     timeClick(val) {
@@ -613,6 +622,7 @@ export default {
       }
       this.title = "编辑合同";
       this.fromData = JSON.parse(JSON.stringify(this.fromObj));
+      this.getComName(this.fromData.userId);
       this.getProList(this.fromData.comId);
       this.fileData.id = this.fromData.fileId;
       let d = {
@@ -648,6 +658,7 @@ export default {
               message: res.data,
               type: "success"
             });
+            this.data.pageNo=1;
             this.ajax();
             this.getCount();
           }
@@ -673,6 +684,10 @@ export default {
             });
             return false;
           }
+          if(!this.isSave){
+              return false
+          }
+          this.isSave=false
           let d = JSON.parse(JSON.stringify(this.fromData));
           for (let x in d) {
             if (x == "re") {
@@ -680,7 +695,7 @@ export default {
             }
           }
           d.creator = this.userId;
-          d.userId = this.userId;
+          // d.userId = this.userId;
           // if(this.fileData.id){
           //     d.fileId=this.fileData.id;
           // }
@@ -690,6 +705,7 @@ export default {
             data: d
           }).then(res => {
             if (res.succ) {
+              this.drawer = false;
               this.$message({
                 title: "成功",
                 message: res.data,
@@ -697,9 +713,11 @@ export default {
               });
               this.fileData.list = [];
               this.fileData.id = null;
-              this.drawer = false;
+              this.isSave=true;
               this.ajax();
               this.getCount();
+            }else{
+              this.isSave=true;
             }
           });
         }
@@ -752,12 +770,19 @@ export default {
       this.fromData = JSON.parse(JSON.stringify(d));
       // this.fromData.projId=null
     },
-    getComName() {
+    userChange(val){
+      this.getComName(val);
+      let d = JSON.parse(JSON.stringify(this.fromData));
+      d.comId = null;
+      d.projId=null;
+      this.fromData = JSON.parse(JSON.stringify(d));
+    },
+    getComName(val) {
       this.$http({
         method: "get",
         url: "/so/company/list",
         params: {
-          userId: this.userId
+          userId:val
         }
       }).then(res => {
         this.comList = res.data;

@@ -76,7 +76,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50px"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -169,6 +169,7 @@
               placeholder="请输入用户名"
               :disabled="title == '编辑用户'"
               v-model="fromData.userName"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -179,6 +180,7 @@
             <el-input
               placeholder="请输入姓名"
               v-model="fromData.nickName"
+              maxlength="15"
             ></el-input>
           </el-form-item>
         </div>
@@ -192,6 +194,7 @@
               placeholder="请输入密码"
               v-model="fromData.password"
               show-password
+              maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -206,6 +209,7 @@
               placeholder="请确认密码"
               v-model="fromData.password2"
               show-password
+              maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -229,6 +233,7 @@
             <el-input
               placeholder="请输入电子邮箱"
               v-model="fromData.email"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -254,6 +259,7 @@
             <el-input
               placeholder="请输入职务"
               v-model="fromData.job"
+              maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -276,6 +282,7 @@
             <el-input
               placeholder="请输入年龄"
               v-model.trim="fromData.user_age"
+              maxlength="3"
             ></el-input>
           </el-form-item>
         </div>
@@ -285,44 +292,57 @@
             <el-input
               placeholder="请输入籍贯"
               v-model="fromData.info_native_place"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item label="毕业院校" prop="info_school">
             <el-input
               placeholder="请输入毕业院校"
               v-model="fromData.info_school"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
         <div class="dfrb">
           <el-form-item label="学历" prop="info_enducation">
-            <el-input
+            <!-- <el-input
               placeholder="请输入学历"
               v-model="fromData.info_enducation"
-            ></el-input>
-            <!-- <el-select v-model="fromData.info_enducation" style="width:200px">
-                            <el-option label="男" value="男"></el-option>
-                            <el-option label="女" value="女"></el-option>
-                        </el-select>-->
+              maxlength="25"
+            ></el-input> -->
+            <el-select v-model="fromData.info_enducation" style="width:200px">
+                <el-option value="高中以下"></el-option>
+                <el-option value="高中(职高、中专)"></el-option>
+                <el-option value="大专(高职)"></el-option>
+                <el-option value="本科"></el-option>
+                <el-option value="研究生"></el-option>
+                <el-option value="博士"></el-option>
+                <el-option value="其它"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="爱好" prop="info_hobby">
             <el-input
               placeholder="请输入爱好"
               v-model="fromData.info_hobby"
+              maxlength="100"
             ></el-input>
           </el-form-item>
         </div>
         <div class="dfrb">
           <el-form-item label="婚姻状况" prop="info_wedlock">
-            <el-input
-              placeholder="请输入婚姻状况"
-              v-model="fromData.info_wedlock"
-            ></el-input>
+            <el-select v-model="fromData.info_wedlock" style="width:200px">
+                <el-option value="未婚"></el-option>
+                <el-option value="已婚"></el-option>
+                <el-option value="离异"></el-option>
+                <el-option value="再婚"></el-option>
+                <el-option value="丧偶"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="工作经历" prop="work_experience">
             <el-input
               placeholder="请输入工作经历"
               v-model="fromData.work_experience"
+              maxlength="10"
             ></el-input>
           </el-form-item>
         </div>
@@ -379,8 +399,9 @@ export default {
     // 监控集合
     comid: function(val, old) {
       if (val != "") {
+        this.tableData.splice(0);
         this.isshow = true;
-        this.pageNo = 1;
+        this.data.pageNo = 1;
         this.ajax();
       } else {
         this.isshow = false;

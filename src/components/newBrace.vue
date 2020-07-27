@@ -10,36 +10,13 @@
             placeholder="请选择"
             size="small"
             style="width:122px"
+            @change="data.pageNo=1"
           >
             <el-option label="私海" value="私海"></el-option>
             <el-option label="公海" value="公海"></el-option>
           </el-select>
         </span>
-        <span class="drc mr15" v-if="supType == 1">
-          <font class="fs13" style="margin-right:12px">漏斗</font>
-          <el-select
-            v-model="funnel"
-            placeholder="请选择"
-            size="small"
-            style="width:122px"
-          >
-            <el-option
-              v-for="item in funnelList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </span>
-        <div class="comname-ipt" @keydown.13="keywordFn">
-          <input
-            type="text"
-            v-model="data.searchCompName"
-            placeholder="请输入关键字"
-          />
-          <i class="el-icon-search cp" slot="append" @click="keywordFn"></i>
-        </div>
-        <span class="drc">
+        <span class="drc mr15">
           <font class="fs13" style="margin-right:12px">地区</font>
           <el-cascader
             placeholder="请选择地区"
@@ -57,6 +34,31 @@
             :clearable="true"
           ></el-cascader>
         </span>
+        <span class="drc mr15" v-if="supType == 1">
+          <font class="fs13" style="margin-right:12px">漏斗</font>
+          <el-select
+            v-model="funnel"
+            placeholder="请选择"
+            size="small"
+            style="width:122px"
+            @change="data.pageNo=1"
+          >
+            <el-option
+              v-for="item in funnelList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </span>
+        <div class="comname-ipt" @keydown.13="keywordFn">
+          <input
+            type="text"
+            v-model="data.searchCompName"
+            placeholder="请输入关键字"
+          />
+          <i class="el-icon-search cp" slot="append" @click="keywordFn"></i>
+        </div>
       </div>
     </div>
     <div class="table-box">
@@ -76,12 +78,13 @@
       >
         <el-table-column
           align="center"
+          :reserve-selection="true"
           class-name="serial-num"
           type="selection"
         ></el-table-column>
         <el-table-column
           align="center"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -215,6 +218,9 @@ export default {
         {
           label: "复购",
           value: 6
+        },{
+            label: "无",
+            value:0
         }
       ],
       userId: ""
@@ -316,6 +322,7 @@ export default {
     ajax() {
       this.isajax = true;
       this.tableData.splice(0);
+      this.$refs.list.clearSelection();
       let that = this;
       let d = this.data;
       let url;
@@ -357,10 +364,12 @@ export default {
       return n;
     },
     pageNoChange(val) {
+      // this.$refs.list.clearSelection();
       this.data.pageNo = val;
       this.ajax();
     },
     keywordFn() {
+      // this.$refs.list.clearSelection();
       this.data.pageNo = 1;
       // this.total = 0;
       this.ajax();
@@ -368,6 +377,7 @@ export default {
     regionWacth(val) {
       this.$refs.cascader.dropDownVisible = false;
       this.data.areaCode = val[val.length - 1];
+      this.data.pageNo=1;
       this.ajax();
     },
     returnRegion(row) {

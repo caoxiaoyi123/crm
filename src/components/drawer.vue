@@ -14,7 +14,7 @@
       ref="drref"
     >
       <header>
-        <font class="fs20 draw-tit">{{ title }}</font>
+        <font class="fs18 draw-tit">{{ title }}</font>
         <i class="el-icon-close cp" @click="closeFn"></i>
       </header>
       <section id="content-box">
@@ -33,7 +33,7 @@
               取消
             </button>
             <button class="sure-btn text-c fs14 cp" @click="sumbitFn">
-              确定
+              {{sumbitTxt}}
             </button>
           </template>
         </div>
@@ -82,6 +82,9 @@ export default {
     },
     readOnly: {
       default: false
+    },
+    sumbitTxt:{
+      default:'保存'
     }
   },
   beforeCreate() {
@@ -128,6 +131,7 @@ export default {
       // }
     },
     sumbitFn() {
+      // this.$refs.drref.closeDrawer();
       this.$emit("submitFn");
     }
   }
@@ -135,6 +139,9 @@ export default {
 </script>
 <!-- 增加 "scoped" 属性 限制 CSS 属于当前部分 -->
 <style lang="less" scoped>
+/deep/ :focus {
+	outline: 0;
+}
 header {
   padding: 20px;
   position: relative;

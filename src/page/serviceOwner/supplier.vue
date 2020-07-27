@@ -30,7 +30,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
         ></el-table-column>
@@ -142,6 +142,7 @@
             <el-input
               placeholder="请输入负责人"
               v-model="fromData.comManager"
+              maxlength="15"
             ></el-input>
           </el-form-item>
         </div>
@@ -154,12 +155,14 @@
             <el-input
               placeholder="请输入手机号码"
               v-model="fromData.comPhone"
+              maxlength="11"
             ></el-input>
           </el-form-item>
           <el-form-item label="电话" prop="comTel">
             <el-input
               placeholder="请输入电话"
               v-model="fromData.comTel"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -172,12 +175,14 @@
             <el-input
               placeholder="请输入电子邮箱"
               v-model="fromData.comEmail"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item label="传真" prop="comFax">
             <el-input
               placeholder="请输入传真"
               v-model="fromData.comFax"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -186,12 +191,14 @@
             <el-input
               placeholder="请输入地址"
               v-model="fromData.comAddr"
+              maxlength="250"
             ></el-input>
           </el-form-item>
           <el-form-item label="网址" prop="comWeb">
             <el-input
               placeholder="请输入网址"
               v-model="fromData.comWeb"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -200,12 +207,14 @@
             <el-input
               placeholder="请输入系统名称"
               v-model="fromData.comSystemname"
+              maxlength="100"
             ></el-input>
           </el-form-item>
           <el-form-item label="备注" prop="comMemo">
             <el-input
               placeholder="请输入备注"
               v-model="fromData.comMemo"
+              maxlength="50"
             ></el-input>
           </el-form-item>
         </div>

@@ -160,7 +160,7 @@ const routes = [
         component: planDetailed
       }
     ]
-  }
+  },
 ];
 
 const router = new VueRouter({

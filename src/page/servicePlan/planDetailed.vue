@@ -61,7 +61,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -86,9 +86,9 @@
         <el-table-column align="center" label="起止时间">
           <template slot-scope="scope">
             {{
-              scope.row.startDate ? scope.row.startDate.replace("-", "/") : ""
+              scope.row.startDate ? scope.row.startDate.replace(/-/g,'/') : ""
             }}-{{
-              scope.row.endDate ? scope.row.endDate.replace("-", "/") : ""
+              scope.row.endDate ? scope.row.endDate.replace(/-/g,'/'): ""
             }}
           </template>
         </el-table-column>
@@ -126,7 +126,7 @@
         ></el-pagination>
       </div>
     </div>
-    <v-drawer :title="title" :drawer="drawer" @submitFn="submitFn">
+    <v-drawer :title="title" :drawer="drawer" :drawerW="'500px'" @submitFn="submitFn">
       <el-form
         :model="fromData"
         label-width="80px"
@@ -155,6 +155,7 @@
           <el-input
             placeholder="请输入内容"
             v-model="fromData.content"
+            :maxlength="50"
           ></el-input>
         </el-form-item>
         <el-form-item
@@ -165,6 +166,7 @@
           <el-input
             placeholder="请输入输出"
             v-model="fromData.output"
+            :maxlength="50"
           ></el-input>
         </el-form-item>
         <div class="drc">
@@ -174,28 +176,45 @@
               v-model="fromData.resolve"
               style="position: relative;"
               :disabled="true"
+              :title="fromData.resolve"
             ></el-input>
             <button class="ml10 search-btn cp" @click.prevent="mask = true">
               添加
             </button>
             <div class="mask-box" v-if="mask">
-              <div class="dia-tit dfrcb">
-                <span class="color-fff">添加任务分解</span>
-                <i class="color-fff el-icon-close cp" @click="mask = false"></i>
+              <div class="mask-content">
+                <div class="dia-tit dfrcb">
+                  <span class="color-fff">添加任务分解</span>
+                  <i class="color-fff el-icon-close cp" @click="mask = false"></i>
+                </div>
+                <v-decompose
+                  @closeFn="mask = false"
+                  @submitFn="addResolve"
+                  :outTxt="fromData.output"
+                  :id="fromData.detailId"
+                  :list="fromFjList"
+                  :contentTxt="fromData.content"
+                ></v-decompose>
               </div>
-              <v-decompose
-                @closeFn="mask = false"
-                @submitFn="addResolve"
-                :outTxt="fromData.output"
-                :id="fromData.detailId"
-                :list="fromFjList"
-                :contentTxt="fromData.content"
-              ></v-decompose>
+              
             </div>
           </el-form-item>
         </div>
         <el-form-item label="起止时间">
-          <template v-if="$route.query.type == 2">
+          <el-date-picker
+              placeholder="请输入起止时间"
+              @change="timeClick"
+              v-model="timeValue"
+              :clearable="false"
+              type="daterange"
+              :editable="false"
+              value-format="yyyy-MM-dd"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+          ></el-date-picker>
+          <!-- <template v-if="$route.query.type == 2">
+            style="width:280px;margin:0 12px"
             <el-date-picker
               v-model="timeValue"
               type="week"
@@ -222,7 +241,7 @@
               placeholder="选择年"
             >
             </el-date-picker>
-          </template>
+          </template> -->
         </el-form-item>
         <el-form-item label="备注" prop="remark" class="text-line">
           <el-input
@@ -292,7 +311,7 @@ export default {
   data() {
     return {
       // 数据模型a
-      timeValue: "",
+      timeValue:[],
       typeTxt: "",
       tableData: [],
       data: {
@@ -322,47 +341,49 @@ export default {
       mask: false,
       fromFjList: [], //表单内分解的list
       FjList: [],
-      receiveList: []
+      receiveList: [],
+      isSave:true,
+      isSave1:true,
     };
   },
   watch: {
     // 监控集合
-    timeValue(val, old) {
-      if (val) {
-        let start, end;
-        let nowY = new Date(val).getFullYear();
-        const oneD = 86400000;
-        if (this.$route.query.type == 0) {
-          //年计划
-          start = val;
-          let nextY = nowY + 1;
-          let nextStr = nextY + "-01-01";
-          let nextTime = new Date(nextStr).getTime() - oneD;
-          end = this.formatDate(nextTime);
-        } else if (this.$route.query.type == 1) {
-          //月计划
-          start = val;
-          let nextM = new Date(val).getMonth() + 2;
-          if (nextM < 10) {
-            nextM = "0" + nextM;
-          }
-          let nextStr = nowY + "-" + nextM + "-01";
-          let nextTime = new Date(nextStr).getTime() - oneD;
-          end = this.formatDate(nextTime);
-        } else if (this.$route.query.type == 2) {
-          //周计划
-          let nowTimestr = new Date(val).getTime();
-          start = this.formatDate(nowTimestr - oneD);
-          let nextW = nowTimestr + 5 * oneD;
-          end = this.formatDate(nextW);
-        }
-        this.fromData.startDate = start;
-        this.fromData.endDate = end;
-      } else {
-        this.fromData.startDate = "";
-        this.fromData.endDate = "";
-      }
-    }
+    // timeValue(val, old) {
+    //   if (val) {
+    //     let start, end;
+    //     let nowY = new Date(val).getFullYear();
+    //     const oneD = 86400000;
+    //     if (this.$route.query.type == 0) {
+    //       //年计划
+    //       start = val;
+    //       let nextY = nowY + 1;
+    //       let nextStr = nextY + "-01-01";
+    //       let nextTime = new Date(nextStr).getTime() - oneD;
+    //       end = this.formatDate(nextTime);
+    //     } else if (this.$route.query.type == 1) {
+    //       //月计划
+    //       start = val;
+    //       let nextM = new Date(val).getMonth() + 2;
+    //       if (nextM < 10) {
+    //         nextM = "0" + nextM;
+    //       }
+    //       let nextStr = nowY + "-" + nextM + "-01";
+    //       let nextTime = new Date(nextStr).getTime() - oneD;
+    //       end = this.formatDate(nextTime);
+    //     } else if (this.$route.query.type == 2) {
+    //       //周计划
+    //       let nowTimestr = new Date(val).getTime();
+    //       start = this.formatDate(nowTimestr - oneD);
+    //       let nextW = nowTimestr + 5 * oneD;
+    //       end = this.formatDate(nextW);
+    //     }
+    //     this.fromData.startDate = start;
+    //     this.fromData.endDate = end;
+    //   } else {
+    //     this.fromData.startDate = "";
+    //     this.fromData.endDate = "";
+    //   }
+    // }
   },
   components: {
     "v-decompose": decompose, //任务分解
@@ -384,6 +405,11 @@ export default {
       this.typeTxt = "月计划";
     } else {
       this.typeTxt = "周计划";
+    }
+    if (sessionStorage.getItem("userid")) {
+      this.userId = sessionStorage.getItem("userid");
+    } else {
+      this.userId = "3A27BD25-8567-479D-9D96-1BA7BBEC5F0E"; //当前用户id
     }
     this.data.planId = this.$route.query.id;
     this.ajax();
@@ -417,15 +443,45 @@ export default {
       }else{
         return ''
       }
-      
     },
     indexFn(index) {
       let n = (this.data.pageNo - 1) * this.data.pageSize + (index + 1);
       return n;
     },
-    resolveUpdate() {
-      this.drawer1 = false;
-      this.ajax();
+    timeClick(val){
+      this.fromData.startDate = val[0];
+      this.fromData.endDate = val[1];
+      if(this.fromFjList.length>0){
+        for(let x of this.fromFjList){
+          x.startDate=val[0];
+          x.endDate=val[1];
+        }
+      }
+    },
+    resolveUpdate(p) {//单个任务分解更新
+      // this.drawer1 = false;
+      let d=JSON.parse(JSON.stringify(this.fromObj));
+      d.planId = this.$route.query.id;
+      let data={
+        detail:d,
+        userId:this.userId,
+        resolve:JSON.parse(JSON.stringify(p))
+      }
+      this.$http({
+        method: "post",
+        url: "/sv/plan/detail/update",
+        data:data
+      }).then(res => {
+        if (res.succ) {
+          this.$message({
+            title: "成功",
+            message: res.data,
+            type: "success"
+          });
+          this.drawer1 = false;
+          this.ajax();
+        }
+      });
     },
     resolveFn() {
       this.$http({
@@ -443,12 +499,18 @@ export default {
     },
     creatFn() {
       let d = new Object();
+      if (this.$refs.fromData) {
+        this.$refs.fromData.resetFields();
+      }
       d.workNature = 0;
+      d.startDate=this.$route.query.startDate;
+      d.endDate=this.$route.query.endDate;
       this.fromData = JSON.parse(JSON.stringify(d));
       this.fromFjList = [];
-      this.timeValue = "";
+      this.timeValue[0] =this.$route.query.startDate;
+      this.timeValue[1] =this.$route.query.endDate;
       this.drawer = true;
-      this.title = "新建计划";
+      this.title = "新建计划明细";
     },
     editFn() {
       this.$http({
@@ -463,9 +525,10 @@ export default {
         }
       });
       this.fromData = JSON.parse(JSON.stringify(this.fromObj));
-      this.timeValue = this.fromData.startDate;
+      this.timeValue[0] = this.fromData.startDate;
+      this.timeValue[1]=this.fromData.endDate;
       this.drawer = true;
-      this.title = "编辑计划";
+      this.title = "编辑计划明细";
     },
     deleteFn() {
       this.$confirm("您确定删除该项吗？", "提示", {
@@ -478,7 +541,8 @@ export default {
         this.$http({
           method: "get",
           params: {
-            detailId: this.fromObj.detailId
+            detailId: this.fromObj.detailId,
+            userId:this.userId,
           },
           url: "/sv/plan/detail/delete"
         }).then(res => {
@@ -496,50 +560,63 @@ export default {
     submitFn() {
       this.$refs.fromData.validate(valid => {
         if (valid) {
-          let d = JSON.parse(JSON.stringify(this.fromData));
-          d.planId = this.$route.query.id;
-          if (!d.resolveIds && !d.resolve) {
-            this.$message({
-              message: "任务分解不得为空",
-              type: "warning"
-            });
-            return false;
+          if(!this.isSave){
+              return false
           }
+          this.isSave=false
+          // if (!this.fromFjList||this.fromFjList.length==0) {
+          //   this.$message({
+          //     message: "任务分解不得为空",
+          //     type: "warning"
+          //   });
+          //   return false;
+          // }
+          
+          let d = JSON.parse(JSON.stringify(this.fromData));
           for (let x in d) {
             if (x == "resolve") {
               delete d[x];
             }
           }
+          d.planId = this.$route.query.id;
+          let data={
+            detail:d,
+            userId:this.userId,
+            resolve:JSON.parse(JSON.stringify(this.fromFjList))
+          }
           this.$http({
             method: "post",
             url: "/sv/plan/detail/update",
-            data: d
+            data:data
           }).then(res => {
             if (res.succ) {
+              this.drawer = false;
               this.$message({
                 title: "成功",
                 message: res.data,
                 type: "success"
               });
-              this.drawer = false;
+              this.isSave=true;
               this.ajax();
+            }else{
+              this.isSave=true;
             }
           });
         }
       });
     },
-    addResolve(p) {
+    addResolve(p) {//新建或编辑时记录任务分解
       let arr = [];
-      for (let x of p.list) {
+      for (let x of p) {
         let str = x.name + "," + x.output;
         arr.push(str);
       }
-      this.fromFjList = JSON.parse(JSON.stringify(p.list));
+      this.fromFjList = JSON.parse(JSON.stringify(p));
       // let d=new Object();
       // d.resolve=arr.join(';');
       // d.resolveIds=p.resolveIds;
       this.fromData.resolve = arr.join(";");
-      this.fromData.resolveIds = p.resolveIds;
+      // this.fromData.resolveIds = p.resolveIds;
       // this.fromData=Object.assign(d,this.fromData);
       this.mask = false;
     },
@@ -576,6 +653,10 @@ export default {
       this.receiveList = JSON.parse(JSON.stringify(p.list));
     },
     xsSaveFn() {
+      if(!this.isSave1){
+          return false
+      }
+      this.isSave1=false
       let d = JSON.parse(JSON.stringify(this.receiveList));
       this.$http({
         method: "post",
@@ -583,14 +664,16 @@ export default {
         data: d
       }).then(res => {
         if (res.data) {
+          this.drawer3 = false;
           this.$message({
             title: "成功",
             message: "保存成功",
             type: "success"
           });
-          this.drawer3 = false;
+          this.isSave1=true;
           this.$refs.statistic.getCount()
         } else {
+          this.isSave1=true;
           this.$message.error({
             message: "保存失败"
           });
@@ -632,20 +715,22 @@ export default {
   }
   .mask-box {
     position: fixed;
-    background: #fff;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 788px;
-    // width: 760px;
-    // height: 480px;
-    height: 60vh;
-    width: 50vw;
-    // border:1px solid rgba(230,235,245,1);
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
-    // box-shadow:0px 2px 5px rgba(223,228,237,0.44);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
     z-index: 1;
-    border-radius: 4px;
+    .mask-content{
+      background: #fff;
+      min-width: 788px;
+      min-height: 60vh;
+      width: 50vw;
+      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+      border-radius: 4px;
+    }
     .dia-tit {
       background: #1989fa;
       line-height: 40px;

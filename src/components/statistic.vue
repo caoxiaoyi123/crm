@@ -3,20 +3,20 @@
   <div class="statistic">
     <div class="drc fs13">
       <b class="mr15"
-        >回款金额：<font class="red-txt">{{ summary1["回款"] }}</font
+        >回款金额：<font class="red-txt">{{ summary["回款"] }}</font
         >万</b
       >
       <b class="mr15"
-        >甲方数量：<font class="red-txt">{{ summary1["甲方数量"] }}</font
+        >甲方数量：<font class="red-txt">{{ summary["甲方数量"] }}</font
         >个</b
       >
       <b class="mr15"
-        >签约金额：<font class="red-txt">{{ summary1["签约"] }}</font
+        >签约金额：<font class="red-txt">{{ summary["签约"] }}</font
         >万</b
       >
       <!-- <b class="mr15" v-for="(val,key,i) in summary1" :key="i">{{key}}：<font class="red-txt">{{val}}</font>万</b> -->
       <el-popover placement="bottom" trigger="manual" v-model="visible">
-        <span class="draw-tit cp" style="display: block;" @click="visible = !visible" slot="reference">
+        <span class="draw-tit cp" style="display: inline-block;" @click="visible = !visible" slot="reference">
           <template v-if="visible">
             关闭查看
             <i class="el-icon-d-arrow-right draw-tit rotate270 "></i>
@@ -28,28 +28,28 @@
         </span>
         <div class="content-box">
           <b
-            >内部验收：<font class="red-txt">{{ summary0["内部验收"] }}</font
+            >内部验收：<font class="red-txt">{{ summary["内部验收"] }}</font
             >张</b
           >
           <b
-            >培训证明：<font class="red-txt">{{ summary0["培训证明"] }}</font
+            >培训证明：<font class="red-txt">{{ summary["培训证明"] }}</font
             >张</b
           >
           <b
-            >外部验收：<font class="red-txt">{{ summary0["外部验收"] }}</font
+            >外部验收：<font class="red-txt">{{ summary["外部验收"] }}</font
             >张</b
           >
           <b
-            >客户好评：<font class="red-txt">{{ summary0["客户好评"] }}</font
+            >客户好评：<font class="red-txt">{{ summary["客户好评"] }}</font
             >个</b
           >
           <b
-            >客户回访：<font class="red-txt">{{ summary0["客户回访"] }}</font
+            >客户回访：<font class="red-txt">{{ summary["客户回访"] }}</font
             >次</b
           >
           <b
             >硬件安装验收：<font class="red-txt">{{
-              summary0["硬件安装验收"]
+              summary["硬件安装验收"]
             }}</font
             >张</b
           >
@@ -65,8 +65,7 @@ export default {
   data() {
     return {
       // 数据模型a
-      summary0: {}, //服务支撑统计
-      summary1: {}, //销售支撑统计
+      summary: {}, //销售支撑统计
       visible: false,
       userId: null
     };
@@ -130,30 +129,29 @@ export default {
     getCount(){
       this.$http({
         method: "get",
-        url: "/sv/plan/support/summary",
+        url: "/sv/plan/support/planSummary",
         params: {
           planId: this.id,
           responsibleId: this.userId,
-          supType: 1
         }
       }).then(res => {
         if (res.succ) {
-          this.summary1 = res.data;
+          this.summary = res.data;
         }
       });
-      this.$http({
-        method: "get",
-        url: "/sv/plan/support/summary",
-        params: {
-          planId: this.id,
-          responsibleId: this.userId,
-          supType: 0
-        }
-      }).then(res => {
-        if (res.succ) {
-          this.summary0 = res.data;
-        }
-      });
+      // this.$http({
+      //   method: "get",
+      //   url: "/sv/plan/support/summary",
+      //   params: {
+      //     planId: this.id,
+      //     responsibleId: this.userId,
+      //     supType: 0
+      //   }
+      // }).then(res => {
+      //   if (res.succ) {
+      //     this.summary0 = res.data;
+      //   }
+      // });
     }
   }
 };

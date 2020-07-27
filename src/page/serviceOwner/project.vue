@@ -38,7 +38,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50px"
+          width="60"
           label="序号"
           type="index"
         ></el-table-column>
@@ -121,17 +121,20 @@
             <el-input
               placeholder="请输入编号"
               v-model="fromData.projNo"
+              :maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item
             label-width="130px"
             label="项目名称"
             prop="projName"
+            :maxlength="50"
             :rules="{ required: true, message: '项目名称不得为空' }"
           >
             <el-input
               placeholder="请输入项目名称"
               v-model="fromData.projName"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -163,6 +166,7 @@
             <el-input
               placeholder="请输入拨款单位"
               v-model="fromData.projFundcom"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -171,6 +175,7 @@
             <el-input
               placeholder="请输入技术等级"
               v-model="fromData.projTechlevel"
+              :maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item label-width="130px" label="所属地区" prop="projRegion">
@@ -194,6 +199,7 @@
             <el-input
               placeholder="请输入计划工期"
               v-model="fromData.projDuration"
+              :maxlength="8"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -229,11 +235,12 @@
             <el-input
               placeholder="请输入总投资"
               v-model="fromData.projBudget"
+              :maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item
             label-width="130px"
-            label="里程"
+            label="里程（km）"
             prop="projDistance"
             :rules="{
               pattern: /^(([1-9]\d*)|0)(\.\d+)?$/,
@@ -244,6 +251,7 @@
             <el-input
               placeholder="请输入里程"
               v-model="fromData.projDistance"
+              :maxlength="8"
             ></el-input>
           </el-form-item>
         </div>
@@ -252,6 +260,7 @@
             <el-input
               placeholder="请输入起始桩号"
               v-model="fromData.projStartstake"
+              :maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -262,6 +271,7 @@
             <el-input
               placeholder="请输入终点桩号"
               v-model="fromData.projEndstake"
+              :maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -339,16 +349,12 @@
         <el-form-item
           label="建安费"
           prop="projConstruction"
-          :rules="{
-            pattern: /^(([1-9]\d*)|0)(\.\d+)?$/,
-            message: '建安费必须为正数',
-            trigger: ['blur', 'change']
-          }"
         >
           <el-input
             placeholder="请输入建安费"
             v-model="fromData.projConstruction"
             style="width:202px"
+            :maxlength="25"
           ></el-input>
         </el-form-item>
         <el-form-item label="项目概况" prop="projMemo" class="text-line">
@@ -367,6 +373,7 @@
             <el-input
               placeholder="请输入责任领导"
               v-model="fromData.responsibilityLeader"
+              :maxlength="15"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -390,6 +397,7 @@
             placeholder="请输入项目经理"
             v-model="fromData.projectManager"
             style="width:202px"
+            :maxlength="15"
           ></el-input>
         </el-form-item>
         <!-- 分割线 -->
@@ -399,6 +407,7 @@
             <el-input
               placeholder="请输入设计单位"
               v-model="fromData.designUnit"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -409,6 +418,7 @@
             <el-input
               placeholder="请输入施工单位"
               v-model="fromData.projBuildcoms"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -417,6 +427,7 @@
             <el-input
               placeholder="请输入勘测单位"
               v-model="fromData.surveyUnit"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -427,6 +438,7 @@
             <el-input
               placeholder="请输入监理单位"
               v-model="fromData.constructionControlUnit"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -437,6 +449,7 @@
             <el-input
               placeholder="请输入招标单位"
               v-model="fromData.bidUnit"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item label-width="130px" label="招标日期" prop="bidDate">
@@ -454,6 +467,7 @@
             <el-input
               placeholder="请输入招标人"
               v-model="fromData.tenderee"
+              :maxlength="15"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -479,6 +493,7 @@
             <el-input
               placeholder="请输入中标单位"
               v-model="fromData.bidWinner"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -489,6 +504,7 @@
             <el-input
               placeholder="请输入招标代理机构"
               v-model="fromData.bidAgency"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
         </div>
@@ -497,6 +513,7 @@
             <el-input
               placeholder="请输入代理人"
               v-model="fromData.agent"
+              :maxlength="15"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -507,6 +524,7 @@
             <el-input
               placeholder="请输入代理人电话"
               v-model="fromData.agentPhone"
+              :maxlength="11"
             ></el-input>
           </el-form-item>
         </div>
@@ -517,6 +535,7 @@
             <el-input
               placeholder="请输入竞争单位"
               v-model="fromData.competitiveUnit"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -527,6 +546,7 @@
             <el-input
               placeholder="请输入联系人"
               v-model="fromData.competitiveUnitLinker"
+              :maxlength="15"
             ></el-input>
           </el-form-item>
         </div>
@@ -535,6 +555,7 @@
             <el-input
               placeholder="请输入电话号码"
               v-model="fromData.competitiveUnitPhone"
+              :maxlength="11"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -545,6 +566,7 @@
             <el-input
               placeholder="请输入品牌名称"
               v-model="fromData.competitiveUnitBrand"
+              :maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -557,7 +579,7 @@
             placeholder="请输入优缺点"
             type="textarea"
             resize="none"
-            maxlength="50"
+            maxlength="500"
             v-model="fromData.competitiveUnitInfo"
           ></el-input>
         </el-form-item>
@@ -568,6 +590,7 @@
             <el-input
               placeholder="请输入项目关系人"
               v-model="fromData.projRelateder"
+              maxlength="15"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -578,6 +601,7 @@
             <el-input
               placeholder="请输入项目关系人电话号码"
               v-model="fromData.projRelatederPhone"
+              maxlength="11"
             ></el-input>
           </el-form-item>
         </div>
@@ -588,6 +612,7 @@
             <el-input
               placeholder="请输入内线人"
               v-model="fromData.projInsider"
+              maxlength="15"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -598,6 +623,7 @@
             <el-input
               placeholder="请输入内线人电话号码"
               v-model="fromData.projInsiderPhone"
+              maxlength="11"
             ></el-input>
           </el-form-item>
         </div>
@@ -606,6 +632,7 @@
             <el-input
               placeholder="请输入内线人职务"
               v-model="fromData.projInsiderDuty"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -616,6 +643,7 @@
             <el-input
               placeholder="请输入内线人性格"
               v-model="fromData.projInsiderCharacter"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </div>
@@ -624,6 +652,7 @@
             <el-input
               placeholder="请输入内线人年龄"
               v-model="fromData.projInsiderAge"
+              maxlength="3"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -634,6 +663,7 @@
             <el-input
               placeholder="请输入内线人性别"
               v-model="fromData.projInsiderSex"
+              maxlength="3"
             ></el-input>
           </el-form-item>
         </div>
@@ -653,6 +683,7 @@
             <el-input
               placeholder="请输入决策人"
               v-model="fromData.projDecider"
+              maxlength="15"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -663,6 +694,7 @@
             <el-input
               placeholder="请输入决策人电话号码"
               v-model="fromData.projDeciderPhone"
+              maxlength="11"
             ></el-input>
           </el-form-item>
         </div>
@@ -671,6 +703,7 @@
             <el-input
               placeholder="请输入决策人职务"
               v-model="fromData.projDeciderDuty"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -681,6 +714,7 @@
             <el-input
               placeholder="请输入决策人性格"
               v-model="fromData.projDeciderCharacter"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </div>
@@ -726,13 +760,12 @@
         >
           <el-table-column
             align="center"
-            width="50px"
+            width="60"
             label="序号"
             type="index"
           ></el-table-column>
           <el-table-column
-            header-align="center"
-            align="left"
+            align="center"
             label="用户名"
             prop="userName"
           ></el-table-column>
@@ -741,7 +774,7 @@
             label="姓名"
             prop="userNickname"
           ></el-table-column>
-          <el-table-column align="center" type="selection"></el-table-column>
+          <el-table-column align="center" type="selection" :reserve-selection="true"></el-table-column>
         </el-table>
       </div>
       <!-- 操作 -->

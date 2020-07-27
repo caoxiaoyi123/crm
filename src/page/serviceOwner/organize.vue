@@ -38,7 +38,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -130,12 +130,14 @@
             <el-input
               placeholder="请输入部门名称"
               v-model="fromData.depName"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item label="部门负责人" prop="depManager">
             <el-input
               placeholder="请输入部门负责人"
               v-model="fromData.depManager"
+              :maxlength="15"
             ></el-input>
           </el-form-item>
         </div>
@@ -152,6 +154,7 @@
             <el-input
               placeholder="请输入手机号码"
               v-model="fromData.depTel"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -166,6 +169,7 @@
             <el-input
               placeholder="请输入邮箱"
               v-model="fromData.depMail"
+              :maxlength="50"
             ></el-input>
           </el-form-item>
         </div>

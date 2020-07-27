@@ -13,7 +13,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50px"
+          width="60px"
           label="序号"
           type="index"
         ></el-table-column>
@@ -113,14 +113,14 @@
         <el-table-column
           align="right"
           header-align="center"
-          label="金额"
+          label="金额(万)"
           width="70"
           prop="amount"
         ></el-table-column>
         <el-table-column
           align="right"
           header-align="center"
-          label="回款"
+          label="回款(万)"
           width="70"
           prop="receivedPayments"
         ></el-table-column>

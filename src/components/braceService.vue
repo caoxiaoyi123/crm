@@ -57,7 +57,8 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
+          fixed
           label="序号"
           type="index"
           :index="indexFn"
@@ -266,7 +267,9 @@ export default {
         "客户好评",
         "客户回访"
       ],
-      fromData: {}
+      fromData: {},
+      isSave:true,
+      isSave1:true,
     };
   },
   watch: {
@@ -393,6 +396,10 @@ export default {
       }
     },
     submitFn() {
+      if(!this.isSave1){
+          return false
+      }
+      this.isSave1=false
       let d = JSON.parse(JSON.stringify(this.addList));
       this.$http({
         method: "post",
@@ -400,14 +407,18 @@ export default {
         data: d
       }).then(res => {
         if (res.succ) {
+          this.drawer = false;
+          this.$children[2].$children[0].closeDrawer()
           this.$message({
             title: "成功",
             message: res.data,
             type: "success"
           });
-          this.drawer = false;
+          this.isSave1=true;
           this.ajax();
           this.count();
+        }else{
+          this.isSave1=true;
         }
       });
     },
@@ -478,10 +489,23 @@ export default {
         this.fromData = new Object();
         this.fromData.seq = i;
         this.fromData.supId = rows.supId;
+        // this.fromData.param='内部验收'
       }
       this.isDialog = true;
     },
     sumbitFn() {
+      if(!this.fromData.param){
+          this.$message({
+              title: "消息",
+              message:'必须填写漏斗阶段',
+              type: "warning"
+          });
+          return false
+      }
+      if(!this.isSave){
+          return false
+      }
+      this.isSave=false
       let d = JSON.parse(JSON.stringify(this.fromData));
       this.$http({
         method: "post",
@@ -489,15 +513,17 @@ export default {
         data: d
       }).then(res => {
         if (res.data) {
+          this.isDialog = false;
           this.$message({
             title: "成功",
             message: "保存成功",
             type: "success"
           });
-          this.isDialog = false;
+          this.isSave=true;
           this.ajax();
           this.count();
         } else {
+          this.isSave=true;
           this.$message.error({
             message: "保存失败"
           });

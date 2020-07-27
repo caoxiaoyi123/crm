@@ -95,7 +95,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -183,6 +183,19 @@
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.confirmCause" placement="right">
               <span class="text-over">{{ scope.row.confirmCause }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column
+          align="left"
+          min-width="200"
+          header-align="center"
+          label="重来一次"
+          prop="again"
+        >
+          <template slot-scope="scope">
+            <el-tooltip :content="scope.row.again" placement="right">
+              <span class="text-over">{{ scope.row.again }}</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -320,7 +333,8 @@ export default {
       depList: [],
       perponList: [],
       drawer: false,
-      fromData: {}
+      fromData: {},
+      isSave:true,
     };
   },
   watch: {
@@ -405,42 +419,47 @@ export default {
     exportFn() {
       //导出
       window.open(
-        // baseUrl +
-        // "/so/report/server/excel?departId=" +this.data.departId +
-        // "&start=" +this.data.start+
-        // "&userId=" +this.data.userId+
-        // "&end=" +this.data.end,
-        // "_blank"
-        baseUrl + "/so/customer/report/excel",
+        baseUrl +
+        "/so/customer/report/excel?departId=" +this.data.departId +
+        "&start=" +this.data.start+
+        "&userId=" +this.data.userId+
+        "&end=" +this.data.end,
         "_blank"
+        // baseUrl + "/so/customer/report/excel",
+        // "_blank"
       );
     },
     getDepart() {
       //获取组织关系
       let c = JSON.parse(sessionStorage.getItem("depart"));
+      c.unshift({depName:'全部',depId:null})
       this.depList = c;
     },
     departFn(val) {
       this.data.userId = null;
       this.data.pageNo = 1;
       this.perponList = [];
-      let id;
-      if (val.length > 0) {
-        id = val[val.length - 1];
-      } else {
-        return false;
+      if(val[0]){
+        let id;
+        if (val.length > 0) {
+          id = val[val.length - 1];
+        } else {
+          return false;
+        }
+        this.$http({
+          method: "get",
+          url: "/common/departUser",
+          params: {
+            depId: id
+          }
+        }).then(res => {
+          if (res.succ) {
+            this.perponList = res.data;
+            this.perponList.unshift({name:'全部',userId:null})
+          }
+        });
       }
-      this.$http({
-        method: "get",
-        url: "/common/departUser",
-        params: {
-          depId: id
-        }
-      }).then(res => {
-        if (res.succ) {
-          this.perponList = res.data;
-        }
-      });
+      
     },
     pageNoChange(val) {
       this.data.pageNo = val;
@@ -458,6 +477,10 @@ export default {
     submitFn() {
       this.$refs.fromData.validate(valid => {
         if (valid) {
+          if(!this.isSave){
+              return false
+          }
+          this.isSave=false
           let d = JSON.parse(JSON.stringify(this.fromData));
           for (let x in d) {
             if (x == "resolve") {
@@ -479,13 +502,16 @@ export default {
             data: d
           }).then(res => {
             if (res.succ) {
+              this.drawer = false;
               this.$message({
                 title: "成功",
                 message: res.data,
                 type: "success"
               });
-              this.drawer = false;
+              this.isSave=true;
               this.ajax();
+            }else{
+              this.isSave=true;
             }
           });
         }

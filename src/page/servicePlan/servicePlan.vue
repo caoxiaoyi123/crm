@@ -58,7 +58,7 @@
         <el-table-column
           align="center"
           class-name="serial-num"
-          width="50"
+          width="60"
           label="序号"
           type="index"
           :index="indexFn"
@@ -81,9 +81,9 @@
         <el-table-column align="center" label="起止时间">
           <template slot-scope="scope">
             {{
-              scope.row.startDate ? scope.row.startDate.replace("-", "/") : ""
+              scope.row.startDate ? scope.row.startDate.replace(/-/g,'/'): ""
             }}-{{
-              scope.row.endDate ? scope.row.endDate.replace("-", "/") : ""
+              scope.row.endDate ? scope.row.endDate.replace(/-/g,'/'): ""
             }}
           </template>
         </el-table-column>
@@ -125,7 +125,7 @@
         ></el-pagination>
       </div>
     </div>
-    <v-drawer :title="title" :drawer="drawer" @submitFn="submitFn">
+    <v-drawer :title="title" :drawer="drawer" @submitFn="submitFn" sumbitTxt="保存">
       <el-form
         :model="fromData"
         label-width="80px"
@@ -244,10 +244,11 @@ export default {
       data: {
         type: 99,
         pageNo: 1,
-        pageSize: 20,
+        pageSize:20,
         userId: null //当前用户id
       },
-      total: 0
+      total: 0,
+      isSave:true,
     };
   },
   components: {
@@ -258,30 +259,37 @@ export default {
     timeValue(val, old) {
       if (val) {
         let start, end;
+        // val=val.replace(/\//g,'-');
         let nowY = new Date(val).getFullYear();
         const oneD = 86400000;
         if (this.fromData.type == 0) {
           //年计划
-          start = val;
+          // start = val;
           let nextY = nowY + 1;
           let nextStr = nextY + "-01-01";
           let nextTime = new Date(nextStr).getTime() - oneD;
+          start=nowY+ "-01-01";
           end = this.formatDate(nextTime);
         } else if (this.fromData.type == 1) {
           //月计划
-          start = val;
+          // start = val;
           let nextM = new Date(val).getMonth() + 2;
           if (nextM < 10) {
             nextM = "0" + nextM;
           }
+          let nowM=(nextM-1);
+          nowM=nowM<10?'0'+nowM:nowM;
           let nextStr = nowY + "-" + nextM + "-01";
           let nextTime = new Date(nextStr).getTime() - oneD;
+          start=nowY + "-" + nowM + "-01";;
           end = this.formatDate(nextTime);
         } else if (this.fromData.type == 2) {
           //周计划
+          let week=new Date(val).getDay();
           let nowTimestr = new Date(val).getTime();
-          start = this.formatDate(nowTimestr - oneD);
-          let nextW = nowTimestr + 5 * oneD;
+          // start=val;
+          start = this.formatDate(nowTimestr - oneD*(week));
+          let nextW = new Date(start).getTime() + 6 * oneD;
           end = this.formatDate(nextW);
         }
         this.fromData.startDate = start;
@@ -403,14 +411,14 @@ export default {
         this.fileData.list = [];
         this.fileData.id = null;
       }
-      this.timeValue = this.fromData.startDate;
-      // if(this.fromData.type==0||this.fromData.type==1){
-      //     this.timeValue=this.fromData.startDate
-      // }else{
-      //     let start=new Date(this.fromData.startDate).getTime();
-      //     let t=start+86400000;
-      //     this.timeValue=this.formatDate(t);
-      // }
+      // this.timeValue = this.fromData.startDate;
+      if(this.fromData.type==0||this.fromData.type==1){
+          this.timeValue=this.fromData.startDate
+      }else{
+          let start=new Date(this.fromData.startDate).getTime();
+          let t=start+86400000;
+          this.timeValue=this.formatDate(t);
+      }
       this.drawer = true;
       this.title = "编辑计划";
     },
@@ -479,7 +487,9 @@ export default {
         path: "planDetailed",
         query: {
           type: row.type,
-          id: row.planId
+          id: row.planId,
+          startDate:row.startDate,
+          endDate:row.endDate
         }
       });
     },
@@ -493,6 +503,10 @@ export default {
             });
             return false;
           }
+          if(!this.isSave){
+              return false
+          }
+          this.isSave=false
           let d = JSON.parse(JSON.stringify(this.fromData));
           d.designeeId = this.data.userId;
           d.responsibleId = this.data.userId;
@@ -519,6 +533,7 @@ export default {
             data: d
           }).then(res => {
             if (res.succ) {
+              this.drawer = false;
               this.$message({
                 title: "成功",
                 message: res.data,
@@ -526,17 +541,57 @@ export default {
               });
               this.fileData.list = [];
               this.fileData.id = null;
-              this.drawer = false;
+              this.isSave=true;
+              this.timeValue='';
+              this.data.pageNo=1;
               this.ajax();
+            }else{
+              this.isSave=true;
             }
           });
         }
       });
     },
     typeChange() {
-      this.timeValue = "";
+      this.timeValue = this.formatDate(new Date());
+      let start, end;
+      let nowY = new Date().getFullYear();
+      const oneD = 86400000;
+      if (this.fromData.type == 0) {
+        //年计划
+        let nextY = nowY + 1;
+        let nextStr = nextY + "-01-01";
+        let nextTime = new Date(nextStr).getTime() - oneD;
+        end = this.formatDate(nextTime);
+        start=nowY+ "-01-01";
+      } else if (this.fromData.type == 1) {
+        //月计划
+        let nextM = new Date().getMonth() + 2;
+        if (nextM < 10) {
+          nextM = "0" + nextM;
+        }
+        let nowM=(nextM-1);
+        nowM=nowM<10?'0'+nowM:nowM;
+        let nextStr = nowY + "-" + nextM + "-01";
+        let nextTime = new Date(nextStr).getTime() - oneD;
+        end = this.formatDate(nextTime);
+        start=nowY + "-" + nowM + "-01";;
+      } else if (this.fromData.type == 2) {
+        //周计划
+        let week=new Date().getDay();
+        let nowTimestr = new Date().getTime();
+        start = this.formatDate(nowTimestr - oneD*(week));
+        let nextW = new Date(start).getTime() + 6 * oneD;
+        end = this.formatDate(nextW);
+        // start = this.formatDate(nowTimestr - oneD);
+        // let nextW = nowTimestr + 6 * oneD;
+        // end = this.formatDate(nextW);
+      }
+      this.fromData.startDate = start;
+      this.fromData.endDate = end;
     },
     dataTypeChange() {
+      this.data.pageNo=1;
       this.ajax();
     }
   }

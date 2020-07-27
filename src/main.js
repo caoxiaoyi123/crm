@@ -102,7 +102,7 @@ Vue.prototype.toTree=function(data,id,pid) {
   });
   var val = [];
   data.forEach(function (item,index) {
-    item.index=index;
+    // item.index=index;
     // 以当前遍历项的pid,去map对象中找到索引的id
     var parent = map[item[pid]];
     // 好绕啊，如果找到索引，那么说明此项不在顶级当中,那么需要把此项添加到，他对应的父级中

@@ -174,7 +174,7 @@
                   align="center"
                   fixed
                   class-name="serial-num"
-                  width="50"
+                  width="60"
                   label="序号"
                   type="index"
                   :index="indexFn"
@@ -348,6 +348,7 @@
             <el-input
               placeholder="请输入单位名称"
               v-model="fromData.comName"
+              maxlength="50"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -358,6 +359,7 @@
             <el-input
               placeholder="请输入负责人"
               v-model="fromData.comManager"
+              maxlength="15"
             ></el-input>
           </el-form-item>
         </div>
@@ -383,6 +385,7 @@
             <el-input
               placeholder="请输入电话"
               v-model="fromData.comTel"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -391,6 +394,7 @@
             <el-input
               placeholder="请输入地址"
               v-model="fromData.comAddr"
+              maxlength="250"
             ></el-input>
           </el-form-item>
           <el-form-item
@@ -405,6 +409,7 @@
             <el-input
               placeholder="请输入电子邮箱"
               v-model="fromData.comEmail"
+              maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
@@ -413,6 +418,7 @@
             <el-input
               placeholder="请输入传真"
               v-model="fromData.comFax"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item label="所属地区" prop="comRegion">
@@ -428,12 +434,14 @@
             <el-input
               placeholder="请输入网址"
               v-model="fromData.comWeb"
+              maxlength="25"
             ></el-input>
           </el-form-item>
           <el-form-item label="系统名称" prop="comSystemname">
             <el-input
               placeholder="请输入系统名称"
               v-model="fromData.comSystemname"
+              maxlength="100"
             ></el-input>
           </el-form-item>
         </div>
