@@ -634,8 +634,18 @@ export default {
       this.drawer = true;
     },
     exportFn() {
+      let keyword='',start='',end='';
+      if(this.data.keyword){
+        keyword=this.data.keyword
+      }
+      if(this.data.start){
+        start=this.data.start
+      }
+      if(this.data.end){
+        end=this.data.end
+      }
       //导出
-      window.open(baseUrl + "/so/contract/download", "_blank");
+      window.open(baseUrl + "/so/contract/download?keyword="+keyword+'&start='+start+'&end='+end, "_blank");
     },
     deleteFn() {
       this.$confirm("您确定删除该项吗？", "提示", {

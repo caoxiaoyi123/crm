@@ -125,7 +125,7 @@
         ></el-pagination>
       </div>
     </div>
-    <v-drawer :title="title" :drawer="drawer" @submitFn="submitFn" sumbitTxt="保存">
+    <v-drawer :title="title" :drawer="drawer" :drawerW="'400px'" @submitFn="submitFn" sumbitTxt="保存">
       <el-form
         :model="fromData"
         label-width="80px"
@@ -140,6 +140,7 @@
             placeholder="请选择"
             size="small"
             @change="typeChange"
+            :disabled="disabled"
           >
             <el-option
               v-for="item in typeList1"
@@ -157,6 +158,7 @@
               format="yyyy 第 WW 周"
               value-format="yyyy-MM-dd"
               placeholder="选择周"
+              :disabled="disabled"
             >
             </el-date-picker>
           </template>
@@ -166,6 +168,7 @@
               type="month"
               value-format="yyyy-MM-dd"
               placeholder="选择月"
+              :disabled="disabled"
             >
             </el-date-picker>
           </template>
@@ -175,6 +178,7 @@
               type="year"
               value-format="yyyy-MM-dd"
               placeholder="选择年"
+              :disabled="disabled"
             >
             </el-date-picker>
           </template>
@@ -249,6 +253,7 @@ export default {
       },
       total: 0,
       isSave:true,
+      disabled:false,
     };
   },
   components: {
@@ -385,6 +390,7 @@ export default {
     creatFn() {
       let d = {};
       d.type = 2;
+      this.disabled=false
       this.fromData = JSON.parse(JSON.stringify(d));
       this.fileData.list = [];
       this.fileData.id = null;
@@ -397,6 +403,7 @@ export default {
     },
     editFn() {
       this.fromData = JSON.parse(JSON.stringify(this.fromObj));
+      this.disabled=false
       if (this.fromData.planFile) {
         this.fileData.id = this.fromData.planFile;
         if (this.fromData.pubFileEntity) {
@@ -419,6 +426,18 @@ export default {
           let t=start+86400000;
           this.timeValue=this.formatDate(t);
       }
+
+      this.$http({
+        url:'/sv/plan/main/editPermiss',
+        params:{
+          planId:this.fromObj.planId,
+          userId:this.data.userId,
+        }
+      }).then(res=>{
+        if(!res.data){
+          this.disabled=true
+        }
+      })
       this.drawer = true;
       this.title = "编辑计划";
     },

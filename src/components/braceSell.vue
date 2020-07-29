@@ -211,7 +211,8 @@
                         <el-input
                             placeholder="请输入金额(万)"
                             v-model="fromData.amount"
-                            :maxlength="50"
+                            maxlength="5"
+                            type="number"
                             @input="gusAmountBlur(fromData, 1)"
                         ></el-input>
                     </el-form-item>
@@ -621,9 +622,10 @@ export default {
                     message: "请输入数字，且最多5位"
                 });
                 if (type == 0) {
-                    obj.gusAmount = "";
+                    // obj.gusAmount =val.replace(/\D/g,'');
+                    obj.gusAmount=val.replace(/^[^\d{1,5}\.\d{1,2}$|^\d{1,5}]$/,'');
                 } else if (type == 1) {
-                    obj.amount = "";
+                    obj.amount =val.replace(/^\d{1,5}\.\d{1,2}$|^\d{1,5}$/g,'');
                 }
             }
         },

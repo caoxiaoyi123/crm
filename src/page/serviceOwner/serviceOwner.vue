@@ -819,10 +819,10 @@ li {
       margin: 0;
     }
     /deep/ .el-tabs__item {
-      color: @fontColor;
+      color: @titFontColor;
     }
     /deep/ .el-tabs__item.is-active {
-      color: #409eff;
+      color: @buleColor;
       font-weight: bold;
     }
   }

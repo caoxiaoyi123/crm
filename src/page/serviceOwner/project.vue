@@ -110,6 +110,7 @@
         :model="fromData"
         label-width="86px"
         size="medium"
+        class="form-box"
       >
         <h4 class="bor-b tit-txt fs16">基本信息</h4>
         <div class="dfrb">
@@ -1255,6 +1256,9 @@ export default {
   i {
     margin-right: 5px;
   }
+}
+.form-box{
+  padding-bottom: 74px;
 }
 .page-box {
   height: 44px;

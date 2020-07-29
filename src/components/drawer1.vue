@@ -53,45 +53,36 @@
                     <div class="main" v-if="type == 0">
                         <h5 class="tit-txt fs16 text-l">当前反馈</h5>
                         <div class="box bor">
+                            <p class="fs13 required">我要反馈</p>
+                            <textarea
+                                placeholder="请详细填写反馈内容，该内容会同步展示给服务提出人，请谨慎填写！"
+                                v-model="fromData.description"
+                                class="fs13 bor mb10"
+                                maxlength="200"
+                            ></textarea>
                             <el-form @submit.native.prevent>
-                            <!-- <p class="fs13 tit-txt">我要反馈</p> -->
-                                <el-form-item label="我要反馈" :rules="{ required: true, message: '反馈内容不得为空' }" prop="description">
-                                    <el-input
-                                        placeholder="请详细填写反馈内容，该内容会同步展示给服务提出人，请谨慎填写！"
-                                        type="textarea"
-                                        resize="none"
-                                        v-model="fromData.description"
-                                        maxlength="50"
-                                        class="fs13 mb10 txt-area"
-                                    ></el-input>
+                                <div class="upload-box " v-if="!from">
+                                    <div class="label fs13 required">相关文档</div>
+                                    <v-upload :fileData="file" :limitNum="10000"></v-upload>
+                                </div>
+                                <!-- <el-form-item label="相关文档" label-width="65px" v-if="!from">
+                                    <v-upload :fileData="file" :limitNum="10000"></v-upload>
+                                </el-form-item> -->
+                                <el-form-item class="required label-required" label="服务类型" label-width="65px" v-else>
+                                    <el-select
+                                        placeholder="请选择服务类型"
+                                        v-model="fromData.type"
+                                        style="width:250px"
+                                    >
+                                        <el-option
+                                            v-for="item in typeList"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item"
+                                        ></el-option>
+                                    </el-select>
                                 </el-form-item>
-                                <!-- <textarea
-                                    placeholder="请详细填写反馈内容，该内容会同步展示给服务提出人，请谨慎填写！"
-                                    v-model="fromData.description"
-                                    class="fs13 bor mb10"
-                                ></textarea> -->
-                                <template  v-if="!from">
-                                    <el-form-item label="相关文档" label-width="75px">
-                                        <v-upload :fileData="file"></v-upload>
-                                    </el-form-item>
-                                </template>
-                                <template  v-else>
-                                    <el-form-item label="服务类型" label-width="75px"  prop="type" :rules="{ required: true, message: '服务类型不得为空' }">
-                                        <el-select
-                                            placeholder="请选择服务类型"
-                                            v-model="fromData.type"
-                                            style="width:250px"
-                                        >
-                                            <el-option
-                                                v-for="item in typeList"
-                                                :key="item"
-                                                :label="item"
-                                                :value="item"
-                                            ></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </template>
-                                <el-form-item label="处理阶段" label-width="75px">
+                                <el-form-item class="required label-required" label="处理阶段" label-width="65px">
                                     <span
                                         v-for="(item, i) of btnList"
                                         :key="i"
@@ -244,7 +235,20 @@ export default {
             } else {
                 d.userid = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
             }
-            d.status = this.btnTxt;
+            if(this.btnTxt=='处理中'){
+                d.status = '进行中';
+            }else{
+                d.status=this.btnTxt
+            }
+            if(!this.from){
+                if(!this.file.id||this.file.id==''){
+                    this.$message({
+                        message: "相关文档为必传",
+                        type: "warning"
+                    });
+                    return false;
+                }
+            }
             if (!d.description || d.description == "") {
                 this.$message({
                     message: "服务内容为必填项",
@@ -362,6 +366,21 @@ section {
                 border-radius: 4px;
                 margin-top: 5px;
                 padding-bottom: 20px;
+                .required{
+                    position: relative;
+                    &::before{
+                        content: '*';
+                        position: absolute;
+                        top: 0;
+                        left: -10px;
+                        color: red;
+                    }
+                }
+                .label-required{
+                    &::before{
+                        top: 10px;
+                    }
+                }
                 .record {
                     font {
                         display: inline-block;
@@ -381,13 +400,13 @@ section {
                         padding-left: 28px;
                     }
                 }
-                .txt-area /deep/ textarea {
+                textarea {
                     padding: 10px;
                     width: 100%;
                     box-sizing: border-box;
                     height: 115px;
                     border-radius: 4px;
-                    // margin-top: 15px;
+                    margin-top: 15px;
                     resize: none;
                     outline: none;
                 }
@@ -421,8 +440,19 @@ section {
                         }
                     }
                 }
+                .upload-box{
+                    display: flex;
+                    align-items: center;
+                    .label{
+                        width: 65px;
+                    }
+                }
+                .upload-box /deep/ .upload{
+                    width: calc(100% - 65px);
+                }
             }
         }
+        
         .main-w {
             width: 100%;
         }

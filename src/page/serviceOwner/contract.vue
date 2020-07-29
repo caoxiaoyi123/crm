@@ -113,17 +113,25 @@
         <el-table-column
           align="right"
           header-align="center"
-          label="金额(万)"
-          width="70"
+          label="金额"
+          width="90"
           prop="amount"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.amount">{{ scope.row.amount }}万</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="right"
           header-align="center"
-          label="回款(万)"
-          width="70"
+          label="回款"
+          width="90"
           prop="receivedPayments"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.receivedPayments">{{ scope.row.receivedPayments }}万</span>
+          </template>
+        </el-table-column>
         <el-table-column
           align="center"
           label="是否开发票"

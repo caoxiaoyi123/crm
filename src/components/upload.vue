@@ -9,7 +9,7 @@
       :multiple="false"
       :on-success="suncfn"
       :on-error="upLoadfn.uploadErrFn"
-      :limit="1"
+      :limit="limitNum"
       :on-exceed="upLoadfn.uploadExcFn"
       :data="fileData.data"
       :file-list="fileData.list"
@@ -22,7 +22,7 @@
         :disabled="disabled"
         :class="disabled ? 'ban' : ''"
       >
-        上传文件
+        {{disabled?'上传中':'上传文件'}}
       </button>
     </el-upload>
   </div>
@@ -35,7 +35,8 @@ export default {
     return {
       // 数据模型
       baseUrl: baseUrl,
-      disabled: false
+      disabled: false,
+      idList:[]
     };
   },
   watch: {
@@ -45,6 +46,9 @@ export default {
     // 集成父级参数
     fileData: {
       default: {}
+    },
+    limitNum:{
+      default:1
     }
   },
   beforeCreate() {
@@ -82,7 +86,14 @@ export default {
       if (res.succ) {
         this.upLoadfn.uploadSucFn();
         this.fileData.list.push(file);
-        this.fileData.id = res.data.id;
+        file.id=res.data.id;
+        if(this.limitNum==1){
+          this.fileData.id = res.data.id;
+        }else{
+          this.idList.push(res.data.id);
+          this.fileData.id=this.idList.join(',');
+        }
+        
       } else {
         this.$message({
           message: res.msg,
@@ -110,9 +121,18 @@ export default {
         this.openLink(baseUrl + "/so/file/view?fileId=" + this.fileData.id);
       }
     },
-    removeFn() {
-      this.fileData.id = null;
+    removeFn(file, fileList) {
+      this.idList=[]
       this.fileData.list = [];
+      for(let x of fileList){
+        this.idList.push(x.id)
+      }
+      this.fileData.id=this.idList.join(',');
+      this.fileData.list=JSON.parse(JSON.stringify(fileList))
+      // console.log(file)
+      // console.log(fileList)
+      // this.fileData.id = null;
+      // this.fileData.list = [];
     },
     beforeAvatarUpload(file) {
       this.disabled = true;

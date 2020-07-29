@@ -155,7 +155,7 @@ export default {
   data() {
     return {
       // 数据模型a
-      value: "",
+      value:[null],
       isajax: true,
       total: 0,
       timer: "",
@@ -169,7 +169,7 @@ export default {
       },
       tableData: [],
       depList: [],
-      perponList: []
+      perponList: [{name:'全部',userId:null}]
     };
   },
   watch: {
@@ -251,13 +251,26 @@ export default {
       return n;
     },
     exportFn() {
+      let departId='',start='',userId='',end='';
+      if(this.data.departId){
+        departId=this.data.departId
+      }
+      if(this.data.start){
+        start=this.data.start
+      }
+      if(this.data.userId){
+        userId=this.data.userId
+      }
+      if(this.data.end){
+        end=this.data.end
+      }
       //导出
       window.open(
         baseUrl +
-        "/so/report/server/excel?departId=" +this.data.departId +
-        "&start=" +this.data.start+
-        "&userId=" +this.data.userId+
-        "&end=" +this.data.end,
+        "/so/report/server/excel?departId=" +departId +
+        "&start=" +start+
+        "&userId=" +userId+
+        "&end=" +end,
         "_blank"
         // baseUrl + "/so/report/server/excel",
         // "_blank"

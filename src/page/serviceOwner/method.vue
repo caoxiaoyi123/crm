@@ -8,7 +8,7 @@
           v-model="data.projId"
           placeholder="请选择"
           size="mini"
-          style="width:122px"
+          style="width:250px"
         >
           <el-option
             v-for="item in projectList"

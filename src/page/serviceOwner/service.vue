@@ -8,7 +8,7 @@
           v-model="data.projId"
           placeholder="请选择"
           size="mini"
-          style="width:122px"
+          style="width:250px"
           @change="selectChange"
         >
           <el-option
@@ -65,6 +65,7 @@
           align="left"
           label="项目名称"
           prop="projName"
+          width="250px"
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.projName" placement="right">
@@ -112,6 +113,7 @@
           align="left"
           label="服务内容"
           prop="description"
+          width="250px"
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.description" placement="right">
@@ -530,7 +532,7 @@ export default {
       if (this.$refs.fromData) {
         this.$refs.fromData.resetFields();
       }
-      this.fromData.created=new Date()
+      this.fromData.created=new Date().getTime()
       let u = this.userId;
       this.file.nbys.data.userId = u;
       this.file.yjaz.data.userId = u;

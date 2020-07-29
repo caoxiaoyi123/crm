@@ -136,7 +136,7 @@
         @submit.native.prevent
       >
         <el-form-item label="工作性质">
-          <el-select v-model="fromData.workNature" style="width:200px">
+          <el-select v-model="fromData.workNature" style="width:200px" :disabled="disabled">
             <el-option
               v-for="(x, i) of workNatureList"
               :key="i"
@@ -155,6 +155,7 @@
           <el-input
             placeholder="请输入内容"
             v-model="fromData.content"
+            :disabled="disabled"
             :maxlength="50"
           ></el-input>
         </el-form-item>
@@ -166,6 +167,7 @@
           <el-input
             placeholder="请输入输出"
             v-model="fromData.output"
+            :disabled="disabled"
             :maxlength="50"
           ></el-input>
         </el-form-item>
@@ -212,6 +214,7 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              :disabled="disabled"
           ></el-date-picker>
           <!-- <template v-if="$route.query.type == 2">
             style="width:280px;margin:0 12px"
@@ -344,6 +347,7 @@ export default {
       receiveList: [],
       isSave:true,
       isSave1:true,
+      disabled:false,
     };
   },
   watch: {
@@ -486,7 +490,7 @@ export default {
     resolveFn() {
       this.$http({
         method: "get",
-        url: "/sv/plan/resolve/list",
+        url: "/sv/plan/detail/resolveList",
         params: {
           detailId: this.fromObj.detailId
         }
@@ -498,6 +502,7 @@ export default {
       });
     },
     creatFn() {
+      this.disabled=false;
       let d = new Object();
       if (this.$refs.fromData) {
         this.$refs.fromData.resetFields();
@@ -513,9 +518,21 @@ export default {
       this.title = "新建计划明细";
     },
     editFn() {
+      this.disabled=false;
+      this.$http({
+        url:"/sv/plan/detail/editPermiss",
+        params:{
+          detailId:this.fromObj.detailId,
+          userId:this.userId,
+        }
+      }).then(res=>{
+        if(!res.data){
+          this.disabled=true
+        }
+      })
       this.$http({
         method: "get",
-        url: "/sv/plan/resolve/list",
+        url: "/sv/plan/detail/resolveList",
         params: {
           detailId: this.fromObj.detailId
         }

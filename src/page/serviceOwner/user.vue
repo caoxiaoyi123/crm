@@ -264,15 +264,15 @@
           </el-form-item>
         </div>
         <div class="dfrb">
-          <el-form-item label="性别" prop="info_sex">
-            <el-select v-model="fromData.info_sex" style="width:200px">
+          <el-form-item label="性别" prop="infoSex">
+            <el-select v-model="fromData.infoSex" style="width:200px">
               <el-option label="男" value="男"></el-option>
               <el-option label="女" value="女"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item
             label="年龄"
-            prop="user_age"
+            prop="userAge"
             :rules="{
               pattern: /^[0-9]+$/,
               message: '请输入数字',
@@ -281,36 +281,36 @@
           >
             <el-input
               placeholder="请输入年龄"
-              v-model.trim="fromData.user_age"
+              v-model.trim="fromData.userAge"
               maxlength="3"
             ></el-input>
           </el-form-item>
         </div>
         <h4 class="bor-b tit-txt fs16">其他资料</h4>
         <div class="dfrb">
-          <el-form-item label="籍贯" prop="info_native_place">
+          <el-form-item label="籍贯" prop="infoNativePlace">
             <el-input
               placeholder="请输入籍贯"
-              v-model="fromData.info_native_place"
+              v-model="fromData.infoNativePlace"
               maxlength="25"
             ></el-input>
           </el-form-item>
-          <el-form-item label="毕业院校" prop="info_school">
+          <el-form-item label="毕业院校" prop="infoSchool">
             <el-input
               placeholder="请输入毕业院校"
-              v-model="fromData.info_school"
+              v-model="fromData.infoSchool"
               maxlength="25"
             ></el-input>
           </el-form-item>
         </div>
         <div class="dfrb">
-          <el-form-item label="学历" prop="info_enducation">
+          <el-form-item label="学历" prop="infoEnducation">
             <!-- <el-input
               placeholder="请输入学历"
               v-model="fromData.info_enducation"
               maxlength="25"
             ></el-input> -->
-            <el-select v-model="fromData.info_enducation" style="width:200px">
+            <el-select v-model="fromData.infoEnducation" style="width:200px">
                 <el-option value="高中以下"></el-option>
                 <el-option value="高中(职高、中专)"></el-option>
                 <el-option value="大专(高职)"></el-option>
@@ -320,17 +320,17 @@
                 <el-option value="其它"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="爱好" prop="info_hobby">
+          <el-form-item label="爱好" prop="infoHobby">
             <el-input
               placeholder="请输入爱好"
-              v-model="fromData.info_hobby"
+              v-model="fromData.infoHobby"
               maxlength="100"
             ></el-input>
           </el-form-item>
         </div>
         <div class="dfrb">
-          <el-form-item label="婚姻状况" prop="info_wedlock">
-            <el-select v-model="fromData.info_wedlock" style="width:200px">
+          <el-form-item label="婚姻状况" prop="infoWedlock">
+            <el-select v-model="fromData.infoWedlock" style="width:200px">
                 <el-option value="未婚"></el-option>
                 <el-option value="已婚"></el-option>
                 <el-option value="离异"></el-option>
@@ -338,10 +338,10 @@
                 <el-option value="丧偶"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="工作经历" prop="work_experience">
+          <el-form-item label="工作经历" prop="workExperience">
             <el-input
               placeholder="请输入工作经历"
-              v-model="fromData.work_experience"
+              v-model="fromData.workExperience"
               maxlength="10"
             ></el-input>
           </el-form-item>
@@ -367,6 +367,10 @@ export default {
       userId: null,
       stateList: [
         {
+          label: "全部",
+          value:null
+        },
+        {
           label: "在职",
           value: 0
         },
@@ -374,16 +378,13 @@ export default {
           label: "离职",
           value: 1
         },
-        {
-          label: "长沙地铁",
-          value: 2
-        }
+        
       ],
       total: 0,
       data: {
         comId: "",
         comName: "",
-        state: 0,
+        state:null,
         pageNo: 1,
         pageSize: 10
       },

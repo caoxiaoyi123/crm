@@ -240,23 +240,23 @@
                             </el-tooltip>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" min-width="150" label="单位名称" prop="compName">
-                        <template slot-scope="scope">
+                    <el-table-column align="center" min-width="150" label="单位名称" show-overflow-tooltip prop="compName">
+                        <!-- <template slot-scope="scope">
                             <el-tooltip :content="scope.row.compName" placement="right">
                                 <span class="clamp-2">
                                     {{ scope.row.compName }}
                                 </span>
                             </el-tooltip>
-                        </template>
+                        </template> -->
                     </el-table-column>
-                    <el-table-column align="center" min-width="150" label="项目名称" prop="projName">
-                        <template slot-scope="scope">
+                    <el-table-column align="center" min-width="150" label="项目名称" show-overflow-tooltip prop="projName">
+                        <!-- <template slot-scope="scope">
                             <el-tooltip :content="scope.row.projName" placement="right">
                                 <span class="clamp-2">
                                     {{ scope.row.projName }}
                                 </span>
                             </el-tooltip>
-                        </template>
+                        </template> -->
                     </el-table-column>
                     <el-table-column align="center" label="负责人" width="125" prop="comManager"></el-table-column>
                     <el-table-column align="center" label="手机" width="125" prop="comTel"></el-table-column>

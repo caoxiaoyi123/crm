@@ -220,6 +220,7 @@ export default {
     },
     submitFn(){
       this.drawer = false;
+      this.fromData.fileName = "";
       this.ajax();
     },
     sucFn(response, file, fileList) {

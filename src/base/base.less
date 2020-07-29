@@ -149,7 +149,12 @@ body {
 .fs16 {
 	font-size: 16px;
 }
-
+.fs18 {
+	font-size: 18px;
+}
+.fs20 {
+	font-size: 20px;
+}
 .text-over{
 	overflow:hidden;
     text-overflow:ellipsis;
@@ -469,7 +474,7 @@ textarea:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 // 文字大小
 @titleSize: 20px;
 @subTitleSize: 16px;
-@contentSize: 14px;
+@contentSize: 13px;
 @titbgColor: #F4F6FA;
 @fontColor: #5A5E66;
 @titFontColor: #2D2F33;
@@ -559,6 +564,27 @@ textarea:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 .el-message-box .red-btn {
 	background: #FA5555;
 	border-color: #FA5555;
+}
+body .el-table th.gutter{   /*解决el-table加了gutter后 边框出现白边*/
+	background:#F4F6FA ;
+	border-color: #F4F6FA;
+	display: table-cell!important;
+}
+/deep/::-webkit-scrollbar {
+	// width: 5px !important;
+	// height:5px !important;
+	// border-radius: 5px;
+	// background-color: red;
+}
+/deep/ .el-table__fixed::before, .el-table__fixed-right::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 1px;
+	background-color: unset;
+	z-index: 4;
 }
 .el-table .el-table__row.current-row>td{
 	background: #FFE088

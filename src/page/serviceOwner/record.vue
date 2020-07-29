@@ -8,7 +8,7 @@
           v-model="data.projId"
           placeholder="请选择"
           size="mini"
-          style="width:122px"
+          style="width:250px"
         >
           <el-option
             v-for="item in projectList"
@@ -79,6 +79,7 @@
           align="left"
           label="跟踪内容"
           prop="recordRemarks"
+          width="250px"
         >
           <template slot-scope="scope">
             <el-tooltip :content="scope.row.recordRemarks" placement="right">

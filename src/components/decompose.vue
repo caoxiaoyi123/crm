@@ -282,11 +282,11 @@ export default {
       })
     },
     selectable(row){
-      if(row.resolveId){
-        return false
-      }else{
+      // if(row.resolveId){
+      //   return false
+      // }else{
         return true
-      }
+      // }
     },
     getRowKey(row) {
       return row.depId;
@@ -375,7 +375,23 @@ export default {
       // }
     },
     rightRow(sele, row) {
-      console.log(row);
+      if(row.resolveId){
+        this.$http({
+          url:'/sv/plan/detail/resolveHasUsed',
+          params:{
+            resolveId:row.resolveId
+          }
+        }).then(res=>{
+          if(!res.data){
+            this.$refs.rList.toggleRowSelection(row,false)
+            this.$message({
+              type: "warning",
+              message:"该计划被使用，无法操作"
+            })
+          }
+        })
+      }
+      
       // if (row.isReadx == 1) {
       //     row.isReadx = 0;
       // }
@@ -473,6 +489,9 @@ export default {
       color: #f7aa12;
       font-size: 16px;
       margin-right: 10px;
+    }
+    .el-table /deep/ th .el-checkbox{
+      display: none;
     }
     .el-table /deep/ .cell {
       display: flex;

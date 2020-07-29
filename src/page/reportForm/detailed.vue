@@ -234,11 +234,11 @@ export default {
       },
       tableData: [],
       depList: [],
-      perponList: [],
+      perponList: [{name:'全部',userId:null}],
       drawer1: false,
       id: "", //反馈问题id
       rowFrom: "", //反馈问题来源
-      value: ""
+      value: [null]
     };
   },
   watch: {
@@ -323,13 +323,26 @@ export default {
       return n;
     },
     exportFn() {
+      let departId='',start='',userId='',end='';
+      if(this.data.departId){
+        departId=this.data.departId
+      }
+      if(this.data.start){
+        start=this.data.start
+      }
+      if(this.data.userId){
+        userId=this.data.userId
+      }
+      if(this.data.end){
+        end=this.data.end
+      }
       //导出
       window.open(
         baseUrl +
-        "/so/report/server/detail/excel?departId=" +this.data.departId +
-        "&start=" +this.data.start+
-        "&userId=" +this.data.userId+
-        "&end=" +this.data.end,
+        "/so/report/server/detail/excel?departId=" +departId +
+        "&start=" +start+
+        "&userId=" +userId+
+        "&end=" +end,
         "_blank"
         // baseUrl + "/so/report/server/detail/excel",
         // "_blank"
@@ -341,8 +354,8 @@ export default {
       c.unshift({depName:'全部',depId:null})
       this.depList = c;
     },
-    departFn() {
-      this.data.userId = "";
+    departFn(val) {
+      this.data.userId = null;
       this.data.pageNo = 1;
       this.perponList = [];
       if(val[0]){
