@@ -186,7 +186,7 @@
             <div class="mask-box" v-if="mask">
               <div class="mask-content">
                 <div class="dia-tit dfrcb">
-                  <span class="color-fff">添加任务分解</span>
+                  <span class="color-fff fs16">添加任务分解</span>
                   <i class="color-fff el-icon-close cp" @click="mask = false"></i>
                 </div>
                 <v-decompose
@@ -320,7 +320,9 @@ export default {
       data: {
         pageNo: 1,
         pageSize: 30,
-        planId: ""
+        planId: "",
+        pid:'',
+        userId:null
       },
       total: 0,
       isajax: true,
@@ -415,7 +417,14 @@ export default {
     } else {
       this.userId = "3A27BD25-8567-479D-9D96-1BA7BBEC5F0E"; //当前用户id
     }
-    this.data.planId = this.$route.query.id;
+    this.data.userId=this.userId;
+    if(sessionStorage.getItem('plandetailid')){
+      this.data.planId = sessionStorage.getItem('plandetailid');
+    }else{
+      this.$router.push('servicePlan');
+    }
+    this.data.pid=this.$route.query.id;
+    // this.data.planId = this.$route.query.id;
     this.ajax();
   },
   beforeMount() {
@@ -465,10 +474,11 @@ export default {
     resolveUpdate(p) {//单个任务分解更新
       // this.drawer1 = false;
       let d=JSON.parse(JSON.stringify(this.fromObj));
-      d.planId = this.$route.query.id;
+      // d.planId = this.$route.query.id;
       let data={
         detail:d,
         userId:this.userId,
+        planId:d.planId,
         resolve:JSON.parse(JSON.stringify(p))
       }
       this.$http({
@@ -477,11 +487,24 @@ export default {
         data:data
       }).then(res => {
         if (res.succ) {
-          this.$message({
-            title: "成功",
-            message: res.data,
-            type: "success"
-          });
+          let str=res.data.replace('编辑成功！','');
+          if(str.length>0){
+            let id=sessionStorage.getItem('plandetailid');
+            sessionStorage.setItem('plandetailid',id+','+str);
+            this.$message({
+              title: "成功",
+              message:'编辑成功！',
+              type: "success"
+            });
+          }else{
+            this.$message({
+              title: "成功",
+              message: res.data,
+              type: "success"
+            });
+          }
+          
+          
           this.drawer1 = false;
           this.ajax();
         }
@@ -569,6 +592,10 @@ export default {
               message: res.data,
               type: "success"
             });
+            let arr=sessionStorage.getItem('plandetailid').split(',');
+            // arr.splice()
+            let index=arr.indexOf(this.fromObj.planId);
+            arr.splice(index,1);
             this.ajax();
           }
         });
@@ -595,10 +622,27 @@ export default {
               delete d[x];
             }
           }
-          d.planId = this.$route.query.id;
+          // d.planId = this.$route.query.id;
+
+          let planid;
+          let pid=sessionStorage.getItem('plandetailid');//父级planid
+          if(d.planId){
+            planid=d.planId
+          }else if(this.$route.query.id){
+            planid=this.$route.query.id
+          }else{
+            planid=pid
+          }
+          // let planid=d.planId?d.planId:this.$route.query.id
+          // if(d.planId){
+          //   planid=d.planId
+          // }else{
+
+          // }
           let data={
             detail:d,
             userId:this.userId,
+            planId:planid,
             resolve:JSON.parse(JSON.stringify(this.fromFjList))
           }
           this.$http({
@@ -607,12 +651,46 @@ export default {
             data:data
           }).then(res => {
             if (res.succ) {
+              let msg,str;
+              if(res.data.indexOf('新增成功')>-1){
+                msg='新增成功！'
+                str=res.data.replace('新增成功！','');
+              }else{
+                msg='编辑成功！'
+                str=res.data.replace('编辑成功！','');
+              }
+              // let str=res.data.replace('编辑成功！','');
+              // let str1=res.data.replace('新增成功！','');
+              if(str.length>0){
+                let id=sessionStorage.getItem('plandetailid');
+                sessionStorage.setItem('plandetailid',id+','+str);
+                this.$message({
+                  title: "成功",
+                  message:msg,
+                  type: "success"
+                });
+              }else{
+                this.$message({
+                  title: "成功",
+                  message: res.data,
+                  type: "success"
+                });
+              }
               this.drawer = false;
-              this.$message({
-                title: "成功",
-                message: res.data,
-                type: "success"
-              });
+              // this.$message({
+              //   title: "成功",
+              //   message: res.data,
+              //   type: "success"
+              // });
+              // let id=sessionStorage.getItem('plandetailid');
+              // let idarr=id.split(',');
+              // idarr.push(this.fromObj.planId);
+              // let arr=new Set(idarr);
+              // arr=Array.from(arr);
+              // sessionStorage.setItem('plandetailid',arr.join(','));
+              // if(!d.planId){
+                
+              // }
               this.isSave=true;
               this.ajax();
             }else{
@@ -652,10 +730,11 @@ export default {
       this.isajax = true;
       this.tableData.splice(0);
       let that = this;
+      this.data.planId = sessionStorage.getItem('plandetailid');
       let d = this.data;
       this.$http({
-        method: "get",
-        params: d,
+        method: "post",
+        data: d,
         url: "/sv/plan/detail/list"
       }).then(res => {
         if (res.succ) {

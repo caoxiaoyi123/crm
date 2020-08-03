@@ -179,7 +179,7 @@
             type="textarea"
             resize="none"
             v-model="fromData.depMemo"
-            maxlength="50"
+            maxlength="25"
           ></el-input>
         </el-form-item>
       </el-form>

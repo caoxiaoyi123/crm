@@ -87,8 +87,8 @@ export default {
   },
   created() {
     // console.group('创建完毕状态===============》created');
-    if(this.planid){
-      this.id=this.planid
+    if(!this.$route.query.id){
+      this.id=sessionStorage.getItem('plandetailid')
     }else{
       this.id = this.$route.query.id;
     }
@@ -131,7 +131,7 @@ export default {
         method: "get",
         url: "/sv/plan/support/planSummary",
         params: {
-          planId: this.id,
+          ppid: this.id,
           responsibleId: this.userId,
         }
       }).then(res => {

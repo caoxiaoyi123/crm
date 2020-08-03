@@ -211,7 +211,7 @@
                 >
                   <template slot-scope="scope">
                     <el-tooltip :content="scope.row.comName" placement="right">
-                      <span class="clamp-2">
+                      <span class="text-over">
                         {{ scope.row.comName }}
                       </span>
                     </el-tooltip>
@@ -227,6 +227,7 @@
                   align="center"
                   label="负责人"
                   min-width="120"
+                  show-overflow-tooltip
                   prop="comManager"
                 ></el-table-column>
                 <el-table-column
@@ -451,6 +452,7 @@
             type="textarea"
             resize="none"
             v-model="fromData.comMemo"
+            maxlength="250"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -694,6 +696,9 @@ export default {
             that.isajax = false;
             that.tableData = res.data.data;
             that.total = res.data.total;
+            that.$nextTick(() => {
+              that.$refs.serverList.doLayout(); //解决表格错位
+            });
           }
         }
       });

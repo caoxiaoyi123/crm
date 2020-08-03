@@ -2,11 +2,11 @@
 <template>
   <div class="decompose">
     <div class="top-box drc mb10">
-      <span class="mr40 text-over" :title="contentTxt">
+      <span class="mr40 text-over fs16" :title="contentTxt">
         计划内容：
         <font class="red-txt">{{ contentTxt }}</font>
       </span>
-      <span class="mr10 text-over" :title="outTxt">
+      <span class="mr10 text-over fs16" :title="outTxt">
         输出：
         <font class="red-txt">{{ outTxt }}</font>
       </span>
@@ -154,7 +154,8 @@ export default {
       leftData: [],
       rightData: [],
       leftList: [], //左侧勾选承载数组
-      rightList: [] //右侧勾选承载数组
+      rightList: [], //右侧勾选承载数组
+      userId:null,
     };
   },
   watch: {
@@ -235,6 +236,11 @@ export default {
     // if(this.list.length>0){
     //     this.rightData=JSON.parse(JSON.stringify(this.list));
     // }
+    if (sessionStorage.getItem("userid")) {
+      this.userId = sessionStorage.getItem("userid");
+    } else {
+      this.userId = "3A27BD25-8567-479D-9D96-1BA7BBEC5F0E"; //当前用户id
+    }
   },
   beforeMount() {
     // console.group('挂载前状态  ===============》beforeMount');
@@ -261,25 +267,48 @@ export default {
   methods: {
     // 方法 集合
     leftTapFn(row){
-      this.$refs.leftData.toggleRowSelection(row)
+      let id =this.$route.query.id;
+      if(id){
+        this.$http({
+          url:'/sv/plan/main/planCreator',
+          params:{
+            ppid:id
+          }
+        }).then(res=>{
+          if(res.succ){
+            if(row.userId==res.data){
+              // this.$refs.leftData.toggleRowSelection(row,false)
+              this.$message({
+                type: "warning",
+                message:"无法分配给创建者"
+              })
+            }else{
+              this.$refs.leftData.toggleRowSelection(row)
+            }
+          }
+        })
+      }
     },
     rightTapFn(row){
       // this.$refs.rList.toggleRowSelection(row)
     },
     returnL(){
-      let arr=JSON.parse(JSON.stringify(this.lObj));
-      let arr2=JSON.parse(JSON.stringify(this.rightData));
-      for(let x in arr){
-        for(let y of arr2){
-          if(arr[x].userId==y.dealUserId&&arr[x].depId==y.depId){
-            // val.splice(x,1);
-            arr[x].isshow=arr[x].isshow==0?1:0;
+      if(this.lObj){
+        let arr=JSON.parse(JSON.stringify(this.lObj));
+        let arr2=JSON.parse(JSON.stringify(this.rightData));
+        for(let x in arr){
+          for(let y of arr2){
+            if(arr[x].userId==y.dealUserId&&arr[x].depId==y.depId){
+              // val.splice(x,1);
+              arr[x].isshow=arr[x].isshow==0?1:0;
+            }
           }
         }
+        this.leftData=arr.filter(v=>{
+          return v.isshow!=0;
+        })
       }
-      this.leftData=arr.filter(v=>{
-        return v.isshow!=0;
-      })
+      
     },
     selectable(row){
       // if(row.resolveId){
@@ -354,6 +383,34 @@ export default {
       // }
     },
     leftRow(sele, row) {
+      let id =this.$route.query.id;
+      if(id){
+        this.$http({
+          url:'/sv/plan/main/planCreator',
+          params:{
+            ppid:id
+          }
+        }).then(res=>{
+          if(res.succ){
+            if(row.userId==res.data){
+              this.$refs.leftData.toggleRowSelection(row,false)
+              this.$message({
+                type: "warning",
+                message:"无法分配给创建者"
+              })
+            }
+          }
+        })
+      }else{
+        if(row.userId==this.userId){
+          this.$refs.leftData.toggleRowSelection(row,false)
+          this.$message({
+            type: "warning",
+            message:"无法分配给创建者"
+          })
+        }
+      }
+      
       // this.list=JSON.parse(JSON.stringify(sele));
       // if (row.isReadx == 1) {
       //     row.isReadx = 0;
@@ -382,7 +439,7 @@ export default {
             resolveId:row.resolveId
           }
         }).then(res=>{
-          if(!res.data){
+          if(res.data){
             this.$refs.rList.toggleRowSelection(row,false)
             this.$message({
               type: "warning",
@@ -425,11 +482,17 @@ export default {
     },
     closeFn() {
       let d = JSON.parse(JSON.stringify(this.rightData));
+      this.$refs.rList.clearSelection();
+      this.$refs.leftData.clearSelection();
+      this.rightData=[];
       this.$emit("closeFn", { list: d });
     },
     sumbitFn() {
       let d = JSON.parse(JSON.stringify(this.rightData));
-      if (d.length && d.length > 0) {
+      this.$refs.rList.clearSelection();
+      this.$refs.leftData.clearSelection();
+      this.rightData=[];
+      // if (d.length && d.length > 0) {
         for (let x of d) {
           if (d[0].detailId) {
             x.detailId = d[0].detailId;
@@ -463,12 +526,12 @@ export default {
         //     this.$emit("submitFn", obj);
         //   }
         // });
-      } else {
-        this.$message({
-          message: "请选择人员",
-          type: "warning"
-        });
-      }
+      // } else {
+      //   this.$message({
+      //     message: "请选择人员",
+      //     type: "warning"
+      //   });
+      // }
     }
   }
 };

@@ -350,6 +350,11 @@
         <el-form-item
           label="建安费"
           prop="projConstruction"
+          :rules="{
+            pattern: /^(([1-9]\d*)|0)(\.\d+)?$/,
+            message: '建安费必须为正数',
+            trigger: ['blur', 'change']
+          }"
         >
           <el-input
             placeholder="请输入建安费"
@@ -363,7 +368,7 @@
             placeholder="请输入项目概况"
             type="textarea"
             resize="none"
-            maxlength="50"
+            maxlength="800"
             v-model="fromData.projMemo"
           ></el-input>
         </el-form-item>

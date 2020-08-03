@@ -108,7 +108,8 @@ export default {
       },
       baseUrl: baseUrl,
       btnTxt: "点击上传",
-      disabled: false
+      disabled: false,
+      fileid:null
     };
   },
   watch: {
@@ -219,15 +220,38 @@ export default {
       }
     },
     submitFn(){
-      this.drawer = false;
-      this.fromData.fileName = "";
-      this.ajax();
+      if(!this.fileid){
+        this.$message({
+          message:'请先上传文件',
+          type: "warning"
+        })
+        return false
+      }
+      this.$http({
+        method:'post',
+        url:'/so/company/saveFile',
+        data:{
+          comId:this.fromData.id,
+          fileId:this.fileid,
+          userId:this.fromData.userId,
+          fileName:this.fromData.fileName
+        }
+      }).then(res=>{
+        if(res.succ){
+          this.drawer = false;
+          this.fromData.fileName = "";
+          this.fileid=null;
+          this.ajax();
+        }
+      })
+      
     },
     sucFn(response, file, fileList) {
       this.btnTxt = "点击上传";
       this.disabled = false;
       this.$refs.upload.clearFiles();
       if (response.succ) {
+        this.fileid=response.data.resId;
         this.upLoadfn.uploadSucFn();
         // this.drawer = false;
         // this.ajax();

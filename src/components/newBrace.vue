@@ -187,7 +187,7 @@ export default {
         pageNo: 1,
         pageSize: 20,
         searchCompName: null,
-        planId: null
+        ppid: null
       },
       tableData: [],
       funnelList: [
@@ -290,7 +290,14 @@ export default {
       this.data.source = "私海";
       this.data.funnel = 99;
     }
-    this.data.planId = this.$route.query.id;
+    let ppid
+    if(this.$route.query.id){
+      ppid=this.$route.query.id;
+    }else{
+      ppid=sessionStorage.getItem('plandetailid')
+    }
+    this.data.ppid = ppid;
+    this.data.userId=this.userId
     this.ajax();
   },
   beforeMount() {
@@ -348,7 +355,7 @@ export default {
       for (let x of sele) {
         let d = {
           compId: x.comId,
-          planId: this.$route.query.id,
+          planId:this.data.ppid ,
           planType: this.$route.query.type,
           projId: x.projId,
           responsibleId: this.userId,

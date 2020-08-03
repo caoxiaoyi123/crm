@@ -184,7 +184,7 @@
           </template>
         </el-form-item>
         <el-form-item label="附件">
-          <v-upload :fileData="fileData"></v-upload>
+          <v-upload :fileData="fileData" ref="upload"></v-upload>
         </el-form-item>
       </el-form>
     </v-drawer>
@@ -403,7 +403,60 @@ export default {
     },
     editFn() {
       this.fromData = JSON.parse(JSON.stringify(this.fromObj));
-      this.disabled=false
+      if(this.fromObj.ppid){
+        this.$http({
+          url:"/sv/plan/main/planCreator",
+          params:{
+            ppid:this.fromObj.ppid
+          }
+        }).then(res=>{
+          if(res.succ){
+            if(res.data==this.data.userId){
+              this.$http({
+                url:'/sv/plan/main/editPermiss',
+                method:'post',
+                data:{
+                  planId:this.fromObj.planId,
+                  userId:this.data.userId,
+                },
+              }).then(res=>{
+                if(!res.data){
+                  this.disabled=true
+                  this.editingFn()
+                  this.title = "编辑计划";
+                }
+              })
+            }else{
+              this.$message({
+                type: "warning",
+                message:'您无编辑权限'
+              })
+              return false
+            }
+          }
+        })
+      }else{
+        this.$http({
+          url:'/sv/plan/main/editPermiss',
+          method:'post',
+          data:{
+            planId:this.fromObj.planId,
+            userId:this.data.userId,
+          },
+        }).then(res=>{
+          if(!res.data){
+            this.disabled=true
+          }
+        })
+        this.editingFn()
+        this.title = "编辑计划";
+      }
+        
+      
+      // this.disabled=false
+      
+    },
+    editingFn(){
       if (this.fromData.planFile) {
         this.fileData.id = this.fromData.planFile;
         if (this.fromData.pubFileEntity) {
@@ -426,20 +479,7 @@ export default {
           let t=start+86400000;
           this.timeValue=this.formatDate(t);
       }
-
-      this.$http({
-        url:'/sv/plan/main/editPermiss',
-        params:{
-          planId:this.fromObj.planId,
-          userId:this.data.userId,
-        }
-      }).then(res=>{
-        if(!res.data){
-          this.disabled=true
-        }
-      })
       this.drawer = true;
-      this.title = "编辑计划";
     },
     deleteFn() {
       //删除组织
@@ -451,8 +491,8 @@ export default {
         cancelButtonClass: "cancel-btn"
       }).then(() => {
         this.$http({
-          method: "get",
-          params: {
+          method: "post",
+          data: {
             planId: this.fromObj.planId,
             userId: this.data.userId
           },
@@ -502,19 +542,36 @@ export default {
       this.ajax();
     },
     jump(row) {
+      if(row.ppid){
+        let id=row.planId;
+        let idarr=id.split(',');
+        idarr.push(row.ppid);
+        let arr=new Set(idarr);
+        arr=Array.from(arr);
+        sessionStorage.setItem('plandetailid',arr.join(','));
+      }else{
+        sessionStorage.setItem('plandetailid',row.planId);
+      }
       this.$router.push({
         path: "planDetailed",
         query: {
           type: row.type,
-          id: row.planId,
           startDate:row.startDate,
-          endDate:row.endDate
+          endDate:row.endDate,
+          id:row.ppid,
         }
       });
     },
     submitFn() {
       this.$refs.fromData.validate(valid => {
         if (valid) {
+          if(this.$refs.upload.disabled){
+            this.$message({
+              message: "文件正在上传，无法保存",
+              type: "warning"
+            });
+            return false;
+          }
           if (!this.timeValue) {
             this.$message({
               message: "起止时间不得为空",

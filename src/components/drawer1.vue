@@ -223,6 +223,8 @@ export default {
         // 方法 集合
         closeFn() {
             // this.$parent.drawer=false
+            this.file.id=null;
+            this.file.list=[];
             this.$refs.drref.closeDrawer();
         },
         sumbitFn() {
@@ -251,7 +253,7 @@ export default {
             }
             if (!d.description || d.description == "") {
                 this.$message({
-                    message: "服务内容为必填项",
+                    message: "反馈内容为必填项",
                     type: "warning"
                 });
                 return false;
@@ -276,6 +278,7 @@ export default {
                         message: res.data,
                         type: "success"
                     });
+                    this.file.id=null;
                     this.file.list = []; //置空
                     this.d = false;
                     this.$parent.ajax();

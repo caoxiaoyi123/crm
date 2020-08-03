@@ -95,6 +95,7 @@
               @select="corpCodeSelect"
               :fetch-suggestions="corpCodeAjax"
               :trigger-on-focus="false"
+              maxlength="50"
             >
               <template slot-scope="{ item }">
                 <span :title="item.jgmc">{{ item.jgmc }}</span>

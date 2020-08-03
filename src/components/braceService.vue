@@ -298,7 +298,14 @@ export default {
     } else if (this.$route.query.type == 2) {
       this.num = 7;
     }
-    this.data.planId = this.$route.query.id;
+    let ppid
+    if(this.$route.query.id){
+      ppid=this.$route.query.id;
+    }else{
+      ppid=sessionStorage.getItem('plandetailid')
+    }
+    this.data.ppid = ppid;
+    this.data.userId=this.userId
     this.ajax();
     // this.getCount();
     this.count();
@@ -328,7 +335,7 @@ export default {
     // 方法 集合
     count() {
       let d = {
-        planId: this.data.planId,
+        ppid: this.data.ppid,
         responsibleId: this.userId,
         supType: 0
       };

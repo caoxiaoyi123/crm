@@ -533,6 +533,13 @@ textarea:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 	opacity: 0;
 	visibility: hidden;
 }
+.el-table th.gutter {
+	display: table-cell !important;
+}
+
+.el-table colgroup.gutter {
+	display: table-cell !important;
+}
 .el-table .table-header {
 	background: @titbgColor;
 	font-size: @contentSize;
@@ -570,6 +577,29 @@ body .el-table th.gutter{   /*解决el-table加了gutter后 边框出现白边*/
 	border-color: #F4F6FA;
 	display: table-cell!important;
 }
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+// ::-webkit-scrollbar {
+// 	width: 8px;
+// 	height: 8px;
+// 	background-color: #F5F5F5;
+// }
+
+// /*定义滚动条轨道 内阴影+圆角*/
+// ::-webkit-scrollbar-track {
+// 	height: 8px;
+// 	-webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0);
+// 	border-radius: 10px;
+// 	background-color: #F5F5F5;
+// }
+
+//   //
+// /*定义滑块 内阴影+圆角*/
+// ::-webkit-scrollbar-thumb {
+// 	height: 8px;
+// 	border-radius: 4px;
+// 	-webkit-box-shadow: inset 0 0 6px rgba(208, 230, 250, .3);
+// 	background-color: #c5daff;
+// }   
 /deep/::-webkit-scrollbar {
 	// width: 5px !important;
 	// height:5px !important;
