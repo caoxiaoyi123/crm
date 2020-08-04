@@ -156,6 +156,7 @@ export default {
       leftList: [], //左侧勾选承载数组
       rightList: [], //右侧勾选承载数组
       userId:null,
+      ppid:null,
     };
   },
   watch: {
@@ -241,6 +242,11 @@ export default {
     } else {
       this.userId = "3A27BD25-8567-479D-9D96-1BA7BBEC5F0E"; //当前用户id
     }
+    if(this.$route.query.id){
+      this.ppid=this.$route.query.id
+    }else{
+      this.ppid=sessionStorage.getItem('plandetailid')
+    }
   },
   beforeMount() {
     // console.group('挂载前状态  ===============》beforeMount');
@@ -267,7 +273,7 @@ export default {
   methods: {
     // 方法 集合
     leftTapFn(row){
-      let id =this.$route.query.id;
+      let id=this.$route.query.id;
       if(id){
         this.$http({
           url:'/sv/plan/main/planCreator',
@@ -287,6 +293,16 @@ export default {
             }
           }
         })
+      }else{
+        if(row.userId==this.userId){
+          this.$refs.leftData.toggleRowSelection(row,false)
+          this.$message({
+            type: "warning",
+            message:"无法分配给创建者"
+          })
+        }else{
+          this.$refs.leftData.toggleRowSelection(row)
+        }
       }
     },
     rightTapFn(row){
@@ -489,9 +505,6 @@ export default {
     },
     sumbitFn() {
       let d = JSON.parse(JSON.stringify(this.rightData));
-      this.$refs.rList.clearSelection();
-      this.$refs.leftData.clearSelection();
-      this.rightData=[];
       // if (d.length && d.length > 0) {
         for (let x of d) {
           if (d[0].detailId) {
@@ -512,6 +525,9 @@ export default {
           //   }
           // }
         }
+        this.$refs.rList.clearSelection();
+        this.$refs.leftData.clearSelection();
+        this.rightData=[];
         this.$emit("submitFn", d);
         // this.$http({
         //   method: "post",

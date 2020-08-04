@@ -125,7 +125,7 @@
         ></el-pagination>
       </div>
     </div>
-    <v-drawer :title="title" :drawer="drawer" :drawerW="'400px'" @submitFn="submitFn" sumbitTxt="保存">
+    <v-drawer :title="title" :drawer="drawer" :drawerW="'400px'" @submitFn="submitFn" sumbitTxt="保存" @closeFn="timeValue='';">
       <el-form
         :model="fromData"
         label-width="80px"

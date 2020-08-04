@@ -321,7 +321,7 @@ export default {
         pageNo: 1,
         pageSize: 30,
         planId: "",
-        pid:'',
+        ppid:'',
         userId:null
       },
       total: 0,
@@ -423,7 +423,7 @@ export default {
     }else{
       this.$router.push('servicePlan');
     }
-    this.data.pid=this.$route.query.id;
+    this.data.ppid=this.$route.query.id;
     // this.data.planId = this.$route.query.id;
     this.ajax();
   },

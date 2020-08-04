@@ -143,8 +143,8 @@
                 :total="total"
             ></el-pagination>
         </div>
-        <v-drawer :title="'事项数量'" :drawer="drawer" :drawerW="'70vw'" :readOnly="true">
-            <v-statistic :planid="planid" :responsibleId="responsibleId"></v-statistic>
+        <v-drawer :title="'事项数量'" :drawer="drawer" :drawerW="'70vw'" :readOnly="true" @closeFn="closePlanDetail">
+            <v-statistic :planid="planid" :responsibleId="responsibleId" :ppid="statisticPpid"></v-statistic>
             <div class="table-box mt10">
                 <el-table
                     cell-class-name="fs13 table-h"
@@ -364,6 +364,8 @@ export default {
             },
             total2:0,
             num: 31,
+            taskData:{},
+            statisticPpid:null,
         };
     },
     filters: {
@@ -573,16 +575,40 @@ export default {
                 }
             })
         },
+        closePlanDetail(){
+            this.statisticPpid=null;
+        },
         seePlanDetail(row){//查看计划明细
             this.planid=row.planId
             this.responsibleId=row.responsibleId;
             this.drawer=true;
-            this.ajax1(row.planId)
+            this.data1.ppid=row.ppid,
+            this.data1.userId=row.responsibleId
+            let arr=row.planId.split(',');
+            if(row.ppid){
+                arr.push(row.ppid)
+            }
+            let id
+            if(row.ppid){
+                id=row.ppid
+            }else{
+                id=row.planId
+            }
+            this.statisticPpid=id;
+            // this.$refs.statistic.id=id;
+            this.data1.planId=arr.join(',')
+            this.ajax1()
         },
         seeBrace(row){//查看支撑明细
             this.drawer2=true
+            let ppid;
+            if(row.ppid){
+                ppid=row.ppid
+            }else{
+                ppid=row.planId
+            }
             this.summaryData={
-                planId:row.planId,
+                ppid:ppid,
                 responsibleId:row.responsibleId,
             }
             if (row.type == 0) {
@@ -592,12 +618,20 @@ export default {
             } else if (row.type == 2) {
                 this.num = 7;
             }
+            this.data2.ppid=ppid,
+            this.data2.userId=row.responsibleId
             this.getCount();
             this.ajax2()
         },
         upload(row){
+            let ppid;
+            if(row.ppid){
+                ppid=row.ppid
+            }else{
+                ppid=row.planId
+            }
             window.open(
-                baseUrl + "/sv/plan/search/downloadReport?planId=" + row.planId+"&responsibleId="+row.responsibleId+"&responsibleName="+row.responsibleName,
+                baseUrl + "/sv/plan/search/downloadReport?ppid=" + ppid+"&planId="+row.planId+"&responsibleId="+row.responsibleId+"&responsibleName="+row.responsibleName,
                 "_blank"
             );
         },
@@ -618,15 +652,14 @@ export default {
             this.data1.pageNo = val;
             this.ajax1()
         },
-        ajax1(id){
+        ajax1(){
             this.isajax1 = true;
             this.list1.splice(0);
             let that = this;
             let d = this.data1;
-            d.planId=id;
             this.$http({
-                method: "get",
-                params: d,
+                method: "post",
+                data: d,
                 url: "/sv/plan/detail/list"
             }).then(res => {
                 if (res.succ) {
@@ -678,7 +711,7 @@ export default {
             this.list2.splice(0);
             let that = this;
             let d = this.data2;
-            d.planId=this.summaryData.planId;
+            // d.planId=this.summaryData.planId;
             d.supType=this.tabNum;
             this.$http({
                 method: "get",

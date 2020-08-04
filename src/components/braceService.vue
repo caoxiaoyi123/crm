@@ -377,7 +377,7 @@ export default {
         this.$http({
           method: "get",
           params: {
-            planId: this.$route.query.id,
+            ppid: this.data.ppid,
             supId: this.fromObj.supId,
             userId: this.userId
           },

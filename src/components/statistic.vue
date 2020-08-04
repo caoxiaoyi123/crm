@@ -80,6 +80,9 @@ export default {
     },
     responsibleId:{
       default: ""
+    },
+    ppid:{
+      default:''
     }
   },
   beforeCreate() {
@@ -127,6 +130,9 @@ export default {
   methods: {
     // 方法 集合
     getCount(){
+      if(this.ppid){
+        this.id=this.ppid;
+      }
       this.$http({
         method: "get",
         url: "/sv/plan/support/planSummary",
