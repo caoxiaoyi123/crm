@@ -7,7 +7,9 @@
 export default {
   name: "App",
   data() {
-    return {};
+    return {
+      userId:null,
+    };
   },
   beforeCreate() {
     if (!localStorage.getItem("cityAllTree")) {
@@ -16,47 +18,87 @@ export default {
         url: "/so/area/all"
       }).then(res => {
         let d = JSON.parse(JSON.stringify(res.data));
+        if(!res.data){
+          d=[];
+        }
         let c = this.toTree(d,'areaId','pid');
         localStorage.setItem("cityAllTree", JSON.stringify(c));
       });
     }
-    if (!sessionStorage.getItem("cityTree")) {
+    // if (!sessionStorage.getItem("cityTree")) {
       this.$http({
         method: "get",
         url: "/so/area/server"
       }).then(res => {
         sessionStorage.setItem("cityTree", JSON.stringify(res.data));
       });
-    }
+    // }
   },
   created() {
     // console.log(this.getJsUrl('userId'))
-    if(!sessionStorage.getItem('depart')){
-      this.getDepart();
-    }
+    // this.userId='3A27BD25-8567-479D-9D96-1BA7BBEC5F0E'
   },
   updated() {
     //默认选中第一项
   },
   mounted() {
+
     if (this.getParam("userid")) {
       // sessionStorage.setItem("userid", this.getJsUrl("userId"));
       sessionStorage.setItem("userid", this.getParam("userid"));
+      this.userId=this.getParam("userid");
     }
-    if (this.getJsUrl("role")) {
-      sessionStorage.setItem("role", this.getJsUrl("role"));
-    }
+
+    // if(!sessionStorage.getItem('depart')){
+      this.getDepart();
+    // }
+    // if(!sessionStorage.getItem('departUser')){
+      this.getDepartUser();
+    // }
+
+    // if (this.getJsUrl("role")) {
+    //   sessionStorage.setItem("role", this.getJsUrl("role"));
+    // }
   },
   methods: {
     getDepart() {
+      let userId;
+      if (sessionStorage.getItem("userid")) {
+        userId=sessionStorage.getItem("userid");
+      }else{
+        userId='3A27BD25-8567-479D-9D96-1BA7BBEC5F0E'
+      }
       //获取组织关系
       this.$http({
         method: "get",
-        url: "/common/depart"
+        url: "/common/depart",
+        params:{
+          userId:userId
+        },
       }).then(res => {
         let c = this.toTree(res.data,'depCode','pid');
         sessionStorage.setItem("depart", JSON.stringify(c));
         
+        // this.tableData=c;
+        // this.$refs.list.setCurrentRow(this.tableData[0]);
+      });
+    },
+    getDepartUser(){
+      let userId;
+      if (sessionStorage.getItem("userid")) {
+        userId=sessionStorage.getItem("userid");
+      }else{
+        userId='3A27BD25-8567-479D-9D96-1BA7BBEC5F0E'
+      }
+      this.$http({
+        method: "get",
+        url: "/common/departPerson",
+        params:{
+          userId:userId
+        },
+      }).then(res => {
+        let c = this.toTree(res.data,'depCode','pid');
+        sessionStorage.setItem("departUser", JSON.stringify(c));
         // this.tableData=c;
         // this.$refs.list.setCurrentRow(this.tableData[0]);
       });

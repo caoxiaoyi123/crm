@@ -36,7 +36,8 @@ export default {
       // 数据模型
       baseUrl: baseUrl,
       disabled: false,
-      idList:[]
+      idList:[],
+      id:null,
     };
   },
   watch: {
@@ -49,6 +50,9 @@ export default {
     },
     limitNum:{
       default:1
+    },
+    type:{
+      default:'all'
     }
   },
   beforeCreate() {
@@ -93,7 +97,10 @@ export default {
           this.idList.push(res.data.id);
           this.fileData.id=this.idList.join(',');
         }
-        
+        // this.id=res.data.id;
+        if(this.type=='file'){
+          this.fileData.id=res.data.resId;
+        }
       } else {
         this.$message({
           message: res.msg,
@@ -113,12 +120,12 @@ export default {
         this.openPdf(
           baseUrl +
             "/so/file/view?fileId=" +
-            this.fileData.id +
+            file.id +
             "&fileName=" +
-            this.fileData.list[0].name
+            file.name
         );
       } else {
-        this.openLink(baseUrl + "/so/file/view?fileId=" + this.fileData.id);
+        this.openLink(baseUrl + "/so/file/view?fileId=" + file.id);
       }
     },
     removeFn(file, fileList) {

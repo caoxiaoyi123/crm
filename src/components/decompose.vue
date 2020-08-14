@@ -484,9 +484,10 @@ export default {
       if (currentRow) {
         this.$http({
           method: "get",
-          url: "/common/departUser",
+          url: "/common/departConChildUser",
           params: {
-            depId: currentRow.depId
+            depCode: currentRow.depCode,
+            userId:this.userId
           }
         }).then(res => {
           if (res.succ) {
@@ -527,7 +528,7 @@ export default {
         }
         this.$refs.rList.clearSelection();
         this.$refs.leftData.clearSelection();
-        this.rightData=[];
+        // this.rightData=[];
         this.$emit("submitFn", d);
         // this.$http({
         //   method: "post",

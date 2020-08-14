@@ -195,7 +195,7 @@
                 ></el-pagination>
             </div>
         </v-drawer>
-        <v-drawer :title="'支撑明细'" :drawer="drawer2" :drawerW="'70vw'" :readOnly="true" :type="2">
+        <v-drawer :title="'支撑明细'" :drawer="drawer2" :drawerW="'70vw'" :readOnly="true" :type="2" @closeFn="data2.pageNo=1">
             <div class="dfrb">
                 <div class="tab-box">
                     <span class="fs14 mr40 cp" :class="i==tabNum?'active':''" v-for="(item,i) of tabList" :key="i" @click="tabChange(i)">{{item}}</span>
@@ -262,7 +262,7 @@
                     <el-table-column align="center" label="手机" width="125" prop="comTel"></el-table-column>
                     <el-table-column align="center" label="可能意向产品" width="110" prop="intentProduct" v-if="tabNum==1"></el-table-column>
                     <el-table-column align="center" label="预估金额（万）" width="120" prop="gusAmount" v-if="tabNum==1"></el-table-column>
-                    <el-table-column align="center" label="概率" width="125" prop="probability" v-if="tabNum==1"></el-table-column>
+                    <el-table-column align="center" label="概率（%）" width="125" prop="probability" v-if="tabNum==1"></el-table-column>
                     <el-table-column width="110" v-for="o in num" :key="o" align="center" :label="o + ''">
                         <template slot-scope="scope">
                             <el-tooltip placement="top" effect="light">
@@ -316,7 +316,8 @@ export default {
                 pageNo: 1,
                 pageSize: 20,
                 startDate: "",
-                endDate: ""
+                endDate: "",
+                userId:null,
             },
             depData: [],
             tableData: [],
@@ -366,6 +367,7 @@ export default {
             num: 31,
             taskData:{},
             statisticPpid:null,
+            userId:null,
         };
     },
     filters: {
@@ -410,6 +412,11 @@ export default {
     created() {
         // console.group('创建完毕状态===============》created');
         //默认起止时间为本月1号到当前时间
+        if (sessionStorage.getItem("userid")) {
+            this.userId = sessionStorage.getItem("userid");
+        } else {
+            this.userId = "3A27BD25-8567-479D-9D96-1BA7BBEC5F0E"; //当前用户id
+        }
         this.typeChange(99)
     },
     beforeMount() {
@@ -463,8 +470,32 @@ export default {
         },
         getDepart() {
             //获取组织关系
-            if(sessionStorage.getItem("depart")){
-                let d = JSON.parse(sessionStorage.getItem("depart"));
+            // if(sessionStorage.getItem("depart")){
+            //     let d = JSON.parse(sessionStorage.getItem("depart"));
+            //     let c = d;
+            //     c.unshift({ name: "全部", depId:'',children:[]});
+            //     c.map(function(item,index){
+            //         item.index=index
+            //     })
+            //     this.depData =JSON.parse(JSON.stringify(c));
+            //     this.depLoad=false;
+            // }else{
+            //     this.$http({
+            //         method: "get",
+            //         url: "/common/depart"
+            //     }).then(res => {
+            //         let c = this.toTree(res.data,'depCode','pid');
+            //         sessionStorage.setItem("depart", JSON.stringify(c));
+            //         c.unshift({ name: "全部", depId:'',children:[]});
+            //         c.map(function(item,index){
+            //             item.index=index
+            //         })
+            //         this.depData =JSON.parse(JSON.stringify(c));
+            //         this.depLoad=false;
+            //     });
+            // }
+            if(sessionStorage.getItem("departUser")){
+                let d = JSON.parse(sessionStorage.getItem("departUser"));
                 let c = d;
                 c.unshift({ name: "全部", depId:'',children:[]});
                 c.map(function(item,index){
@@ -475,10 +506,13 @@ export default {
             }else{
                 this.$http({
                     method: "get",
-                    url: "/common/depart"
+                    url: "/common/departPerson",
+                    params:{
+                        userId:this.userId
+                    },
                 }).then(res => {
                     let c = this.toTree(res.data,'depCode','pid');
-                    sessionStorage.setItem("depart", JSON.stringify(c));
+                    sessionStorage.setItem("departUser", JSON.stringify(c));
                     c.unshift({ name: "全部", depId:'',children:[]});
                     c.map(function(item,index){
                         item.index=index
@@ -512,35 +546,35 @@ export default {
                 d.pageNo=1;
                 this.data=JSON.parse(JSON.stringify(d));
                 // this.ajax();
-                if((!currentRow.userId)&&currentRow.depCode){//如果是组织的情况
-                    let nowRow=JSON.parse(JSON.stringify(currentRow));//查询组织下的人员
-                    this.$http({
-                        method: "get",
-                        url: "/common/departConChildUser",
-                        params: {
-                            depCode: currentRow.depCode
-                        }
-                    }).then(res => {
-                        if (res.succ) {
-                            if(res.data.length>0){
-                                for(let x in res.data){
-                                    res.data[x].index=currentRow.index+'C'+x
-                                }
-                                if(!currentRow.children||currentRow.children.length==0){
-                                    currentRow.children = res.data;
-                                }else{
-                                    if(currentRow.children[0].userId){
-                                        currentRow.children = res.data;
-                                    }else{
-                                        currentRow.children=currentRow.children.concat(res.data);
-                                    }
-                                }
+                // if((!currentRow.userId)&&currentRow.depCode){//如果是组织的情况
+                //     let nowRow=JSON.parse(JSON.stringify(currentRow));//查询组织下的人员
+                //     this.$http({
+                //         method: "get",
+                //         url: "/common/departConChildUser",
+                //         params: {
+                //             depCode: currentRow.depCode
+                //         }
+                //     }).then(res => {
+                //         if (res.succ) {
+                //             if(res.data.length>0){
+                //                 for(let x in res.data){
+                //                     res.data[x].index=currentRow.index+'C'+x
+                //                 }
+                //                 if(!currentRow.children||currentRow.children.length==0){
+                //                     currentRow.children = res.data;
+                //                 }else{
+                //                     if(currentRow.children[0].userId){
+                //                         currentRow.children = res.data;
+                //                     }else{
+                //                         currentRow.children=currentRow.children.concat(res.data);
+                //                     }
+                //                 }
                                 
-                                this.$set(this.depData,currentRow.index,currentRow)
-                            }
-                        }
-                    });
-                }
+                //                 this.$set(this.depData,currentRow.index,currentRow)
+                //             }
+                //         }
+                //     });
+                // }
             }
         },
         timeClick(val) {
@@ -563,6 +597,11 @@ export default {
             this.isajax = true;
             this.tableData.splice(0);
             let d = JSON.parse(JSON.stringify(this.data));
+            if(!d.depCode){
+                d.userId=null;
+            }else{
+                d.userId=this.userId;
+            }
             this.$http({
                 method:'get',
                 url: "/sv/plan/search/list",
@@ -576,6 +615,7 @@ export default {
             })
         },
         closePlanDetail(){
+            this.data1.pageNo=1;
             this.statisticPpid=null;
         },
         seePlanDetail(row){//查看计划明细
@@ -768,7 +808,7 @@ export default {
             position: relative;
             & .el-table__expand-icon {
                 position: absolute;
-                right: 10px;
+                right: 0px;
             }
         }
         .depart .cell>div{

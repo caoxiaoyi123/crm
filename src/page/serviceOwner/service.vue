@@ -292,7 +292,7 @@
             type="textarea"
             resize="none"
             v-model="fromData.description"
-            maxlength="50"
+            maxlength="200"
           ></el-input>
         </el-form-item>
         <h4 class="bor-b mb20"></h4>

@@ -278,9 +278,30 @@ export default {
     },
     getDepart() {
       //获取组织关系
-      let c = JSON.parse(sessionStorage.getItem("depart"));
-      c.unshift({depName:'全部',depId:null})
-      this.depList = c;
+      if(sessionStorage.getItem("depart")){
+        let c = JSON.parse(sessionStorage.getItem("depart"));
+        c.unshift({depName:'全部',depId:null})
+        this.depList = c;
+      }else{
+        let userId;
+        if (sessionStorage.getItem("userid")) {
+          userId=sessionStorage.getItem("userid");
+        }else{
+          userId='3A27BD25-8567-479D-9D96-1BA7BBEC5F0E'
+        }
+        this.$http({
+            method: "get",
+            url: "/common/depart",
+            params:{
+              userId:userId
+            },
+        }).then(res => {
+            let c = this.toTree(res.data,'depCode','pid');
+            sessionStorage.setItem("depart", JSON.stringify(c));
+            c.unshift({depName:'全部',depId:null})
+            this.depList =JSON.parse(JSON.stringify(c));
+        });
+      }
     },
     departFn(val) {
       this.data.userId = null;

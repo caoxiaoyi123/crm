@@ -20,6 +20,7 @@
             type="text"
             v-model="data.searchCompName"
             placeholder="请输入关键字"
+            maxlength="50"
           />
           <i class="el-icon-search cp" slot="append" @click="keywordFn"></i>
         </div>
@@ -92,14 +93,15 @@
           min-width="150"
           label="单位名称"
           prop="compName"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.compName" placement="right">
               <span class="clamp-2">
                 {{ scope.row.compName }}
               </span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
@@ -107,14 +109,15 @@
           min-width="150"
           label="项目名称"
           prop="projName"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.projName" placement="right">
               <span class="clamp-2">
                 {{ scope.row.projName }}
               </span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="center"
@@ -507,6 +510,10 @@ export default {
               message:'必须填写漏斗阶段',
               type: "warning"
           });
+          return false
+      }
+      if(this.fromData.param=='无'&&!this.fromData.id){
+          this.isDialog = false;
           return false
       }
       if(!this.isSave){

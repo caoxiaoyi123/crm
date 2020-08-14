@@ -103,12 +103,13 @@
           header-align="center"
           label="单位"
           prop="company"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.company" placement="right">
               <span class="text-over">{{ scope.row.company }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
@@ -116,12 +117,13 @@
           header-align="center"
           label="项目"
           prop="projName"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.projName" placement="right">
               <span class="text-over">{{ scope.row.projName }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="center"
@@ -158,12 +160,13 @@
           min-width="200"
           label="服务内容"
           prop="description"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.description" placement="right">
               <span class="text-over">{{ scope.row.description }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="center"
@@ -350,9 +353,30 @@ export default {
     },
     getDepart() {
       //获取组织关系
-      let c = JSON.parse(sessionStorage.getItem("depart"));
-      c.unshift({depName:'全部',depId:null})
-      this.depList = c;
+      if(sessionStorage.getItem("depart")){
+        let c = JSON.parse(sessionStorage.getItem("depart"));
+        c.unshift({depName:'全部',depId:null})
+        this.depList = c;
+      }else{
+        let userId;
+        if (sessionStorage.getItem("userid")) {
+          userId=sessionStorage.getItem("userid");
+        }else{
+          userId='3A27BD25-8567-479D-9D96-1BA7BBEC5F0E'
+        }
+        this.$http({
+            method: "get",
+            url: "/common/depart",
+            params:{
+              userId:userId
+            },
+        }).then(res => {
+            let c = this.toTree(res.data,'depCode','pid');
+            sessionStorage.setItem("depart", JSON.stringify(c));
+            c.unshift({depName:'全部',depId:null})
+            this.depList =JSON.parse(JSON.stringify(c));
+        });
+      }
     },
     departFn(val) {
       this.data.userId = null;

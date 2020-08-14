@@ -9,107 +9,91 @@
         >
           <ul class="prov bor-r" style="height: 100%;">
             <h5 class="fs13">区域</h5>
-            <!-- :class="[o.selected?'active':'',(!o.children)&&o.selected?'listbg':'']" -->
-            <li
-              v-for="(o, i) of cityList"
-              :key="i"
-              :class="o.selected ? 'active' : ''"
-            >
-              <div
-                class="prov-box dfrcb"
-                @click="listTapFn(o)"
-                style="padding:0 17px"
-                :class="data.areaId == o.areaId ? 'listbg' : ''"
-              >
-                <div class="fs13 text-over" :title="o.areaName">
-                  <template v-if="o.children">
-                    <i
-                      class="left-icon"
-                      :class="
-                        o.selected
-                          ? 'el-icon-folder-remove'
-                          : 'el-icon-folder-add'
-                      "
-                      @click="openTapFn(o)"
-                    ></i>
-                  </template>
-                  <template v-else>
-                    <i class="left-icon el-icon-document"></i>
-                  </template>
-                  {{ o.areaName }}
-                </div>
-                <i
-                  class="fs13"
-                  :class="
-                    o.selected ? 'el-icon-arrow-down' : 'el-icon-arrow-right'
-                  "
-                  v-if="o.children"
-                  @click="openTapFn(o)"
-                ></i>
-              </div>
-              <ul class="city" v-if="o.children">
-                <li
-                  v-for="(x, y) of o.children"
-                  :key="y"
-                  style="text-indent:7px"
-                  :class="x.selected ? 'active' : ''"
-                >
-                  <div
-                    class="prov-box dfrcb"
-                    @click="listTapFn(x)"
-                    style="padding:0 17px"
-                    :class="data.areaId == x.areaId ? 'listbg' : ''"
-                  >
-                    <div class="fs13 text-over" :title="x.areaName">
-                      <template v-if="x.children">
-                        <i
-                          class="left-icon"
-                          :class="
-                            x.selected
-                              ? 'el-icon-folder-remove'
-                              : 'el-icon-folder-add'
-                          "
-                          @click="openTapFn(x)"
-                        ></i>
-                      </template>
-                      <template v-else>
-                        <i class="left-icon el-icon-document"></i>
-                      </template>
-                      {{ x.areaName }}
-                    </div>
-                    <i
-                      class="fs13"
-                      :class="
-                        x.selected
-                          ? 'el-icon-arrow-down'
-                          : 'el-icon-arrow-right'
-                      "
-                      v-if="x.children"
-                      @click="openTapFn(x)"
-                    ></i>
+            <!-- :class="[o.selected?'active':'',(!o.children)&&o.selected?'listbg':'']"  '\"areaId\":\"'+o.areaId+'\"'  -->
+            <div v-for="(o, i) of cityList" :key="i">
+              <li :class="o.selected ? 'active' : ''" v-if='cityStr.indexOf(`"areaId":"`+o.areaId)>-1||o.areaId=="all"'>
+                <div class="prov-box dfrcb" @click="listTapFn(o)" style="padding:0 17px" :class="data.areaId == o.areaId ? 'listbg' : ''">
+                  <div class="fs13 text-over" :title="o.areaName">
+                    <template v-if='cityStr.indexOf(`"areaId":"`+o.areaId+`"`)>-1||o.areaId=="all"'>
+                      <i class="left-icon el-icon-document"></i>
+                    </template>
+                    <template v-else>
+                      <i
+                        class="left-icon"
+                        :class="
+                          o.selected
+                            ? 'el-icon-folder-remove'
+                            : 'el-icon-folder-add'
+                        "
+                        @click="openTapFn(o)"
+                      ></i>
+                    </template>
+                    {{ o.areaName }}
                   </div>
-                  <ul class="area" v-if="x.children">
-                    <li
-                      v-for="(item, n) of x.children"
-                      :key="n"
-                      style="text-indent:14px"
-                    >
+                  <i class="fs13" :class="o.selected ? 'el-icon-arrow-down' : 'el-icon-arrow-right'" v-if='!(cityStr.indexOf(`"areaId":"`+o.areaId+`"`)>-1)&&o.areaId!="all"' @click="openTapFn(o)"></i>
+                </div>
+                <ul class="city" v-if="o.children">
+                  <div v-for="(x, y) of o.children" :key="y" >
+                    <li style="text-indent:7px" :class="x.selected ? 'active' : ''" v-if='cityStr.indexOf(`"areaId":"`+x.areaId)>-1'>
                       <div
                         class="prov-box dfrcb"
-                        @click="listTapFn(item)"
+                        @click="listTapFn(x)"
                         style="padding:0 17px"
-                        :class="data.areaId == item.areaId ? 'listbg' : ''"
+                        :class="data.areaId == x.areaId ? 'listbg' : ''"
                       >
-                        <div class="fs13 text-over" :title="item.areaName">
-                          <i class="left-icon el-icon-document"></i>
-                          {{ item.areaName }}
+                        <div class="fs13 text-over" :title="x.areaName">
+                          <template v-if='cityStr.indexOf(`"areaId":"`+x.areaId)>-1+`"`'>
+                            <i
+                              class="left-icon"
+                              :class="
+                                x.selected
+                                  ? 'el-icon-folder-remove'
+                                  : 'el-icon-folder-add'
+                              "
+                              @click="openTapFn(x)"
+                            ></i>
+                          </template>
+                          <template v-else>
+                            <i class="left-icon el-icon-document"></i>
+                          </template>
+                          {{ x.areaName }}
                         </div>
+                        <i
+                          class="fs13"
+                          :class="
+                            x.selected
+                              ? 'el-icon-arrow-down'
+                              : 'el-icon-arrow-right'
+                          "
+                          v-if='cityStr.indexOf(`"areaId":"`+x.areaId)>-1+`"`'
+                          @click="openTapFn(x)"
+                        ></i>
                       </div>
+                      <ul class="area" v-if="x.children">
+                        <div v-for="(item, n) of x.children" :key="n" >
+                          <li style="text-indent:14px" v-if='cityStr.indexOf(`"areaId":"`+item.areaId)>-1'>
+                            <div
+                              class="prov-box dfrcb"
+                              @click="listTapFn(item)"
+                              style="padding:0 17px"
+                              :class="data.areaId == item.areaId ? 'listbg' : ''"
+                            >
+                              <div class="fs13 text-over" :title="item.areaName">
+                                <i class="left-icon el-icon-document"></i>
+                                {{ item.areaName }}
+                              </div>
+                            </div>
+                          </li>
+                        </div>
+                        
+                      </ul>
                     </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
+                  </div>
+                  
+                </ul>
+              </li>
+            </div>
+            
           </ul>
         </el-aside>
         <!-- 内容 -->
@@ -192,14 +176,15 @@
                   label="市州"
                   min-width="70"
                   prop="city"
+                  show-overflow-tooltip
                 >
-                  <template slot-scope="scope">
+                  <!-- <template slot-scope="scope">
                     <el-tooltip :content="scope.row.city" placement="left">
                       <span class="text-over">
                         {{ scope.row.city }}
                       </span>
                     </el-tooltip>
-                  </template>
+                  </template> -->
                 </el-table-column>
                 <el-table-column
                   header-align="center"
@@ -208,14 +193,15 @@
                   label="名称"
                   min-width="182"
                   prop="comName"
+                  show-overflow-tooltip
                 >
-                  <template slot-scope="scope">
+                  <!-- <template slot-scope="scope">
                     <el-tooltip :content="scope.row.comName" placement="right">
                       <span class="text-over">
                         {{ scope.row.comName }}
                       </span>
                     </el-tooltip>
-                  </template>
+                  </template> -->
                 </el-table-column>
                 <el-table-column
                   align="center"
@@ -545,7 +531,8 @@ export default {
       fromData: { comRegion: "" },
       fromObj: {},
       comid: "",
-      comname: ""
+      comname: "",
+      cityStr:'',
     };
   },
   components: {
@@ -564,26 +551,29 @@ export default {
         method: "get",
         url: "/so/area/server"
       }).then(res => {
+        if(!res.data){
+          res.data=[]
+        }
         sessionStorage.setItem("cityTree", JSON.stringify(res.data));
-        let city = JSON.parse(sessionStorage.getItem("cityTree"));
-        city = this.toTree(city,'areaId','pid');
-        let obj = {
-          areaId: "all",
-          areaName: "全部",
-          selected: false,
-          children: null
-        };
-        city.unshift(obj);
-        this.cityList = city; //服务业主地区
+        this.cityStr=JSON.stringify(res.data);
+        // let city = JSON.parse(sessionStorage.getItem("cityTree"));
+        // city = this.toTree(city,'areaId','pid');
+        // let obj = {
+        //   areaId: "all",
+        //   areaName: "全部",
+        //   selected: false,
+        //   children: null
+        // };
+        // city.unshift(obj);
+        // this.cityList = city; //服务业主地区
       });
     }
   },
   created() {
     // console.log(this.getJsUrl('userId'))
 
-    if (sessionStorage.getItem("cityTree")) {
-      let city = JSON.parse(sessionStorage.getItem("cityTree"));
-      // let city=JSON.parse(localStorage.getItem('cityAllTree'))
+    if (localStorage.getItem("cityAllTree")) {
+      let city = JSON.parse(localStorage.getItem("cityAllTree"));
       city = this.toTree(city,'areaId','pid');
       let obj = {
         areaId: "all",
@@ -593,6 +583,7 @@ export default {
       };
       city.unshift(obj);
       this.cityList = city; //服务业主地区
+      this.cityStr=sessionStorage.getItem('cityTree');
     }
     this.tabNum = this.$route.name; //控制下方的tab路由
     this.ajax();
@@ -602,7 +593,7 @@ export default {
     // this.$refs.serverList.setCurrentRow(this.tableData[0])
   },
   mounted() {
-    this.$refs.serverList.setCurrentRow(this.tableData[0]);
+    // this.$refs.serverList.setCurrentRow(this.tableData[0]);
   },
   methods: {
     indexFn(index) {
@@ -697,6 +688,7 @@ export default {
             that.tableData = res.data.data;
             that.total = res.data.total;
             that.$nextTick(() => {
+              that.$refs.serverList.setCurrentRow(this.tableData[0]);
               that.$refs.serverList.doLayout(); //解决表格错位
             });
           }

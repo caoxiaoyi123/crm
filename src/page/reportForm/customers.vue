@@ -111,12 +111,13 @@
           header-align="center"
           label="单位"
           prop="comName"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.comName" placement="right">
               <span class="text-over">{{ scope.row.comName }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
@@ -124,12 +125,13 @@
           header-align="center"
           label="项目"
           prop="projName"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.projName" placement="right">
               <span class="text-over">{{ scope.row.projName }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="center"
@@ -141,24 +143,26 @@
           header-align="center"
           prop="oldPlan"
           label="原计划"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.oldPlan" placement="right">
               <span class="text-over">{{ scope.row.oldPlan }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
           header-align="center"
           prop="result"
           label="结果"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.result" placement="right">
               <span class="text-over">{{ scope.row.result }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
@@ -166,12 +170,13 @@
           header-align="center"
           label="分析原因"
           prop="cause"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.cause" placement="right">
               <span class="text-over">{{ scope.row.cause }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
@@ -179,12 +184,13 @@
           header-align="center"
           label="确认根本原因"
           prop="confirmCause"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.confirmCause" placement="right">
               <span class="text-over">{{ scope.row.confirmCause }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="left"
@@ -192,12 +198,13 @@
           header-align="center"
           label="重来一次"
           prop="again"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.again" placement="right">
               <span class="text-over">{{ scope.row.again }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
       </el-table>
       <div class="page-box dfrcb">
@@ -444,9 +451,32 @@ export default {
     },
     getDepart() {
       //获取组织关系
-      let c = JSON.parse(sessionStorage.getItem("depart"));
-      c.unshift({depName:'全部',depId:null})
-      this.depList = c;
+      
+      if(sessionStorage.getItem("depart")){
+        let c = JSON.parse(sessionStorage.getItem("depart"));
+        c.unshift({depName:'全部',depId:null})
+        this.depList = c;
+      }else{
+        let userId;
+        if (sessionStorage.getItem("userid")) {
+          userId=sessionStorage.getItem("userid");
+        }else{
+          userId='3A27BD25-8567-479D-9D96-1BA7BBEC5F0E'
+        }
+        this.$http({
+            method: "get",
+            url: "/common/depart",
+            params:{
+              userId:userId
+            },
+        }).then(res => {
+            let c = this.toTree(res.data,'depCode','pid');
+            sessionStorage.setItem("depart", JSON.stringify(c));
+            c.unshift({depName:'全部',depId:null})
+            this.depList =JSON.parse(JSON.stringify(c));
+        });
+      }
+      
     },
     departFn(val) {
       this.data.userId = null;

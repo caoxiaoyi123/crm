@@ -92,9 +92,9 @@ Vue.prototype.openPdf = function(url) {
 //根据pid获取树状图
 Vue.prototype.toTree=function(data,id,pid) {
   // 删除 所有 children,以防止多次调用
-  data.forEach(function (item) {
-    delete item.children;
-  });
+  // data.forEach(function (item) {
+  //   delete item.children;
+  // });
   // 将数据存储为 以 id 为 KEY 的 map 索引数据列
   var map = {};
   data.forEach(function (item) {

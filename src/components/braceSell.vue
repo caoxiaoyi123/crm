@@ -16,7 +16,7 @@
                     <font class="fs13">删除</font>
                 </span>
                 <div class="comname-ipt" @keydown.13="keywordFn">
-                    <input type="text" v-model="data.searchCompName" placeholder="请输入关键字" />
+                    <input type="text" v-model="data.searchCompName" placeholder="请输入关键字" maxlength="50"/>
                     <i class="el-icon-search cp" slot="append" @click="keywordFn"></i>
                 </div>
             </div>
@@ -81,12 +81,13 @@
                     min-width="150"
                     label="单位名称"
                     prop="compName"
+                    show-overflow-tooltip
                 >
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <el-tooltip :content="scope.row.compName" placement="right">
                             <span class="clamp-2">{{ scope.row.compName }}</span>
                         </el-tooltip>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column
                     align="left"
@@ -94,12 +95,13 @@
                     min-width="150"
                     label="项目名称"
                     prop="projName"
+                    show-overflow-tooltip
                 >
-                    <template slot-scope="scope">
+                    <!-- <template slot-scope="scope">
                         <el-tooltip :content="scope.row.projName" placement="right">
                             <span class="clamp-2">{{ scope.row.projName }}</span>
                         </el-tooltip>
-                    </template>
+                    </template> -->
                 </el-table-column>
                 <el-table-column align="center" label="负责人" prop="comManager"></el-table-column>
                 <el-table-column align="center" label="手机" width="125" prop="comTel"></el-table-column>
@@ -120,8 +122,8 @@
                         <el-input
                             v-model="scope.row.gusAmount"
                             placeholder="点击输入"
-                            :maxlength="50"
-                            @input="gusAmountBlur(scope.row, 0)"
+                            :maxlength="5"
+                            @input="scope.row.gusAmount=scope.row.gusAmount.replace(/[^\d]/g,'')"
                         />
                     </template>
                 </el-table-column>
@@ -138,7 +140,7 @@
                 </el-table-column>
                 <el-table-column v-for="o in num" :key="o" align="center" :label="o + ''">
                     <template slot-scope="scope">
-                        <template v-if="scope.row.arr[o - 1].id">
+                        <template v-if="scope.row.arr[o - 1].param">
                             <el-tooltip placement="top" effect="light">
                                 <div slot="content">
                                     <p class="fs14">阶段：{{ scope.row.arr[o - 1].param }}</p>
@@ -211,9 +213,8 @@
                         <el-input
                             placeholder="请输入金额(万)"
                             v-model="fromData.amount"
-                            maxlength="5"
-                            type="number"
-                            @input="gusAmountBlur(fromData, 1)"
+                            :maxlength="5"
+                            @input="fromData.amount=fromData.amount.replace(/[^\d]/g,'')"
                         ></el-input>
                     </el-form-item>
                     <el-form-item
@@ -549,13 +550,16 @@ export default {
             this.isDialog = true;
         },
         sumbitFn() {
-            
             if(!this.fromData.param){
                 this.$message({
                     title: "消息",
                     message:'必须填写漏斗阶段',
                     type: "warning"
                 });
+                return false
+            }
+            if(this.fromData.param=='无'&&!this.fromData.id){
+                this.isDialog = false;
                 return false
             }
             if(this.fromData.param=='签约'||this.fromData.param=='回款'){
@@ -599,7 +603,8 @@ export default {
                         type: "success"
                     });
                     this.isSave=true;
-                    this.ajax();
+                    this.returnExpUpdate(this.fromData);
+                    // this.ajax();
                     this.count();
                 } else {
                     this.isSave=true;
@@ -609,35 +614,43 @@ export default {
                 }
             });
         },
-        handleChange(row) {
-            row.intentProduct = row.intentProduct[row.intentProduct.length - 1];
-        },
-        gusAmountBlur(obj, type) {
-            let t = /^\d{1,5}\.\d{1,2}$|^\d{1,5}$/,
-                val;
-            if (type == 0) {
-                val = obj.gusAmount;
-            } else if (type == 1) {
-                val = obj.amount;
-            }
-            if (val == "") {
-                return;
-            }
-            if (!t.test(val)) {
-                this.$message({
-                    type: "warning",
-                    message: "请输入数字，且最多5位"
-                });
-                if (type == 0) {
-                    // obj.gusAmount =val.replace(/\D/g,'');
-                    obj.gusAmount='';
-                    // obj.gusAmount=val.replace(/^[^\d{1,5}\.\d{1,2}$|^\d{1,5}]$/,'');
-                } else if (type == 1) {
-                    obj.amount='';
-                    // obj.amount =val.replace(/^\d{1,5}\.\d{1,2}$|^\d{1,5}$/g,'');
+        returnExpUpdate(obj){
+            for(let x in this.tableData){
+                let d=this.tableData[x]
+                if(d.supId==obj.supId){
+                    d.arr[obj.seq-1]=obj
+                    this.$set(this.tableData,x,d);
+                    return
                 }
             }
         },
+        handleChange(row) {
+            row.intentProduct = row.intentProduct[row.intentProduct.length - 1];
+        },
+        // gusAmountBlur(obj, type) {
+            
+            // let t = /^\d{1,5}$/,
+            //     val;
+            // if (type == 0) {
+            //     val = obj.gusAmount;
+            // } else if (type == 1) {
+            //     val = obj.amount;
+            // }
+            // if (val == "") {
+            //     return;
+            // }
+            // if (!t.test(val)) {
+            //     this.$message({
+            //         type: "warning",
+            //         message: "请输入数字，且最多5位"
+            //     });
+            //     if (type == 0) {
+            //         obj.gusAmount='';
+            //     } else if (type == 1) {
+            //         obj.amount='';
+            //     }
+            // }
+        // },
         probabilityFn(row) {
             if (row.probability < 0) {
                 row.probability = 0;

@@ -63,10 +63,11 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="上传附件">
-          <el-upload
+          <v-upload :fileData="fileData" :type="'file'"></v-upload>
+          <!-- <el-upload
             ref="upload"
             :action="baseUrl + '/so/file/upload'"
-            :show-file-list="false"
+            :show-file-list="true"
             :multiple="false"
             :on-success="sucFn"
             :on-error="errorFn"
@@ -82,7 +83,7 @@
             >
               {{ btnTxt }}
             </button>
-          </el-upload>
+          </el-upload> -->
         </el-form-item>
       </el-form>
     </v-drawer>
@@ -92,6 +93,7 @@
 import {
   baseUrl //引入baseUrl
 } from "../../../config/env";
+import upload from "@/components/upload";
 export default {
   name: "file", // 结构名称
   data() {
@@ -109,7 +111,16 @@ export default {
       baseUrl: baseUrl,
       btnTxt: "点击上传",
       disabled: false,
-      fileid:null
+      fileid:null,
+      fileData:{
+        data:{
+          id: null,
+          fileName: null,
+          uploadType: "company",
+          userId: null
+        },
+        list:[],
+      }
     };
   },
   watch: {
@@ -117,19 +128,22 @@ export default {
     comid: function(val, old) {
       if (val != "") {
         this.isshow = true;
-        this.fromData.fileName = "";
+        this.fileData.data.fileName = "";
         if (sessionStorage.getItem("userid")) {
-          this.fromData.userId = sessionStorage.getItem("userid");
+          this.fileData.data.userId = sessionStorage.getItem("userid");
         } else {
-          this.fromData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+          this.fileData.data.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
         }
-        this.fromData.id = this.comid;
+        this.fileData.data.id = this.comid;
         this.ajax();
       } else {
         this.isshow = false;
         this.tableData.splice(0);
       }
     }
+  },
+  components: {
+    "v-upload": upload
   },
   props: {
     // 集成父级参数
@@ -144,14 +158,15 @@ export default {
     // console.group('创建完毕状态===============》created');
     if (this.comid != "") {
       this.ajax();
-      this.fromData.id = this.comid;
+      this.fileData.data.id = this.comid;
       this.isshow = true;
     }
     if (sessionStorage.getItem("userid")) {
-      this.fromData.userId = sessionStorage.getItem("userid");
+      this.fileData.data.userId = sessionStorage.getItem("userid");
     } else {
-      this.fromData.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
+      this.fileData.data.userId = "60C877AB-3B89-44A8-A4EA-0265002DC975"; //当前用户id
     }
+    // this.fileData.data=JSON.stringify(JSON.parse(this.fromData));
   },
   beforeMount() {
     // console.group('挂载前状态  ===============》beforeMount');
@@ -194,6 +209,9 @@ export default {
         // this.upLoadfn.uploadExcFn();
       // } else {
         this.drawer = true;
+        this.fileData.list=[];
+        this.fromData.fileName='';
+        this.fileData.id=null;
       // }
     },
     previewFn(row) {
@@ -220,7 +238,7 @@ export default {
       }
     },
     submitFn(){
-      if(!this.fileid){
+      if(!this.fileData.id){
         this.$message({
           message:'请先上传文件',
           type: "warning"
@@ -231,57 +249,57 @@ export default {
         method:'post',
         url:'/so/company/saveFile',
         data:{
-          comId:this.fromData.id,
-          fileId:this.fileid,
-          userId:this.fromData.userId,
+          comId:this.fileData.data.id,
+          fileId:this.fileData.id,
+          userId:this.fileData.data.userId,
           fileName:this.fromData.fileName
         }
       }).then(res=>{
         if(res.succ){
           this.drawer = false;
           this.fromData.fileName = "";
-          this.fileid=null;
+          this.fileData.id=null;
           this.ajax();
         }
       })
       
     },
-    sucFn(response, file, fileList) {
-      this.btnTxt = "点击上传";
-      this.disabled = false;
-      this.$refs.upload.clearFiles();
-      if (response.succ) {
-        this.fileid=response.data.resId;
-        this.upLoadfn.uploadSucFn();
-        // this.drawer = false;
-        // this.ajax();
-      } else {
-        this.$message({
-          message: response.msg,
-          type: "warning"
-        });
-      }
-    },
-    beforeAvatarUpload(file) {
-      this.btnTxt = "上传中";
-      this.disabled = true;
-      const isLt2M = file.size / 1024 / 1024 < 20;
-      if (!isLt2M) {
-        this.$message({
-          message: "上传附件大小不能超过 20MB!",
-          type: "warning"
-        });
-        this.btnTxt = "点击上传";
-        this.disabled = false;
-        return false;
-      }
-      return isLt2M;
-    },
-    errorFn() {
-      this.btnTxt = "点击上传";
-      this.disabled = false;
-      this.upLoadfn.uploadErrFn;
-    }
+    // sucFn(response, file, fileList) {
+    //   this.btnTxt = "点击上传";
+    //   this.disabled = false;
+    //   this.$refs.upload.clearFiles();
+    //   if (response.succ) {
+    //     this.fileid=response.data.resId;
+    //     this.upLoadfn.uploadSucFn();
+    //     // this.drawer = false;
+    //     // this.ajax();
+    //   } else {
+    //     this.$message({
+    //       message: response.msg,
+    //       type: "warning"
+    //     });
+    //   }
+    // },
+    // beforeAvatarUpload(file) {
+    //   this.btnTxt = "上传中";
+    //   this.disabled = true;
+    //   const isLt2M = file.size / 1024 / 1024 < 20;
+    //   if (!isLt2M) {
+    //     this.$message({
+    //       message: "上传附件大小不能超过 20MB!",
+    //       type: "warning"
+    //     });
+    //     this.btnTxt = "点击上传";
+    //     this.disabled = false;
+    //     return false;
+    //   }
+    //   return isLt2M;
+    // },
+    // errorFn() {
+    //   this.btnTxt = "点击上传";
+    //   this.disabled = false;
+    //   this.upLoadfn.uploadErrFn;
+    // }
   }
 };
 </script>

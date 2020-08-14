@@ -38,14 +38,14 @@
           width="120"
           prop="confirmDate"
         ></el-table-column>
-        <el-table-column align="center" label="区域" width="80" prop="province">
-          <template slot-scope="scope">
+        <el-table-column align="center" label="区域" width="80" prop="province" show-overflow-tooltip>
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.province" placement="right">
               <span class="text-over">
                 {{ scope.row.province }}
               </span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="center"

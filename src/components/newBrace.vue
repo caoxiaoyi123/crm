@@ -56,6 +56,7 @@
             type="text"
             v-model="data.searchCompName"
             placeholder="请输入关键字"
+            maxlength="50"
           />
           <i class="el-icon-search cp" slot="append" @click="keywordFn"></i>
         </div>

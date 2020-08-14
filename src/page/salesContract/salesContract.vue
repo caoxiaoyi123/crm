@@ -116,14 +116,15 @@
           min-width="70"
           label="地区"
           prop="province"
+          show-overflow-tooltip
         >
-          <template slot-scope="scope">
+          <!-- <template slot-scope="scope">
             <el-tooltip :content="scope.row.province" placement="right">
               <span class="text-over">
                 {{ scope.row.province }}
               </span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column
           align="center"

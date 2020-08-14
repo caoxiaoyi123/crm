@@ -403,6 +403,7 @@ export default {
     },
     editFn() {
       this.fromData = JSON.parse(JSON.stringify(this.fromObj));
+      this.disabled=false;
       if(this.fromObj.ppid){
         this.$http({
           url:"/sv/plan/main/planCreator",

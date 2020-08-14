@@ -136,7 +136,7 @@
         @submit.native.prevent
       >
         <el-form-item label="工作性质">
-          <el-select v-model="fromData.workNature" style="width:200px" :disabled="disabled">
+          <el-select v-model="fromData.workNature" :disabled="disabled">
             <el-option
               v-for="(x, i) of workNatureList"
               :key="i"
@@ -172,7 +172,7 @@
           ></el-input>
         </el-form-item>
         <div class="drc">
-          <el-form-item label="任务分解">
+          <el-form-item label="任务分解" class="resolve">
             <el-input
               placeholder="任务分解"
               v-model="fromData.resolve"
@@ -195,6 +195,7 @@
                   :outTxt="fromData.output"
                   :id="fromData.detailId"
                   :list="fromFjList"
+                  ref="decompose1"
                   :contentTxt="fromData.content"
                 ></v-decompose>
               </div>
@@ -278,6 +279,7 @@
           @submitFn="resolveUpdate"
           :outTxt="fromObj.output"
           :list="FjList"
+          ref="decompose"
           :contentTxt="fromObj.content"
         ></v-decompose>
       </section>
@@ -503,9 +505,11 @@ export default {
               type: "success"
             });
           }
-          
-          
           this.drawer1 = false;
+          let that=this;
+          setTimeout(function(){
+            that.$refs.decompose.rightData=[];
+          },500)
           this.ajax();
         }
       });
@@ -677,6 +681,10 @@ export default {
                 });
               }
               this.drawer = false;
+              let that=this;
+              setTimeout(function(){
+                that.$refs.decompose1.rightData=[];
+              },500)
               // this.$message({
               //   title: "成功",
               //   message: res.data,
@@ -844,6 +852,9 @@ export default {
   outline: none;
   background: #fff;
   border-radius: 4px;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 .planDetailed /deep/ .el-drawer {
   overflow: inherit;
@@ -867,4 +878,18 @@ export default {
     padding: 0 25px;
   }
 }
+.planDetailed .el-form /deep/ .el-input {
+	width:100%;
+}
+.planDetailed .el-form /deep/ .el-select {
+	width:100%;
+}
+.planDetailed .el-form .resolve /deep/ .el-form-item__content{
+  width: 350px;
+}
+.planDetailed .el-form .resolve  .el-input {
+	width:calc(100% - 68px);
+}
+
+
 </style>
